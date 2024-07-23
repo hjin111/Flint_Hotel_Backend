@@ -1,6 +1,7 @@
 package com.hotel.flint.user.domain;
 
 import com.hotel.flint.common.Option;
+import com.hotel.flint.employee.dto.InfoUserResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Builder
-public class user {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,4 +37,16 @@ public class user {
     @ColumnDefault("'N'")
     @Enumerated(EnumType.STRING)
     private Option delYn;
+
+    public InfoUserResDto infoUserEntity(){
+        return InfoUserResDto.builder()
+                .id(this.id)
+                .email(this.email)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .nation(this.nation)
+                .birthday(this.birthday)
+                .build();
+    }
+
 }
