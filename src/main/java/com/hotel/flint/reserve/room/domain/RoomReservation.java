@@ -32,14 +32,18 @@ public class RoomReservation {
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
-    private Option breakfastYN;
-
-    @Enumerated(EnumType.STRING)
-    @ColumnDefault("'N'")
     private Option parkingYN;
 
     @Column(nullable = false)
     private String payment;
+
+    @Column(nullable = false)
+    private int adultBfCnt; // 성인 조식 신청인원
+
+    @Column(nullable = false)
+    private int childBfCnt; // 아이 조식 신청인원
+
+    private String requestContents;
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
