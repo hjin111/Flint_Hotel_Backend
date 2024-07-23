@@ -1,5 +1,6 @@
 package com.hotel.flint.employee.controller;
 
+import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.employee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,11 @@ public class EmployeeController {
     @ResponseBody
     public InfoUserResDto memberInfoCheck(@PathVariable Long id){
         return employeeService.memberInfo(id);
+    }
+
+    @PostMapping("/detail/{id}")
+    @ResponseBody
+    public EmployeeDetResDto empDetail(@PathVariable Long id){
+        return employeeService.employeeDetail(id);
     }
 }

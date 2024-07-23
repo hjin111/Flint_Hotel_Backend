@@ -5,6 +5,7 @@ import com.hotel.flint.common.DepartMent;
 import com.hotel.flint.common.EmployeeRank;
 import com.hotel.flint.common.Gender;
 import com.hotel.flint.common.Option;
+import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -53,4 +54,18 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DepartMent department;
+
+    public EmployeeDetResDto EmpDetEntity(){
+        return EmployeeDetResDto.builder()
+                .id(this.id)
+                .employeeNumber(this.employeeNumber)
+                .employeeRank(this.employeeRank)
+                .email(this.email)
+                .phoneNumber(this.phoneNumber)
+                .birthday(this.birthday)
+                .dateOfEmployment(this.dateOfEmployment)
+                .gender(this.gender)
+                .department(this.department)
+                .build();
+    }
 }

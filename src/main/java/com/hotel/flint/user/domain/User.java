@@ -2,6 +2,7 @@ package com.hotel.flint.user.domain;
 
 import com.hotel.flint.common.Option;
 import com.hotel.flint.employee.dto.InfoUserResDto;
+import com.hotel.flint.user.dto.UserdetResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,6 +46,18 @@ public class User {
                 .firstName(this.firstName)
                 .lastName(this.lastName)
                 .nation(this.nation)
+                .birthday(this.birthday)
+                .build();
+    }
+
+    public UserdetResDto detUserEntity(){
+        return UserdetResDto.builder()
+                .email(this.email)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .phoneNumber(this.phoneNumber)
+                .nation(this.nation)
+                .password(this.password)
                 .birthday(this.birthday)
                 .build();
     }

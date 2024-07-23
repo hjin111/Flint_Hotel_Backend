@@ -1,5 +1,7 @@
 package com.hotel.flint.employee.service;
 
+import com.hotel.flint.employee.domain.Employee;
+import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.domain.User;
@@ -7,6 +9,7 @@ import com.hotel.flint.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 
 @Service
@@ -25,6 +28,16 @@ public class EmployeeService {
     public InfoUserResDto memberInfo(Long id){
         User user = userService.findByUserId(id);
         return user.infoUserEntity();
+    }
+
+    public EmployeeDetResDto employeeDetail(Long id){
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        return employee.EmpDetEntity();
+    }
+
+    public Employee empFindById(Long id){
+        Employee employee = employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당하는 id가 존재하지 않습니다."));
+        return employee;
     }
 
 }

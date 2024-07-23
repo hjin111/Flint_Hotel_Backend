@@ -1,13 +1,16 @@
 package com.hotel.flint.user.service;
 
 import com.hotel.flint.user.domain.User;
+import com.hotel.flint.user.dto.UserdetResDto;
 import com.hotel.flint.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -15,6 +18,12 @@ public class UserService {
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public UserdetResDto memberDetail(Long id){
+        User user = findByUserId(id);
+
+        return user.detUserEntity();
     }
 
     public User findByUserId(Long id) {
