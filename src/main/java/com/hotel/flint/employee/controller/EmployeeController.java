@@ -4,7 +4,6 @@ import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import com.hotel.flint.employee.dto.EmployeeModResDto;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.employee.service.EmployeeService;
-import com.hotel.flint.user.dto.UserModResDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

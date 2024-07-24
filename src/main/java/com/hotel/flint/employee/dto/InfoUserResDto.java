@@ -1,7 +1,6 @@
 package com.hotel.flint.employee.dto;
 
 
-import com.hotel.flint.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

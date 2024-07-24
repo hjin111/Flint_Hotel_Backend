@@ -1,4 +1,4 @@
-package com.hotel.flint.user.dto;
+package com.hotel.flint.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDetResDto {
+public class MemberDetResDto {
     private String email;
     private String firstName;
     private String lastName;

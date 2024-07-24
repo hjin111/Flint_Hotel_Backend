@@ -1,9 +1,8 @@
-package com.hotel.flint.user.domain;
+package com.hotel.flint.member.domain;
 
 import com.hotel.flint.common.Option;
 import com.hotel.flint.employee.dto.InfoUserResDto;
-import com.hotel.flint.user.dto.UserDetResDto;
-import com.hotel.flint.user.dto.UserModResDto;
+import com.hotel.flint.member.dto.MemberDetResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +17,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 @Builder
-public class User {
+public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,8 +50,8 @@ public class User {
                 .build();
     }
 
-    public UserDetResDto detUserEntity(){
-        return UserDetResDto.builder()
+    public MemberDetResDto detUserEntity(){
+        return MemberDetResDto.builder()
                 .email(this.email)
                 .firstName(this.firstName)
                 .lastName(this.lastName)
@@ -63,7 +62,7 @@ public class User {
                 .build();
     }
 
-    public User deleteUser(){
+    public Member deleteUser(){
         this.delYn = Option.Y;
         return this;
     }

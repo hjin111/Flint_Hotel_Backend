@@ -1,4 +1,4 @@
-package com.hotel.flint.user.dto;
+package com.hotel.flint.member.dto;
 
 
 import com.hotel.flint.common.Option;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDelResDto {
+public class MemberDelResDto {
     private Option delYn;
 }
