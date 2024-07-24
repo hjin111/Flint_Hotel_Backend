@@ -2,6 +2,7 @@ package com.hotel.flint.user.service;
 
 import com.hotel.flint.user.domain.User;
 import com.hotel.flint.user.dto.UserDetResDto;
+import com.hotel.flint.user.dto.UserModResDto;
 import com.hotel.flint.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,11 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void memberModify(UserModResDto dto){
+        User user = this.findByUserId(dto.getId());
+        user.modifyUser(dto.getPassword());
+        userRepository.save(user);
+    }
     public User findByUserId(Long id) {
         User user = userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 id가 존재하지 않습니다."));
         return user;

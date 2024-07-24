@@ -3,6 +3,7 @@ package com.hotel.flint.user.domain;
 import com.hotel.flint.common.Option;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.dto.UserDetResDto;
+import com.hotel.flint.user.dto.UserModResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -64,7 +65,10 @@ public class User {
 
     public User deleteUser(){
         this.delYn = Option.Y;
-
         return this;
+    }
+
+    public void modifyUser(String password){
+        this.password = password;
     }
 }

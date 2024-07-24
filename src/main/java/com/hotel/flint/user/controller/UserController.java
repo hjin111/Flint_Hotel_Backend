@@ -1,13 +1,11 @@
 package com.hotel.flint.user.controller;
 
 import com.hotel.flint.user.dto.UserDetResDto;
+import com.hotel.flint.user.dto.UserModResDto;
 import com.hotel.flint.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/user/member")
@@ -32,5 +30,12 @@ public class UserController {
         userService.memberDelete(id);
 
         return "삭제 완료";
+    }
+
+    @PostMapping("/modify")
+    @ResponseBody
+    public String userModify(@RequestBody UserModResDto dto){
+        userService.memberModify(dto);
+        return "수정 완료";
     }
 }
