@@ -2,6 +2,7 @@ package com.hotel.flint.employee.service;
 
 import com.hotel.flint.employee.domain.Employee;
 import com.hotel.flint.employee.dto.EmployeeDetResDto;
+import com.hotel.flint.employee.dto.EmployeeModResDto;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.domain.User;
@@ -35,4 +36,13 @@ public class EmployeeService {
         return employee.EmpDetEntity();
     }
 
+    public void employeeModify(EmployeeModResDto dto){
+        Employee employee = this.findByEmpId(dto.getId());
+        employee.modifyEmp(dto.getPassword());
+        employeeRepository.save(employee);
+    }
+
+    public Employee findByEmpId(Long id){
+        return employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+    }
 }

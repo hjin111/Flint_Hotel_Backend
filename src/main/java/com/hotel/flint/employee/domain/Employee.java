@@ -31,6 +31,9 @@ public class Employee {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @ColumnDefault("1234")
+    private String password;
+
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
@@ -64,5 +67,9 @@ public class Employee {
                 .gender(this.gender)
                 .department(this.department)
                 .build();
+    }
+
+    public void modifyEmp(String password){
+        this.password = password;
     }
 }

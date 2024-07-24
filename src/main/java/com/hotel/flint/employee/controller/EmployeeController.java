@@ -1,14 +1,13 @@
 package com.hotel.flint.employee.controller;
 
 import com.hotel.flint.employee.dto.EmployeeDetResDto;
+import com.hotel.flint.employee.dto.EmployeeModResDto;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.employee.service.EmployeeService;
+import com.hotel.flint.user.dto.UserModResDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/user/employee")
@@ -30,5 +29,12 @@ public class EmployeeController {
     @ResponseBody
     public EmployeeDetResDto empDetail(@PathVariable Long id){
         return employeeService.employeeDetail(id);
+    }
+
+    @PostMapping("/modify")
+    @ResponseBody
+    public String userModify(@RequestBody EmployeeModResDto dto){
+        employeeService.employeeModify(dto);
+        return "수정 완료";
     }
 }
