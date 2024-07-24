@@ -55,4 +55,9 @@ public class RoomReservation {
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
+    // RoomDetails 테이블과 관계설정
+    @OneToOne
+    @JoinColumn(name = "room_id", nullable = false)
+    private RoomDetails roomDetails;
+
 }

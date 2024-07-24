@@ -29,6 +29,10 @@ public class RoomDetails {
     @Column(nullable = false)
     private RoomState roomState; // 룸 상태
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private RoomView roomView;
+
     @Column(nullable = false)
     private int maxOccupancy;
 
