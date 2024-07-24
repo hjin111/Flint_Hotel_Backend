@@ -22,5 +22,5 @@ public class RoomInfo {
     private String roomTypeName; // 룸 타입명
 
     @Column(nullable = false)
-    private int roomTypePrice; // 룸 별 원가 정보
+    private double roomTypePrice; // 룸 별 원가 정보
 }
