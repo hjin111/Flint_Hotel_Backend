@@ -6,10 +6,7 @@ import com.hotel.flint.common.EmployeeRank;
 import com.hotel.flint.common.Gender;
 import com.hotel.flint.common.Option;
 import com.hotel.flint.employee.dto.EmployeeDetResDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;

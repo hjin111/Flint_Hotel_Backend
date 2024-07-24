@@ -5,9 +5,11 @@ import com.hotel.flint.common.EmployeeRank;
 import com.hotel.flint.common.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,6 +23,4 @@ public class EmployeeDetResDto {
     private LocalDate dateOfEmployment;
     private Gender gender;
     private DepartMent department;
-
-
 }

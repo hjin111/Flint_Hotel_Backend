@@ -31,13 +31,8 @@ public class EmployeeService {
     }
 
     public EmployeeDetResDto employeeDetail(Long id){
-        Employee employee = employeeRepository.findById(id).orElse(null);
+        Employee employee = employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
         return employee.EmpDetEntity();
-    }
-
-    public Employee empFindById(Long id){
-        Employee employee = employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당하는 id가 존재하지 않습니다."));
-        return employee;
     }
 
 }
