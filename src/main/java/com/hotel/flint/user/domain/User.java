@@ -2,6 +2,7 @@ package com.hotel.flint.user.domain;
 
 import com.hotel.flint.common.Option;
 import com.hotel.flint.employee.dto.InfoUserResDto;
+import com.hotel.flint.user.dto.UserDelResDto;
 import com.hotel.flint.user.dto.UserdetResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -62,4 +63,9 @@ public class User {
                 .build();
     }
 
+    public User deleteUser(){
+        this.delYn = Option.Y;
+
+        return this;
+    }
 }

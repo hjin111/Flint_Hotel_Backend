@@ -26,6 +26,12 @@ public class UserService {
         return user.detUserEntity();
     }
 
+    public void memberDelete(Long id){
+        User user = userRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("해당 id가 존재하지 않습니다."));
+        user.deleteUser();
+        userRepository.save(user);
+    }
+
     public User findByUserId(Long id) {
         User user = userRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 id가 존재하지 않습니다."));
         return user;

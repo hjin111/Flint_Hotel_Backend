@@ -1,5 +1,6 @@
 package com.hotel.flint.user.controller;
 
+import com.hotel.flint.user.domain.User;
 import com.hotel.flint.user.dto.UserdetResDto;
 import com.hotel.flint.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,14 @@ public class UserController {
     @PostMapping("/detail/{id}")
     @ResponseBody
     public UserdetResDto userDetail(@PathVariable Long id){
-
         return userService.memberDetail(id);
+    }
+
+    @PostMapping("/delete/{id}")
+    @ResponseBody
+    public String userDelete(@PathVariable Long id){
+        userService.memberDelete(id);
+
+        return "삭제 완료";
     }
 }
