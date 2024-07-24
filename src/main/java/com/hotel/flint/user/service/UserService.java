@@ -1,7 +1,7 @@
 package com.hotel.flint.user.service;
 
 import com.hotel.flint.user.domain.User;
-import com.hotel.flint.user.dto.UserdetResDto;
+import com.hotel.flint.user.dto.UserDetResDto;
 import com.hotel.flint.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserdetResDto memberDetail(Long id){
+    public UserDetResDto memberDetail(Long id){
         User user = findByUserId(id);
 
         return user.detUserEntity();
