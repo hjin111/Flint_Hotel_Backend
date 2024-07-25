@@ -31,7 +31,7 @@ public class RoomReservation {
     private LocalDate checkOutDate;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'N'")
+    @Column(nullable = false)
     private Option parkingYN;
 
     @Column(nullable = false)
@@ -52,7 +52,7 @@ public class RoomReservation {
 
     // user 테이블과 관계설정
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     // RoomDetails 테이블과 관계설정

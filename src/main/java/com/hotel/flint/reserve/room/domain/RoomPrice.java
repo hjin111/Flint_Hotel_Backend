@@ -24,11 +24,9 @@ public class RoomPrice {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'N'")
     private Option isHoliday;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'row'")
     private Season season;
 
     @Enumerated(EnumType.STRING)
