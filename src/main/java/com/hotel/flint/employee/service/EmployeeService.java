@@ -1,5 +1,7 @@
 package com.hotel.flint.employee.service;
 
+import com.hotel.flint.diningreservation.domain.DiningReservation;
+import com.hotel.flint.diningreservation.repository.DiningReservationRepository;
 import com.hotel.flint.employee.domain.Employee;
 import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import com.hotel.flint.employee.dto.EmployeeModResDto;
@@ -19,11 +21,15 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final MemberService memberService;
+    private final DiningReservationRepository diningReservationRepository;
 
     @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository, MemberService memberService){
+    public EmployeeService(EmployeeRepository employeeRepository,
+                           MemberService memberService,
+                           DiningReservationRepository diningReservationRepository){
         this.employeeRepository = employeeRepository;
         this.memberService = memberService;
+        this.diningReservationRepository = diningReservationRepository;
     }
 
     public InfoUserResDto memberInfo(Long id){

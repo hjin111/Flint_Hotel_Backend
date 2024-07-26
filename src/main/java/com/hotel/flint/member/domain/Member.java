@@ -1,6 +1,7 @@
 package com.hotel.flint.member.domain;
 
 import com.hotel.flint.common.Option;
+import com.hotel.flint.diningreservation.domain.DiningReservation;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.member.dto.MemberDetResDto;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -38,6 +40,9 @@ public class Member {
     @ColumnDefault("'N'")
     @Enumerated(EnumType.STRING)
     private Option delYn;
+
+    @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL)
+    private List<DiningReservation> diningReservationList;
 
     public InfoUserResDto infoUserEntity(){
         return InfoUserResDto.builder()

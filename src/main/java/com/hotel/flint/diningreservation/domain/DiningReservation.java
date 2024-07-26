@@ -2,6 +2,7 @@ package com.hotel.flint.diningreservation.domain;
 
 import com.hotel.flint.common.Option;
 import com.hotel.flint.dining.domain.Dining;
+import com.hotel.flint.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,7 +29,7 @@ public class DiningReservation {
     @Column
     private String comment;
     @Column(nullable = false)
-    private LocalDate reservationDate;
+    private LocalDateTime reservationDate;
     @ColumnDefault("'N'")
     @Enumerated(EnumType.STRING)
     private Option delYn;
@@ -36,4 +38,7 @@ public class DiningReservation {
     @JoinColumn(name = "dining_id")
     private Dining diningId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member memberId;
 }
