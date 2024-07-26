@@ -72,4 +72,8 @@ public class Employee {
     public void modifyEmp(String password){
         this.password = password;
     }
+
+    public void modifyRank(EmployeeRank employeeRank){
+        this.employeeRank = employeeRank;
+    }
 }

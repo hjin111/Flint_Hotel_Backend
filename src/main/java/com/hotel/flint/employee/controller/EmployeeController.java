@@ -2,6 +2,7 @@ package com.hotel.flint.employee.controller;
 
 import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import com.hotel.flint.employee.dto.EmployeeModResDto;
+import com.hotel.flint.employee.dto.EmployeeRankModResDto;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.employee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,12 @@ public class EmployeeController {
     public String userModify(@RequestBody EmployeeModResDto dto){
         employeeService.employeeModify(dto);
         return "수정 완료";
+    }
+
+    @PostMapping("/mod_rank")
+    @ResponseBody
+    public String modEmployeeRank(@RequestBody EmployeeRankModResDto dto){
+        employeeService.modEmployeeRank(dto);
+        return "수정완료";
     }
 }

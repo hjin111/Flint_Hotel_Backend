@@ -1,10 +1,12 @@
 package com.hotel.flint.employee.service;
 
+import com.hotel.flint.common.DepartMent;
 import com.hotel.flint.diningreservation.domain.DiningReservation;
 import com.hotel.flint.diningreservation.repository.DiningReservationRepository;
 import com.hotel.flint.employee.domain.Employee;
 import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import com.hotel.flint.employee.dto.EmployeeModResDto;
+import com.hotel.flint.employee.dto.EmployeeRankModResDto;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.employee.repository.EmployeeRepository;
 import com.hotel.flint.member.domain.Member;
@@ -50,5 +52,15 @@ public class EmployeeService {
 
     public Employee findByEmpId(Long id){
         return employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+    }
+
+    public Employee modEmployeeRank(EmployeeRankModResDto dto){
+        Employee officeEmployee = employeeRepository.findById(dto.getOfficeId()).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+        if(!officeEmployee.getDepartment().equals(DepartMent.Office))
+            throw new IllegalArgumentException("Office 부서만 수정이 가능합니다.");
+        Employee targetEmployee = employeeRepository.findById(dto.getTargetId()).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+
+        targetEmployee.modifyRank(dto.getEmployeeRank());
+        return employeeRepository.save(targetEmployee);
     }
 }
