@@ -2,12 +2,10 @@ package com.hotel.flint.employee.service;
 
 import com.hotel.flint.common.DepartMent;
 import com.hotel.flint.diningreservation.domain.DiningReservation;
+import com.hotel.flint.diningreservation.dto.DiningReservationInfoResDto;
 import com.hotel.flint.diningreservation.repository.DiningReservationRepository;
 import com.hotel.flint.employee.domain.Employee;
-import com.hotel.flint.employee.dto.EmployeeDetResDto;
-import com.hotel.flint.employee.dto.EmployeeModResDto;
-import com.hotel.flint.employee.dto.EmployeeRankModResDto;
-import com.hotel.flint.employee.dto.InfoUserResDto;
+import com.hotel.flint.employee.dto.*;
 import com.hotel.flint.employee.repository.EmployeeRepository;
 import com.hotel.flint.member.domain.Member;
 import com.hotel.flint.member.service.MemberService;
@@ -37,6 +35,13 @@ public class EmployeeService {
     public InfoUserResDto memberInfo(Long id){
         Member member = memberService.findByUserId(id);
         return member.infoUserEntity();
+    }
+    public DiningReservationInfoResDto memberDiningReservationInfo(Long id){
+        Member member = memberService.findByUserId(id);
+        DiningReservation diningReservation = diningReservationRepository.findByMemberId(member);
+        DiningReservationInfoResDto dto = diningReservation.toEntity();
+
+        return dto;
     }
 
     public EmployeeDetResDto employeeDetail(Long id){

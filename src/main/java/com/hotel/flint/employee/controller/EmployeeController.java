@@ -1,5 +1,6 @@
 package com.hotel.flint.employee.controller;
 
+import com.hotel.flint.diningreservation.dto.DiningReservationInfoResDto;
 import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import com.hotel.flint.employee.dto.EmployeeModResDto;
 import com.hotel.flint.employee.dto.EmployeeRankModResDto;
@@ -43,5 +44,13 @@ public class EmployeeController {
     public String modEmployeeRank(@RequestBody EmployeeRankModResDto dto){
         employeeService.modEmployeeRank(dto);
         return "수정완료";
+    }
+
+    @PostMapping("/dining_reservation/{id}")
+    @ResponseBody
+//    고객 email(ID)
+    public DiningReservationInfoResDto memberDiningReservationCheck(@PathVariable Long id){
+
+        return employeeService.memberDiningReservationInfo(id);
     }
 }
