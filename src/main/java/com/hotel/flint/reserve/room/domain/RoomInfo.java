@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 
@@ -28,6 +29,10 @@ public class RoomInfo {
     private Long roomCnt; // 방 남은 개수
 
     public void updateRoomStock(Long cnt) {
-        this.roomCnt = this.roomCnt - 1;
+        this.roomCnt = this.roomCnt - cnt;
+    }
+
+    public void updateRoomStockAfterCanceled(Long cnt) {
+        this.roomCnt = this.roomCnt + cnt;
     }
 }
