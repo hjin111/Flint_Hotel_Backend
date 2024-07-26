@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ReservationUpdateDto {
 
-    private Long diningId;
+    private Long diningId; // 한식, 중식, 일식, 라운지 구분하는 ID
     private int adult;
     private int child;
     private String comment;
