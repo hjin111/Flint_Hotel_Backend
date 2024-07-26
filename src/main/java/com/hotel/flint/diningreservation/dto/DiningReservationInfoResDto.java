@@ -1,6 +1,6 @@
 package com.hotel.flint.diningreservation.dto;
 
-import com.hotel.flint.common.DiningName;
+import com.hotel.flint.common.enumdir.DiningName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

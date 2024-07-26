@@ -1,4 +1,4 @@
-package com.hotel.flint.common;
+package com.hotel.flint.common.enumdir;
 
 public enum RoomState {
     CI,

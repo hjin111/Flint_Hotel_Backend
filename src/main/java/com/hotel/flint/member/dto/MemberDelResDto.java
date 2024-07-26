@@ -1,7 +1,7 @@
 package com.hotel.flint.member.dto;
 
 
-import com.hotel.flint.common.Option;
+import com.hotel.flint.common.enumdir.Option;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

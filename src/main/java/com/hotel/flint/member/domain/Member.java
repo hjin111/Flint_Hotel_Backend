@@ -1,6 +1,6 @@
 package com.hotel.flint.member.domain;
 
-import com.hotel.flint.common.Option;
+import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.diningreservation.domain.DiningReservation;
 import com.hotel.flint.employee.dto.InfoUserResDto;
 import com.hotel.flint.member.dto.MemberDetResDto;

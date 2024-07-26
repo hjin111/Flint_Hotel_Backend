@@ -1,6 +1,6 @@
 package com.hotel.flint.employee.service;
 
-import com.hotel.flint.common.DepartMent;
+import com.hotel.flint.common.enumdir.DepartMent;
 import com.hotel.flint.diningreservation.domain.DiningReservation;
 import com.hotel.flint.diningreservation.dto.DiningReservationInfoResDto;
 import com.hotel.flint.diningreservation.repository.DiningReservationRepository;

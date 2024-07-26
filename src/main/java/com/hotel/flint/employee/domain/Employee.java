@@ -1,10 +1,10 @@
 package com.hotel.flint.employee.domain;
 
 
-import com.hotel.flint.common.DepartMent;
-import com.hotel.flint.common.EmployeeRank;
-import com.hotel.flint.common.Gender;
-import com.hotel.flint.common.Option;
+import com.hotel.flint.common.enumdir.DepartMent;
+import com.hotel.flint.common.enumdir.EmployeeRank;
+import com.hotel.flint.common.enumdir.Gender;
+import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.employee.dto.EmployeeDetResDto;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;

@@ -1,7 +1,6 @@
 package com.hotel.flint.employee.dto;
 
-import com.hotel.flint.common.DepartMent;
-import com.hotel.flint.common.EmployeeRank;
+import com.hotel.flint.common.enumdir.EmployeeRank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
