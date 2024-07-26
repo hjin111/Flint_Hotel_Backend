@@ -44,5 +44,9 @@ public class RoomDetails {
     @JoinColumn(name = "room_info_id", nullable = false)
     private RoomInfo roomInfo;
 
+    public void updateRoomStateAfterReservation(RoomState roomState) {
+        this.roomState = roomState;
+    }
+
 
 }
