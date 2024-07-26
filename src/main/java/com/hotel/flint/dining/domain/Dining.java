@@ -2,7 +2,7 @@ package com.hotel.flint.dining.domain;
 
 import com.hotel.flint.common.DiningName;
 import com.hotel.flint.common.Option;
-import com.hotel.flint.diningreservation.domain.DiningReservation;
+import com.hotel.flint.diningReservation.domain.diningReservation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
