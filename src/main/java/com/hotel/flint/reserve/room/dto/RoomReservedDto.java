@@ -41,7 +41,6 @@ public class RoomReservedDto {
                 .payment("kakaopay")
                 .rooms(roomDetails)
                 .user(user)
-                .delYN(Option.N)
                 .build();
         return roomReservation;
     }

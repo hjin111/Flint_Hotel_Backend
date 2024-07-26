@@ -23,4 +23,11 @@ public class RoomInfo {
 
     @Column(nullable = false)
     private double roomTypePrice; // 룸 별 원가 정보
+
+    @Column(nullable = false)
+    private Long roomCnt; // 방 남은 개수
+
+    public void updateRoomStock(Long cnt) {
+        this.roomCnt = this.roomCnt - 1;
+    }
 }

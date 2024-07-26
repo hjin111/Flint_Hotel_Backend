@@ -45,10 +45,6 @@ public class RoomReservation {
 
     private String requestContents;
 
-    @Enumerated(EnumType.STRING)
-    @ColumnDefault("'N'")
-    private Option delYN;
-
 
     // user 테이블과 관계설정
     @ManyToOne

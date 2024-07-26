@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -55,10 +54,6 @@ public class RoomReservedService {
     @Transactional
     public double roomReservation(RoomReservedDto dto, Long userId) {
 
-        // 날짜 가져가서 계산
-        double totalPrice = calculatePrice(dto);
-
-        // dto를 entity로 바꾸고 save
         // user 찾기
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 회원이 없음")
@@ -68,9 +63,27 @@ public class RoomReservedService {
                 () -> new IllegalArgumentException("해당 id의 방이 없음")
         );
 
+        // CO(check out) 상태의 룸만 예약 가능
+        if (!roomDetails.getRoomState().toString().equals("CO")) {
+            throw new IllegalArgumentException("예약 가능한 룸의 상태가 아님");
+        }
+
+        // 수용할 수 있는 최대 인원수 체크하기
+        if (roomDetails.getMaxOccupancy() < dto.getAdultCnt() + dto.getChildCnt()) {
+            throw new IllegalArgumentException("최대 수용 가능한 인원 수 초과");
+        }
+
         RoomReservation roomReservation = dto.toEntity(user, roomDetails);
         RoomReservation savedRoomReservation = roomReservationRepository.save(roomReservation);
         log.info("room reservation : " + savedRoomReservation);
+
+        // 예약 save가 되면 -> roomInfo 테이블의 roomCnt를 -1로 업데이트
+        log.info("예약 전, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
+        roomDetails.getRoomInfo().updateRoomStock(1L);
+        log.info("예약 후, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
+
+        // 날짜 가져가서 계산
+        double totalPrice = calculatePrice(dto);
 
         return totalPrice;
 
@@ -96,7 +109,7 @@ public class RoomReservedService {
         while (checkInDate.isBefore(checkOutDate)) { // checkInDate <= checkOutdate
             boolean isHoliday = holidayService.isHoliday(checkInDate);
             boolean isSeason = seasonService.isSeason(checkInDate);
-            log.info("isHoliday:" + checkInDate + isHoliday);
+            log.info("Checking date: {} isHoliday: {}, isSeason: {}", checkInDate, isHoliday, isSeason);
 
             double percentage = getAdditionalPercentage(roomDetails.getId(), roomDetails.getRoomInfo(), isHoliday, isSeason, String.valueOf(roomDetails.getRoomView()));
 
