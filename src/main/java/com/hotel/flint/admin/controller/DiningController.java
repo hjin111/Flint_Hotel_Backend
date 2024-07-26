@@ -27,4 +27,10 @@ public class DiningController {
         int newCost = request.get("cost");
         diningService.modDiningMenu(id, newCost);
     }
+
+    @DeleteMapping("/delmenu/{id}")
+    public void delDiningMenu(@PathVariable Long id){
+        diningService.delDiningMenu(id);
+    }
+
 }

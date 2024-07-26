@@ -33,4 +33,12 @@ public class DiningService {
         Menu menu = menuRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 메뉴"));
         menu.menuUpdate(newCost);
     }
+
+    public void delDiningMenu(Long id){
+        if(menuRepository.findById(id).isPresent()){
+            menuRepository.deleteById(id);
+        } else{
+            throw new EntityNotFoundException("존재하지 않는 메뉴");
+        }
+    }
 }
