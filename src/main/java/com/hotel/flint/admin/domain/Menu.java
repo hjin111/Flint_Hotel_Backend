@@ -27,4 +27,8 @@ public class Menu {
     @ManyToOne(fetch = FetchType.LAZY)
     private Dining dining;
 
+
+    public void menuUpdate(int newCost){
+        this.cost = newCost;
+    }
 }

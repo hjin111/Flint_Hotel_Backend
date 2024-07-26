@@ -29,4 +29,8 @@ public class DiningService {
         menuRepository.save(menu);
     }
 
+    public void modDiningMenu(Long id, int newCost){
+        Menu menu = menuRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 메뉴"));
+        menu.menuUpdate(newCost);
+    }
 }
