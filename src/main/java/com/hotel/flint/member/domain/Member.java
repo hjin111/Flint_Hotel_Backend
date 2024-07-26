@@ -1,5 +1,4 @@
 package com.hotel.flint.member.domain;
-
 import com.hotel.flint.common.Option;
 import com.hotel.flint.diningreservation.domain.DiningReservation;
 import com.hotel.flint.employee.dto.InfoUserResDto;
@@ -38,6 +37,7 @@ public class Member {
     @Column(nullable = false)
     private LocalDate birthday;
     @ColumnDefault("'N'")
+    @Column
     @Enumerated(EnumType.STRING)
     private Option delYn;
 
