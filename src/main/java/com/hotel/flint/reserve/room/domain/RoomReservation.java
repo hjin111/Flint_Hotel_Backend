@@ -1,7 +1,8 @@
 package com.hotel.flint.reserve.room.domain;
 
-import com.hotel.flint.common.Option;
-import com.hotel.flint.user.member.domain.User;
+
+import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.user.member.domain.Member;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -46,10 +47,10 @@ public class RoomReservation {
     private String requestContents;
 
 
-    // user 테이블과 관계설정
+    // member 테이블과 관계설정
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "member_id", nullable = false)
+    private Member member;
 
     // RoomDetails 테이블과 관계설정
     @OneToOne

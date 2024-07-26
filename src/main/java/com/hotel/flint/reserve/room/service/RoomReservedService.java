@@ -1,9 +1,9 @@
 package com.hotel.flint.reserve.room.service;
 
-import com.hotel.flint.common.Option;
-import com.hotel.flint.common.RoomState;
-import com.hotel.flint.common.RoomView;
-import com.hotel.flint.common.Season;
+
+import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.common.enumdir.RoomView;
+import com.hotel.flint.common.enumdir.Season;
 import com.hotel.flint.reserve.room.domain.RoomDetails;
 import com.hotel.flint.reserve.room.domain.RoomInfo;
 import com.hotel.flint.reserve.room.domain.RoomPrice;
@@ -13,8 +13,8 @@ import com.hotel.flint.reserve.room.repository.RoomDetailRepository;
 import com.hotel.flint.reserve.room.repository.RoomInfoRepository;
 import com.hotel.flint.reserve.room.repository.RoomPriceRepository;
 import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
-import com.hotel.flint.user.member.domain.User;
-import com.hotel.flint.user.member.repository.UserRepository;
+import com.hotel.flint.user.member.domain.Member;
+import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,18 +32,18 @@ public class RoomReservedService {
     private final RoomDetailRepository roomDetailRepository;
     private final RoomPriceRepository roomPriceRepository;
     private final RoomInfoRepository roomInfoRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     private final HolidayService holidayService;
     private final SeasonService seasonService;
 
     @Autowired
-    public RoomReservedService (RoomReservationRepository roomReservationRepository, RoomDetailRepository roomDetailRepository, RoomPriceRepository roomPriceRepository, RoomInfoRepository roomInfoRepository, UserRepository userRepository, HolidayService holidayService, SeasonService seasonService) {
+    public RoomReservedService (RoomReservationRepository roomReservationRepository, RoomDetailRepository roomDetailRepository, RoomPriceRepository roomPriceRepository, RoomInfoRepository roomInfoRepository, MemberRepository memberRepository, HolidayService holidayService, SeasonService seasonService) {
         this.roomReservationRepository = roomReservationRepository;
         this.roomDetailRepository = roomDetailRepository;
         this.roomPriceRepository = roomPriceRepository;
         this.roomInfoRepository = roomInfoRepository;
-        this.userRepository = userRepository;
+        this.memberRepository = memberRepository;
 
         this.holidayService = holidayService;
         this.seasonService = seasonService;
@@ -56,7 +56,7 @@ public class RoomReservedService {
     public double roomReservation(RoomReservedDto dto, Long userId) {
 
         // user 찾기
-        User user = userRepository.findById(userId).orElseThrow(
+        Member member = memberRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 회원이 없음")
         );
         // RoomDetail 찾아오기
@@ -74,7 +74,7 @@ public class RoomReservedService {
             throw new IllegalArgumentException("최대 수용 가능한 인원 수 초과");
         }
 
-        RoomReservation roomReservation = dto.toEntity(user, roomDetails);
+        RoomReservation roomReservation = dto.toEntity(member, roomDetails);
         RoomReservation savedRoomReservation = roomReservationRepository.save(roomReservation);
         log.info("room reservation : " + savedRoomReservation);
 
@@ -82,10 +82,6 @@ public class RoomReservedService {
         log.info("예약 전, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
         roomDetails.getRoomInfo().updateRoomStock(1L);
         log.info("예약 후, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
-
-        // 예약 성공 후 룸 상태변경 CO -> RS
-        roomDetails.updateRoomStateAfterReservation(RoomState.RS);
-        log.info("예약 후 룸의 상태: " + roomDetails.getRoomState().toString());
 
         // 날짜 가져가서 계산
         double totalPrice = calculatePrice(dto);
@@ -157,22 +153,6 @@ public class RoomReservedService {
 
         return percentage != null ? percentage.getAdditionalPercentage() : 1.0;
 
-    }
-
-    /**
-     * 객실 예약 취소
-     */
-    @Transactional
-    public void delete(Long roomReservedId) {
-
-        RoomReservation roomReservation = roomReservationRepository.findById(roomReservedId).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 예약 내역 없음")
-        );
-        roomReservationRepository.delete(roomReservation);
-
-        log.info("예약 취소 전, 남은 방의 개수 : " + roomReservation.getRooms().getRoomInfo().getRoomCnt());
-        roomReservation.getRooms().getRoomInfo().updateRoomStockAfterCanceled(1L);
-        log.info("예약 취소 후, 남은 방의 개수 : " + roomReservation.getRooms().getRoomInfo().getRoomCnt());
     }
 
 

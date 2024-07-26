@@ -29,30 +29,12 @@ public class RoomReservedController {
             double totalPrice = roomReservedService.roomReservation(dto, userId);
 
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "예약 금액은 " + totalPrice + "원 입니다.", null);
-            return new ResponseEntity<>(commonResDto, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    /**
-     * 객실 예약 취소
-     */
-    @GetMapping("/room/cancel/{id}")
-    public ResponseEntity<?> reservationRoomCanceled(@PathVariable Long id) { // id : room reservation의 id
-
-        try {
-            roomReservedService.delete(id);
-
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "delete reservation", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
+
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
-
     }
 
 

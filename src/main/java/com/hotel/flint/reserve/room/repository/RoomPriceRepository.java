@@ -1,8 +1,9 @@
 package com.hotel.flint.reserve.room.repository;
 
-import com.hotel.flint.common.Option;
-import com.hotel.flint.common.RoomView;
-import com.hotel.flint.common.Season;
+
+import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.common.enumdir.RoomView;
+import com.hotel.flint.common.enumdir.Season;
 import com.hotel.flint.reserve.room.domain.RoomInfo;
 import com.hotel.flint.reserve.room.domain.RoomPrice;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,43 +1,40 @@
 package com.hotel.flint.reserve.room.domain;
 
-
-import com.hotel.flint.common.Option;
-import com.hotel.flint.common.RoomView;
-import com.hotel.flint.common.Season;
+import com.hotel.flint.common.enumdir.RoomView;
+import com.hotel.flint.common.enumdir.Season;
+import com.jayway.jsonpath.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
 @Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RoomPrice {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private Option isHoliday;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_type_id", nullable = false)
+    private RoomInfo roomInfo;
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     private Season season;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private Option isHoliday;
+
+    @Enumerated(value = EnumType.STRING)
     private RoomView roomView;
 
-    @Column(nullable = false)
-    private double additionalPercentage;
+    private Double additionalPercentage;
 
-    // RoomInfo 테이블과 관계 설정
-    @ManyToOne
-    @JoinColumn(name = "room_info_id", nullable = false)
-    private RoomInfo roomInfo;
+    @Enumerated(value = EnumType.STRING)
+    private Option isWeekend;
 }

@@ -1,9 +1,9 @@
 package com.hotel.flint.reserve.room.dto;
 
-import com.hotel.flint.common.Option;
+import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.room.domain.RoomDetails;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
-import com.hotel.flint.user.member.domain.User;
+import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +28,7 @@ public class RoomReservedDto {
     private Long roomId; // 일단 사용자가 룸을 직접 지정한다고 가정 후 추후에 수정
 
 
-    public RoomReservation toEntity(User user, RoomDetails roomDetails) {
+    public RoomReservation toEntity(Member member, RoomDetails roomDetails) {
         RoomReservation roomReservation = RoomReservation.builder()
                 .adultCnt(this.adultCnt)
                 .childCnt(this.childCnt)
@@ -40,7 +40,7 @@ public class RoomReservedDto {
                 .requestContents(this.requestContents)
                 .payment("kakaopay")
                 .rooms(roomDetails)
-                .user(user)
+                .member(member)
                 .build();
         return roomReservation;
     }

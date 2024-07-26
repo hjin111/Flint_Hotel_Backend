@@ -4,35 +4,34 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Getter
 @Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RoomInfo {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String roomTypeName; // 룸 타입명
+    private String roomTypeName;
+    private Double roomTypePrice;
 
+//    방 남은 개수
     @Column(nullable = false)
-    private double roomTypePrice; // 룸 별 원가 정보
+    private Long roomCnt;
 
-    @Column(nullable = false)
-    private Long roomCnt; // 방 남은 개수
+    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomPrice> roomPrices;
+
+    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomDetails> roomDetails;
 
     public void updateRoomStock(Long cnt) {
-        this.roomCnt = this.roomCnt - cnt;
-    }
-
-    public void updateRoomStockAfterCanceled(Long cnt) {
-        this.roomCnt = this.roomCnt + cnt;
+        this.roomCnt = this.roomCnt - 1;
     }
 }
