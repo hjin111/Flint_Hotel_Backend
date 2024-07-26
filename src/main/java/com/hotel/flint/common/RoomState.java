@@ -1,7 +1,7 @@
 package com.hotel.flint.common;
 
 public enum RoomState {
-    CL,
+    CI,
     CO,
     RP,
     RS
