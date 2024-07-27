@@ -1,7 +1,7 @@
-package com.hotel.flint.admin.controller;
+package com.hotel.flint.employee.controller;
 
-import com.hotel.flint.admin.dto.MenuSaveDto;
-import com.hotel.flint.admin.service.DiningService;
+import com.hotel.flint.employee.dto.MenuSaveDto;
+import com.hotel.flint.employee.service.DiningService;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
 import org.springframework.beans.factory.annotation.Autowired;

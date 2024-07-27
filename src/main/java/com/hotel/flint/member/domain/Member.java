@@ -46,4 +46,8 @@ public class Member {
     @ColumnDefault("'N'")
     private Option delYN;
 
+//    public Member updatePassword(MemberUpdateDto memberUpdateDto){
+//
+//    }
+
 }

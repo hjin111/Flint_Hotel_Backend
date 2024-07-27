@@ -1,6 +1,6 @@
-package com.hotel.flint.admin.repository;
+package com.hotel.flint.employee.repository;
 
-import com.hotel.flint.admin.domain.Menu;
+import com.hotel.flint.employee.domain.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

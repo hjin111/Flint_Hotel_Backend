@@ -21,7 +21,13 @@ public class MemberService {
 
     public String findEmail(String phoneNumber){
         Member member = memberRepository.findByPhoneNumberAndDelYN(phoneNumber, Option.N).orElseThrow(
-                ()-> new EntityNotFoundException("존재하지 않는 회원입니다."));
+                ()-> new EntityNotFoundException("해당 번호로 가입한 아이디가 없습니다."));
         return member.getEmail();
+    }
+
+    public void updatePassword(String email){
+        Member member = memberRepository.findByEmailAndDelYN(email, Option.N).orElseThrow(
+                ()-> new EntityNotFoundException("해당 이메일로 가입한 아이디가 없습니다."));
+
     }
 }

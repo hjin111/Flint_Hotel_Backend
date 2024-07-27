@@ -1,7 +1,7 @@
-package com.hotel.flint.admin.dto;
+package com.hotel.flint.employee.dto;
 
-import com.hotel.flint.admin.domain.Dining;
-import com.hotel.flint.admin.domain.Menu;
+import com.hotel.flint.employee.domain.Dining;
+import com.hotel.flint.employee.domain.Menu;
 import lombok.Data;
 
 @Data

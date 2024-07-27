@@ -1,10 +1,10 @@
-package com.hotel.flint.admin.service;
+package com.hotel.flint.employee.service;
 
-import com.hotel.flint.admin.domain.Dining;
-import com.hotel.flint.admin.domain.Menu;
-import com.hotel.flint.admin.dto.MenuSaveDto;
-import com.hotel.flint.admin.repository.DiningRepository;
-import com.hotel.flint.admin.repository.MenuRepository;
+import com.hotel.flint.employee.domain.Dining;
+import com.hotel.flint.employee.domain.Menu;
+import com.hotel.flint.employee.dto.MenuSaveDto;
+import com.hotel.flint.employee.repository.DiningRepository;
+import com.hotel.flint.employee.repository.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

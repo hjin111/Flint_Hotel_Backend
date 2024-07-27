@@ -1,4 +1,4 @@
-package com.hotel.flint.admin.domain;
+package com.hotel.flint.employee.domain;
 
 import com.hotel.flint.common.Option;
 import lombok.AllArgsConstructor;
