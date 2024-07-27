@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReservationResDto {
+public class ReservationListResDto {
 
     private Long id;
     private Member memberId;

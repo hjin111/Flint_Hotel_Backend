@@ -1,7 +1,7 @@
 package com.hotel.flint.reserve.dining.controller;
 
 import com.hotel.flint.reserve.dining.dto.ReservationSaveReqDto;
-import com.hotel.flint.reserve.dining.dto.ReservationResDto;
+import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
 import com.hotel.flint.reserve.dining.service.DiningReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +27,9 @@ public class DiningReservationController {
     }
 
     @GetMapping("/dining/list")
-    public List<ReservationResDto> diningReservationList(){
-        List<ReservationResDto> reservationResDtos = diningReservationService.list();
-        return reservationResDtos;
+    public List<ReservationListResDto> diningReservationList(){
+        List<ReservationListResDto> reservationListResDtos = diningReservationService.list();
+        return reservationListResDtos;
     }
 
     @DeleteMapping("/dining/delete/{id}")
