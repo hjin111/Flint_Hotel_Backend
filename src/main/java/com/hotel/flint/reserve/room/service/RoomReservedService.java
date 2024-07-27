@@ -131,6 +131,17 @@ public class RoomReservedService {
             log.info("total :" + total);
             checkInDate = checkInDate.plusDays(1); // 체크인날짜 +1 (체크아웃 전까지)
         }
+
+        // 조식 금액 추가하기
+        int adultBfCnt = dto.getAdultBfCnt();
+        int childBfCnt = dto.getChildBfCnt();
+
+        double bf_total = (adultBfCnt * 50000) + (childBfCnt * 35000);
+        log.info("조식 총가격 :" + bf_total);
+
+        total += bf_total;
+        log.info("조식 + 객실 total :" + total);
+
         return total;
     }
 
