@@ -2,6 +2,7 @@ package com.hotel.flint.reserve.room.service;
 
 
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.common.enumdir.RoomState;
 import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.common.enumdir.Season;
 import com.hotel.flint.reserve.room.domain.RoomDetails;
@@ -83,6 +84,10 @@ public class RoomReservedService {
         roomDetails.getRoomInfo().updateRoomStock(1L);
         log.info("예약 후, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
 
+        // 예약 성공 후 룸 상태변경 CO -> RS
+        roomDetails.updateRoomStateAfterReservation(RoomState.RS);
+        log.info("예약 후 룸의 상태: " + roomDetails.getRoomState().toString());
+
         // 날짜 가져가서 계산
         double totalPrice = calculatePrice(dto);
 
@@ -153,6 +158,26 @@ public class RoomReservedService {
 
         return percentage != null ? percentage.getAdditionalPercentage() : 1.0;
 
+    }
+
+    /**
+     * 객실 예약 취소
+     */
+    @Transactional
+    public void delete(Long roomReservedId) {
+
+        RoomReservation roomReservation = roomReservationRepository.findById(roomReservedId).orElseThrow(
+                () -> new IllegalArgumentException("해당 id의 예약 내역 없음")
+        );
+        roomReservationRepository.delete(roomReservation);
+
+        log.info("예약 취소 전, 남은 방의 개수 : " + roomReservation.getRooms().getRoomInfo().getRoomCnt());
+        roomReservation.getRooms().getRoomInfo().updateRoomStockAfterCanceled(1L);
+        log.info("예약 취소 후, 남은 방의 개수 : " + roomReservation.getRooms().getRoomInfo().getRoomCnt());
+
+        // 예약 취소 후 룸 상태변경 RS -> CO
+        roomReservation.getRooms().updateRoomStateAfterReservation(RoomState.CO);
+        log.info("예약 취소 후 룸의 상태: " + roomReservation.getRooms().getRoomState().toString());
     }
 
 

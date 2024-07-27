@@ -2,7 +2,7 @@ package com.hotel.flint.reserve.room.domain;
 
 import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.common.enumdir.Season;
-import com.jayway.jsonpath.Option;
+import com.hotel.flint.common.enumdir.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

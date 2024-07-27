@@ -21,7 +21,7 @@ public class RoomDetails {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_info_id", nullable = false)
+    @JoinColumn(name = "room_type_id", nullable = false)
     private RoomInfo roomInfo;
 
     @Column(nullable = false, unique = true)
@@ -38,8 +38,18 @@ public class RoomDetails {
     @Column(nullable = false)
     private Integer roomArea;
 
+    /**
+     * 직원이 룸의 상태를 변경
+     */
     public void updateRoomState(RoomStateDto roomStateDto){
         this.roomState = roomStateDto.getRoomState();
+    }
+
+    /**
+     * 고객이 룸 예약 진행 혹은 취소 후 상태 자동 변경
+     */
+    public void updateRoomStateAfterReservation(RoomState roomState) {
+        this.roomState = roomState;
     }
 
 }

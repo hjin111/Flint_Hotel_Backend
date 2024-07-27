@@ -31,7 +31,17 @@ public class RoomInfo {
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomDetails> roomDetails;
 
+    /**
+     * 고객이 룸 예약 진행 후 룸 개수 자동 -1
+     */
     public void updateRoomStock(Long cnt) {
-        this.roomCnt = this.roomCnt - 1;
+        this.roomCnt = this.roomCnt - cnt;
+    }
+
+    /**
+     * 고객이 룸 예약 취소 후 룸 개수 자동 +1
+     */
+    public void updateRoomStockAfterCanceled(Long cnt) {
+        this.roomCnt = this.roomCnt + cnt;
     }
 }

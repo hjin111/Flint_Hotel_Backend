@@ -1,4 +1,4 @@
-package com.hotel.flint.reserve.room.service;
+package com.hotel.flint.user.employee.service;
 
 import com.hotel.flint.reserve.room.domain.RoomDetails;
 import com.hotel.flint.reserve.room.dto.RoomStateDto;
@@ -12,12 +12,12 @@ import javax.persistence.EntityNotFoundException;
 
 @Service
 @Transactional
-public class RoomService {
+public class EmployeeRoomService {
     private final RoomPriceRepository roomPriceRepository;
     private final RoomDetailRepository roomDetailRepository;
 
     @Autowired
-    public RoomService(RoomPriceRepository roomPriceRepository, RoomDetailRepository roomDetailRepository) {
+    public EmployeeRoomService(RoomPriceRepository roomPriceRepository, RoomDetailRepository roomDetailRepository) {
         this.roomPriceRepository = roomPriceRepository;
         this.roomDetailRepository = roomDetailRepository;
     }
