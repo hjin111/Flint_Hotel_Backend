@@ -1,6 +1,7 @@
 package com.hotel.flint.dining.domain;
 
-import com.hotel.flint.common.Option;
+import com.hotel.flint.common.enumdir.DiningName;
+import com.hotel.flint.common.enumdir.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,19 +21,19 @@ public class Dining {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private DiningName diningName;
+
+    @Column(length = 255, nullable = false, unique = true)
     private String location;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Option breakfastYn;
 
     @Column(nullable = false, unique = true, length = 13)
     private String callNum;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private DiningName diningName;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Option breakfastYn;
 
     @Column(nullable = false)
     private LocalTime openTime;
@@ -43,12 +44,5 @@ public class Dining {
     @OneToMany(mappedBy = "dining", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<Menu> menu;
 
-
 }
 
-enum DiningName {
-    KorDining,
-    ChiDining,
-    JapDining,
-    Lounge
-}

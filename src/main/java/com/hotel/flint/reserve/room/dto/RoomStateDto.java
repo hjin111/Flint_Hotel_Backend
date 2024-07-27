@@ -1,6 +1,6 @@
 package com.hotel.flint.reserve.room.dto;
 
-import com.hotel.flint.common.RoomState;
+import com.hotel.flint.common.enumdir.RoomState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

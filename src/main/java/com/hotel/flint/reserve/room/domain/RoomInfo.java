@@ -18,8 +18,11 @@ public class RoomInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String typeName;
-    private Double typePrice;
+    private String roomTypeName;
+    private Double roomTypePrice;
+
+    @Column(nullable = false)
+    private Long roomCnt;
 
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomPrices> roomPrices;
@@ -28,6 +31,6 @@ public class RoomInfo {
     private List<RoomDetails> roomDetails;
 
     public void updateRoomPrice(Double newPrice){
-        this.typePrice = newPrice;
+        this.roomTypePrice = newPrice;
     }
 }

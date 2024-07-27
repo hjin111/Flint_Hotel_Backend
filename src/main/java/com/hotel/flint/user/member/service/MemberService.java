@@ -1,6 +1,6 @@
 package com.hotel.flint.user.member.service;
 
-import com.hotel.flint.common.Option;
+import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +12,7 @@ import javax.persistence.EntityNotFoundException;
 @Service
 @Transactional
 public class MemberService {
+
     private final MemberRepository memberRepository;
 
     @Autowired

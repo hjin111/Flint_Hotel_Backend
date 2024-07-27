@@ -15,7 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/user/member")
 public class MemberController {
     private final MemberService memberService;
 
@@ -24,7 +24,7 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/member/findemail")
+    @GetMapping("/findemail")
     public ResponseEntity<?> findEmail(@RequestBody Map<String, String> request){
         try {
             String memberEmail = memberService.findEmail(request.get("phoneNumber"));

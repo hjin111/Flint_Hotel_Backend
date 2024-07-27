@@ -1,8 +1,8 @@
 package com.hotel.flint.reserve.room.dto;
 
-import com.hotel.flint.common.Option;
-import com.hotel.flint.common.RoomView;
-import com.hotel.flint.common.Season;
+import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.common.enumdir.RoomView;
+import com.hotel.flint.common.enumdir.Season;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

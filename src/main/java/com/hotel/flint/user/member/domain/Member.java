@@ -1,6 +1,6 @@
 package com.hotel.flint.user.member.domain;
 
-import com.hotel.flint.common.Option;
+import com.hotel.flint.common.enumdir.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,38 +16,24 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Member {
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false, unique = true)
     private String email;
-
     @Column(nullable = false)
-    private String firstName; // 이름
-
+    private String firstName;
     @Column(nullable = false)
-    private String lastName; // 성
-
+    private String lastName;
     @Column(nullable = false, unique = true)
     private String phoneNumber;
-
     @Column(nullable = false)
     private String nation;
-
     @Column(nullable = false)
     private String password;
-
     @Column(nullable = false)
     private LocalDate birthday;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     @ColumnDefault("'N'")
+    @Enumerated(EnumType.STRING)
     private Option delYN;
-
-//    public Member updatePassword(MemberUpdateDto memberUpdateDto){
-//
-//    }
 
 }

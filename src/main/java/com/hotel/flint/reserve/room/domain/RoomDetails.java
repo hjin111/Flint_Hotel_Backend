@@ -1,7 +1,7 @@
 package com.hotel.flint.reserve.room.domain;
 
-import com.hotel.flint.common.RoomState;
-import com.hotel.flint.common.RoomView;
+import com.hotel.flint.common.enumdir.RoomState;
+import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.reserve.room.dto.RoomStateDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,7 @@ public class RoomDetails {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_type_id", nullable = false)
+    @JoinColumn(name = "room_info_id", nullable = false)
     private RoomInfo roomInfo;
 
     private Integer roomNumber;
@@ -30,10 +30,12 @@ public class RoomDetails {
     private RoomState roomState;
 
     @Enumerated(value = EnumType.STRING)
-    private RoomView view;
+    private RoomView roomView;
 
+    @Column(nullable = false)
     private Integer maxOccupancy;
-    private Integer area;
+    @Column(nullable = false)
+    private Integer roomArea;
 
     public void updateRoomState(RoomStateDto roomStateDto){
         this.roomState = roomStateDto.getRoomState();
