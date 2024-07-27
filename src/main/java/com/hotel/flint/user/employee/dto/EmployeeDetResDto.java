@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// 직원의 상세정보를 반환해주는 Dto
 public class EmployeeDetResDto {
     private Long id;
     private String employeeNumber;

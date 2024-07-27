@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+// 직원이 member의 정보를 보기 위한 dto
 public class InfoUserResDto {
     private Long id;
     private String email;
@@ -19,5 +20,4 @@ public class InfoUserResDto {
     private String lastName;
     private String nation;
     private LocalDate birthday;
-
 }

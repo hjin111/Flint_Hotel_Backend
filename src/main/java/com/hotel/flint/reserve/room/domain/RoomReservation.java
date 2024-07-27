@@ -2,6 +2,9 @@ package com.hotel.flint.reserve.room.domain;
 
 
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.user.employee.dto.InfoRoomDetResDto;
+import com.hotel.flint.user.employee.dto.InfoRoomResDto;
+import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -57,4 +60,22 @@ public class RoomReservation {
     @JoinColumn(name = "room_id", nullable = false)
     private RoomDetails rooms;
 
+
+    public InfoRoomResDto toInfoRoomResDto(InfoUserResDto infoUserResDto) {
+        InfoRoomDetResDto infoRoomDetResDto = InfoRoomDetResDto.builder()
+                .roomType(rooms.getRoomInfo().getRoomTypeName())
+                .checkin(this.checkInDate)
+                .checkout(this.checkOutDate)
+                .adultCnt(this.adultCnt)
+                .childCnt(this.childCnt)
+                .adultBfCnt(this.adultBfCnt)
+                .childBfCnt(this.childBfCnt)
+                .build();
+        return InfoRoomResDto.builder()
+                .id(this.id)
+                .firstname(infoUserResDto.getFirstName())
+                .lastname(infoUserResDto.getLastName())
+                .infoRoomDetResDto(infoRoomDetResDto)
+                .build();
+    }
 }

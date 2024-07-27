@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+// 직원의 직급 수정 Dto
 public class EmployeeRankModResDto {
     private Long officeId;
     private Long targetId;

@@ -18,12 +18,14 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+//    멤버 상세 정보 보여주는 기능
     @PostMapping("/detail/{id}")
     @ResponseBody
     public MemberDetResDto userDetail(@PathVariable Long id){
         return memberService.memberDetail(id);
     }
 
+//    멤버 계정 삭제하는 기능
     @PostMapping("/delete/{id}")
     @ResponseBody
     public String userDelete(@PathVariable Long id){
@@ -32,6 +34,7 @@ public class MemberController {
         return "삭제 완료";
     }
 
+//    멤버 비밀번호 수정하는 기능
     @PostMapping("/modify")
     @ResponseBody
     public String userModify(@RequestBody MemberModResDto dto){
