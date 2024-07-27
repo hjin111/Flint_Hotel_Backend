@@ -25,6 +25,7 @@ public class RoomReservedController {
     @PostMapping("/room")
     public ResponseEntity<?> roomReservation(@RequestBody RoomReservedDto dto, @RequestParam Long userId) {
 
+        System.out.println("pull test");
         try {
             double totalPrice = roomReservedService.roomReservation(dto, userId);
 
