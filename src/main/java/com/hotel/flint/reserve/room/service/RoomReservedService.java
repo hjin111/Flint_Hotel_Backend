@@ -10,6 +10,7 @@ import com.hotel.flint.reserve.room.domain.RoomInfo;
 import com.hotel.flint.reserve.room.domain.RoomPrice;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
 import com.hotel.flint.reserve.room.dto.RoomReservedDto;
+import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
 import com.hotel.flint.reserve.room.repository.RoomDetailRepository;
 import com.hotel.flint.reserve.room.repository.RoomInfoRepository;
 import com.hotel.flint.reserve.room.repository.RoomPriceRepository;
@@ -18,11 +19,15 @@ import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Transactional(readOnly = true)
@@ -180,5 +185,24 @@ public class RoomReservedService {
         log.info("예약 취소 후 룸의 상태: " + roomReservation.getRooms().getRoomState().toString());
     }
 
+    /**
+     * 객실 예약 내역 조회 - 목록
+     */
+    public Page<RoomReservedListDto> roomReservedList(Pageable pageable, Long userId) {
+
+        Member member = memberRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("해당 id의 회원이 없음")
+        );
+        Page<RoomReservation> reservations = roomReservationRepository.findByMember(pageable, member);
+
+        log.info("Total reservations found: {}", reservations.getTotalElements());
+
+        // no구하기
+        AtomicInteger start = new AtomicInteger((int) pageable.getOffset());
+
+        Page<RoomReservedListDto> roomReservedListDtos = reservations.map((a -> a.listFromEntity(start.incrementAndGet())));
+
+        return roomReservedListDtos;
+    }
 
 }
