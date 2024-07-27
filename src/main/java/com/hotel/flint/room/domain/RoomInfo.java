@@ -26,4 +26,8 @@ public class RoomInfo {
 
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomDetails> roomDetails;
+
+    public void updateRoomPrice(Double newPrice){
+        this.typePrice = newPrice;
+    }
 }

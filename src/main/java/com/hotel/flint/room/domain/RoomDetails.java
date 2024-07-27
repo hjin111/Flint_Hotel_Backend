@@ -38,5 +38,4 @@ public class RoomDetails {
     public void updateRoomState(RoomStateDto roomStateDto){
         this.roomState = roomStateDto.getRoomState();
     }
-
 }
