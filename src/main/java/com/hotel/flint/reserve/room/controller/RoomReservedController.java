@@ -3,6 +3,7 @@ package com.hotel.flint.reserve.room.controller;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
+import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
 import com.hotel.flint.reserve.room.service.RoomReservedService;
@@ -71,7 +72,22 @@ public class RoomReservedController {
         return roomReservedService.roomReservedList(pageable, userId);
     }
 
+    /**
+     * 객실 예약 내역 조회 - 단 건 상세내역
+     */
+    @GetMapping("/room/detail/{id}")
+    public ResponseEntity<?> reservationRoomDetailCheck(@PathVariable Long id) {
 
+        try {
+            RoomReservedDetailDto roomReservedDetailDto = roomReservedService.roomReservedDetail(id);
 
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회 성공", roomReservedDetailDto);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }
+
+    }
 
 }

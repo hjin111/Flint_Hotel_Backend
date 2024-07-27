@@ -2,6 +2,7 @@ package com.hotel.flint.reserve.room.domain;
 
 
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.*;
@@ -67,6 +68,23 @@ public class RoomReservation {
                 .checkOutDate(this.checkOutDate)
                 .build();
         return roomReservedListDto;
+    }
+
+    public RoomReservedDetailDto detailFromEntity() {
+        RoomReservedDetailDto roomReservation = RoomReservedDetailDto.builder()
+                .adultCnt(this.adultCnt)
+                .childCnt(this.childCnt)
+                .roomType(this.getRooms().getRoomInfo().getRoomTypeName())
+                .checkInDate(this.checkInDate)
+                .checkOutDate(this.checkOutDate)
+                .parkingYN(this.parkingYN)
+                .payment("kakaopay")
+                .adultBfCnt(this.adultBfCnt)
+                .childBfCnt(this.childBfCnt)
+                .requestContents(this.requestContents)
+                .build();
+
+        return roomReservation;
     }
 
 }

@@ -9,6 +9,7 @@ import com.hotel.flint.reserve.room.domain.RoomDetails;
 import com.hotel.flint.reserve.room.domain.RoomInfo;
 import com.hotel.flint.reserve.room.domain.RoomPrice;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
+import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
 import com.hotel.flint.reserve.room.repository.RoomDetailRepository;
@@ -23,6 +24,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -216,4 +219,16 @@ public class RoomReservedService {
         return roomReservedListDtos;
     }
 
+    /**
+     *  객실 예약 내역 조회 - 단 건 상세내역
+     */
+    public RoomReservedDetailDto roomReservedDetail(Long roomReservationId) {
+
+        RoomReservation detail = roomReservationRepository.findById(roomReservationId).orElseThrow(
+                () -> new IllegalArgumentException("해당 id의 예약 내역이 없음")
+        );
+
+        RoomReservedDetailDto roomReservedDetailDto = detail.detailFromEntity();
+        return roomReservedDetailDto;
+    }
 }

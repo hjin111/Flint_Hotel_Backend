@@ -5,12 +5,14 @@ import com.hotel.flint.reserve.room.domain.RoomDetails;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoomReservedDto {
