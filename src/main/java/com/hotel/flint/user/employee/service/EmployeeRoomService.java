@@ -63,7 +63,7 @@ public class EmployeeRoomService {
 
     public void modRoomPrice(Long id, Double newPrice) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
-        if(!authenticatedEmployee.getDepartment().toString().equals("ROOM")){
+        if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
 
