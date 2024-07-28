@@ -3,10 +3,7 @@ package com.hotel.flint.reserve.dining.service;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.dining.repository.DiningRepository;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
-import com.hotel.flint.reserve.dining.dto.ReservationDeleteDto;
-import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
-import com.hotel.flint.reserve.dining.dto.ReservationSaveReqDto;
-import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
+import com.hotel.flint.reserve.dining.dto.*;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
@@ -35,6 +32,7 @@ public class DiningReservationService {
         this.diningRepository = diningRepository;
     }
 
+    // 다이닝 예약
     public void create(ReservationSaveReqDto dto){
         // memberRepository 를 통해 멤버를 찾아오고
         Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new EntityNotFoundException("없는 회원 입니다."));
@@ -47,7 +45,7 @@ public class DiningReservationService {
         diningReservationRepository.save(diningReservation);
     }
 
-    // 전체 목록 조회
+    // 예약 전체 조회
     public List<ReservationListResDto> list(){
 
         List<ReservationListResDto> reservationListResDtos = new ArrayList<>();
@@ -58,6 +56,15 @@ public class DiningReservationService {
         }
 
         return reservationListResDtos;
+    }
+
+    // 예약 단건 조회
+    public ReservationDetailDto detailList(Long diningReservationId){
+
+        DiningReservation dto = diningReservationRepository.findById(diningReservationId).orElseThrow(() -> new EntityNotFoundException("예약 내역이 없습니다."));
+        ReservationDetailDto reservationDetailDto = dto.fromEntity(diningReservationId);
+        return reservationDetailDto;
+
     }
 
     // 회원별 전체 목록 조회 , 예를 들어 1번 회원이 예약한 목록 전체 조회

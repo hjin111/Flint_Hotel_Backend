@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomPricesDTO {
+public class RoomPricesDto {
     private Long id;
     private Long roomTypeId;
     private Season season;
