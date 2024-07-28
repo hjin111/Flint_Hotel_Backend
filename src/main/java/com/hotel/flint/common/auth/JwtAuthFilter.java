@@ -45,8 +45,13 @@ public class JwtAuthFilter extends GenericFilter {
                 }
                 String token = bearerToken.substring(7);
                 Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
+
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority("DEPARTMENT" + claims.get("department")));
+                if (claims.containsKey("department")) {
+                    String department = (String) claims.get("department");
+                    authorities.add(new SimpleGrantedAuthority("DEPARTMENT_" + department));
+                }
+
                 UserDetails userDetails = new User(claims.getSubject(), "", authorities);
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
