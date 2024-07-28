@@ -1,10 +1,10 @@
 package com.hotel.flint.user.employee.service;
 
 import com.hotel.flint.common.dto.UserLoginDto;
-import com.hotel.flint.common.enumdir.DepartMent;
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
-import com.hotel.flint.user.employee.dto.Employee;
+import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.EmployeeDetResDto;
 import com.hotel.flint.user.employee.dto.EmployeeMakeDto;
 import com.hotel.flint.user.employee.dto.EmployeeModResDto;
@@ -92,8 +92,7 @@ public class EmployeeService {
 //    직원 직급 수정 로직
     public Employee modEmployeeRank(EmployeeRankModResDto dto){
         Employee officeEmployee = employeeRepository.findById(dto.getOfficeId()).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
-        if(!officeEmployee.getDepartment().equals(DepartMent.Office))
-
+        if(!officeEmployee.getDepartment().equals(Department.Office))
             throw new IllegalArgumentException("Office 부서만 수정이 가능합니다.");
         Employee targetEmployee = employeeRepository.findById(dto.getTargetId()).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
 

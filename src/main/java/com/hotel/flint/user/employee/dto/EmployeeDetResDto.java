@@ -1,6 +1,6 @@
 package com.hotel.flint.user.employee.dto;
 
-import com.hotel.flint.common.enumdir.DepartMent;
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.EmployeeRank;
 import com.hotel.flint.common.enumdir.Gender;
 import lombok.AllArgsConstructor;
@@ -23,5 +23,5 @@ public class EmployeeDetResDto {
     private LocalDate birthday;
     private LocalDate dateOfEmployment;
     private Gender gender;
-    private DepartMent department;
+    private Department department;
 }

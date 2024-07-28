@@ -23,19 +23,6 @@ public class EmployeeRoomController {
         this.employeeRoomService = employeeRoomService;
     }
 
-    @PatchMapping("/setstate/{room_id}")
-    public ResponseEntity<?> setRoomState(@PathVariable Long room_id,
-                                          @RequestBody RoomStateDto roomStateDto) {
-        try {
-            employeeRoomService.setRoomState(room_id, roomStateDto);
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "객실 상태가 변경되었습니다", null);
-            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PatchMapping("/modprice/{room_type_id}")
     public ResponseEntity<?> modRoomPrice(@PathVariable Long room_type_id,
                                           @RequestBody Map<String, Double> request) {

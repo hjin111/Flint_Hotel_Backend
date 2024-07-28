@@ -25,9 +25,6 @@ public class RoomInfo {
     private List<RoomPrices> roomPrices;
 
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RoomPrice> roomPrices;
-
-    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomDetails> roomDetails;
 
     public void updateRoomPrice(Double newPrice){

@@ -5,7 +5,7 @@ import com.hotel.flint.common.auth.JwtTokenProvider;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
 import com.hotel.flint.common.dto.UserLoginDto;
-import com.hotel.flint.user.employee.dto.Employee;
+import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.EmployeeMakeDto;
 import com.hotel.flint.user.employee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
