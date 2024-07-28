@@ -28,13 +28,14 @@ public class EmployeeDiningController {
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "메뉴가 성공적으로 생성되었습니다", menuSaveDto.getMenuName());
             employeeDiningService.addDiningMenu(menuSaveDto);
             return new ResponseEntity<>(commonResDto, HttpStatus.CREATED);
-        } catch (EntityNotFoundException e ){
+        } catch (EntityNotFoundException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        } catch (SecurityException e){
+        } catch (SecurityException | IllegalArgumentException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
+
     }
 
     @PatchMapping("/modmenu/{id}")
@@ -48,7 +49,7 @@ public class EmployeeDiningController {
         } catch (EntityNotFoundException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        } catch (SecurityException e){
+        } catch (SecurityException | IllegalArgumentException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
@@ -63,7 +64,7 @@ public class EmployeeDiningController {
         } catch (EntityNotFoundException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        } catch (SecurityException e){
+        } catch (SecurityException | IllegalArgumentException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }

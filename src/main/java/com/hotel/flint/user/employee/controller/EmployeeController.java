@@ -38,11 +38,14 @@ public class EmployeeController {
     public ResponseEntity<?> makeEmployee(@RequestBody EmployeeMakeDto dto){
         try {
             Employee employee = employeeService.makeEmployee(dto);
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "계정 생성이 성공적으로 완료되었습니다", null);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "계정 생성이 성공적으로 완료되었습니다",null);
             return new ResponseEntity<>(commonResDto, HttpStatus.CREATED);
         } catch (IllegalArgumentException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
 
@@ -50,7 +53,7 @@ public class EmployeeController {
     public ResponseEntity<?> doLogin(@RequestBody UserLoginDto dto){
         try {
             Employee employee = employeeService.login(dto);
-            String jwtToken = jwtTokenProvider.createToken(employee.getEmail(), employee.getId());
+            String jwtToken = jwtTokenProvider.createEmployeeToken(employee.getEmail(), employee.getId(), employee.getDepartment().toString());
             Map<String, Object> loginInfo = new HashMap<>();
             loginInfo.put("token", jwtToken);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "환영합니다 " + employee.getFirstName() + employee.getLastName() + "님!", loginInfo);

@@ -5,16 +5,15 @@ import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
-import com.hotel.flint.user.employee.dto.EmployeeDetResDto;
-import com.hotel.flint.user.employee.dto.EmployeeMakeDto;
-import com.hotel.flint.user.employee.dto.EmployeeModResDto;
-import com.hotel.flint.user.employee.dto.EmployeeRankModResDto;
-import com.hotel.flint.user.employee.dto.InfoUserResDto;
+import com.hotel.flint.user.employee.dto.*;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import com.hotel.flint.user.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +43,25 @@ public class EmployeeService {
         this.diningReservationRepository = diningReservationRepository;
     }
 
+    private Employee getAuthenticatedEmployee() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("인증 값::" + authentication + "\n 여기가 끝");
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String email = userDetails.getUsername();
+            return employeeRepository.findByEmailAndDelYN(email, Option.N)
+                    .orElseThrow(() -> new SecurityException("인증되지 않은 사용자입니다."));
+        } else {
+            throw new SecurityException("인증되지 않은 사용자입니다.");
+        }
+    }
+
+
     public Employee makeEmployee(EmployeeMakeDto dto) {
+        Employee authenticatedEmployee = getAuthenticatedEmployee();
+        if(!authenticatedEmployee.getDepartment().toString().equals("Office")){
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
         if (employeeRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).isPresent() ||
             memberRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).isPresent()) {
             throw new IllegalArgumentException("해당 이메일로 이미 가입한 계정이 존재합니다.");
