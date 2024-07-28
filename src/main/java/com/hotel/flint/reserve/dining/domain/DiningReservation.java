@@ -1,7 +1,9 @@
 package com.hotel.flint.reserve.dining.domain;
 
+import com.hotel.flint.common.domain.BaseTimeEntity;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.reserve.dining.dto.ReservationDeleteDto;
+import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
 import com.hotel.flint.user.member.domain.Member;
@@ -18,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiningReservation {
+public class DiningReservation extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,15 +56,6 @@ public class DiningReservation {
         return reservationListResDto;
     }
 
-//    public void update(ReservationUpdateDto dto){
-////        this.diningId = dto.getDiningId();
-//        this.adult = dto.getAdult();
-//        this.child = dto.getChild();
-//        this.comment = dto.getComment();
-//        this.reservationDateTime = dto.getReservationDateTime();
-//
-//    }
-
     public DiningReservation(Member member, ReservationDeleteDto dto){
         this.memberId = member;
         this.id = dto.getReservationId();
@@ -78,5 +71,20 @@ public class DiningReservation {
         this.diningId = dining;
         this.memberId = member;
 
+    }
+
+    public ReservationDetailDto fromEntity(Long diningReservationId){
+
+        return ReservationDetailDto.builder()
+                .reservationId(diningReservationId)
+                .memberId(this.memberId.getId())
+                .diningName(this.diningId.getDiningName())
+                .adult(this.adult)
+                .child(this.child)
+                .comment(this.comment)
+                .reservationDateTime(this.reservationDateTime)
+                .createdTime(this.getCreatedTime())
+                .updatedTime(this.getUpdatedTime())
+                .build();
     }
 }
