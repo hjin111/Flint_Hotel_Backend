@@ -2,26 +2,30 @@ package com.hotel.flint.reserve.room.service;
 
 
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.common.enumdir.RoomState;
 import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.common.enumdir.Season;
-import com.hotel.flint.reserve.room.domain.RoomDetails;
-import com.hotel.flint.reserve.room.domain.RoomInfo;
-import com.hotel.flint.reserve.room.domain.RoomPrice;
-import com.hotel.flint.reserve.room.domain.RoomReservation;
+import com.hotel.flint.reserve.room.domain.*;
+import com.hotel.flint.reserve.room.dto.CheckedReservedDateDto;
+import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDto;
-import com.hotel.flint.reserve.room.repository.RoomDetailRepository;
-import com.hotel.flint.reserve.room.repository.RoomInfoRepository;
-import com.hotel.flint.reserve.room.repository.RoomPriceRepository;
-import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
+import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
+import com.hotel.flint.reserve.room.repository.*;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,17 +37,26 @@ public class RoomReservedService {
     private final RoomPriceRepository roomPriceRepository;
     private final RoomInfoRepository roomInfoRepository;
     private final MemberRepository memberRepository;
+    private final CheckReservedDateRepository checkReservedDateRepository;
 
     private final HolidayService holidayService;
     private final SeasonService seasonService;
 
     @Autowired
-    public RoomReservedService (RoomReservationRepository roomReservationRepository, RoomDetailRepository roomDetailRepository, RoomPriceRepository roomPriceRepository, RoomInfoRepository roomInfoRepository, MemberRepository memberRepository, HolidayService holidayService, SeasonService seasonService) {
+    public RoomReservedService (RoomReservationRepository roomReservationRepository,
+                                RoomDetailRepository roomDetailRepository,
+                                RoomPriceRepository roomPriceRepository,
+                                RoomInfoRepository roomInfoRepository,
+                                MemberRepository memberRepository,
+                                CheckReservedDateRepository checkReservedDateRepository,
+                                HolidayService holidayService,
+                                SeasonService seasonService) {
         this.roomReservationRepository = roomReservationRepository;
         this.roomDetailRepository = roomDetailRepository;
         this.roomPriceRepository = roomPriceRepository;
         this.roomInfoRepository = roomInfoRepository;
         this.memberRepository = memberRepository;
+        this.checkReservedDateRepository = checkReservedDateRepository;
 
         this.holidayService = holidayService;
         this.seasonService = seasonService;
@@ -64,30 +77,52 @@ public class RoomReservedService {
                 () -> new IllegalArgumentException("해당 id의 방이 없음")
         );
 
-        // CO(check out) 상태의 룸만 예약 가능
-        if (!roomDetails.getRoomState().toString().equals("CO")) {
-            throw new IllegalArgumentException("예약 가능한 룸의 상태가 아님");
-        }
-
         // 수용할 수 있는 최대 인원수 체크하기
         if (roomDetails.getMaxOccupancy() < dto.getAdultCnt() + dto.getChildCnt()) {
             throw new IllegalArgumentException("최대 수용 가능한 인원 수 초과");
+        }
+
+        // 해당 날짜에 해당 객실을 예약할 수 있는지 날짜별로 확인 ⭐⭐
+        if (!checkReserved(dto, roomDetails)) {
+            throw new IllegalArgumentException("해당 날짜에 해당 객실을 이용할 수 없음");
         }
 
         RoomReservation roomReservation = dto.toEntity(member, roomDetails);
         RoomReservation savedRoomReservation = roomReservationRepository.save(roomReservation);
         log.info("room reservation : " + savedRoomReservation);
 
-        // 예약 save가 되면 -> roomInfo 테이블의 roomCnt를 -1로 업데이트
-        log.info("예약 전, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
-        roomDetails.getRoomInfo().updateRoomStock(1L);
-        log.info("예약 후, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
-
         // 날짜 가져가서 계산
         double totalPrice = calculatePrice(dto);
 
         return totalPrice;
 
+    }
+
+    /**
+     * 예약 가능한 날짜 및 객실인지 확인
+     */
+    private boolean checkReserved(RoomReservedDto dto, RoomDetails roomDetails) {
+
+        // 체크인,아웃 날짜
+        LocalDate checkInDate= dto.getCheckInDate();
+        LocalDate checkOutDate = dto.getCheckOutDate();
+
+        while (checkInDate.isBefore(checkOutDate)) { // checkInDate < checkOutDate
+            if (checkReservedDateRepository.findByDateAndRooms(checkInDate, roomDetails).isPresent()) {
+                log.info("이 날짜 안됨 : " + checkInDate);
+                return false;
+            }
+            checkInDate = checkInDate.plusDays(1);
+        }
+
+        // 모든 날짜에 대해 예약이 가능한 경우 예약 데이터 저장
+        checkInDate = dto.getCheckInDate();
+        while (checkInDate.isBefore(checkOutDate)) {
+            ReservedRoom reservedRoom = dto.toEntity(checkInDate, roomDetails);
+            checkReservedDateRepository.save(reservedRoom);
+            checkInDate = checkInDate.plusDays(1);
+        }
+        return true;
     }
 
     /**
@@ -121,6 +156,17 @@ public class RoomReservedService {
             log.info("total :" + total);
             checkInDate = checkInDate.plusDays(1); // 체크인날짜 +1 (체크아웃 전까지)
         }
+
+        // 조식 금액 추가하기
+        int adultBfCnt = dto.getAdultBfCnt();
+        int childBfCnt = dto.getChildBfCnt();
+
+        double bf_total = (adultBfCnt * 50000) + (childBfCnt * 35000);
+        log.info("조식 총가격 :" + bf_total);
+
+        total += bf_total;
+        log.info("조식 + 객실 total :" + total);
+
         return total;
     }
 
@@ -155,5 +201,59 @@ public class RoomReservedService {
 
     }
 
+    /**
+     * 객실 예약 취소
+     */
+    @Transactional
+    public void delete(Long roomReservedId) {
 
+        RoomReservation roomReservation = roomReservationRepository.findById(roomReservedId).orElseThrow(
+                () -> new IllegalArgumentException("해당 id의 예약 내역 없음")
+        );
+        // 객실 예약 내역 취소
+        roomReservationRepository.delete(roomReservation);
+
+        // 예약된 객실 테이블에서도 삭제
+        LocalDate checkInDate = roomReservation.getCheckInDate();
+        LocalDate checkOutDate = roomReservation.getCheckOutDate();
+        RoomDetails roomDetails = roomReservation.getRooms();
+
+        while (checkInDate.isBefore(checkOutDate)) {
+            checkReservedDateRepository.deleteByDateAndRooms(checkInDate, roomDetails);
+            checkInDate = checkInDate.plusDays(1);
+        }
+    }
+
+    /**
+     * 객실 예약 내역 조회 - 목록
+     */
+    public Page<RoomReservedListDto> roomReservedList(Pageable pageable, Long userId) {
+
+        Member member = memberRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("해당 id의 회원이 없음")
+        );
+        Page<RoomReservation> reservations = roomReservationRepository.findByMember(pageable, member);
+
+        log.info("Total reservations found: {}", reservations.getTotalElements());
+
+        // no구하기
+        AtomicInteger start = new AtomicInteger((int) pageable.getOffset());
+
+        Page<RoomReservedListDto> roomReservedListDtos = reservations.map((a -> a.listFromEntity(start.incrementAndGet())));
+
+        return roomReservedListDtos;
+    }
+
+    /**
+     *  객실 예약 내역 조회 - 단 건 상세내역
+     */
+    public RoomReservedDetailDto roomReservedDetail(Long roomReservationId) {
+
+        RoomReservation detail = roomReservationRepository.findById(roomReservationId).orElseThrow(
+                () -> new IllegalArgumentException("해당 id의 예약 내역이 없음")
+        );
+
+        RoomReservedDetailDto roomReservedDetailDto = detail.detailFromEntity();
+        return roomReservedDetailDto;
+    }
 }

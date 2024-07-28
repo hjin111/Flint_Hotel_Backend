@@ -2,6 +2,8 @@ package com.hotel.flint.reserve.room.domain;
 
 
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
+import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -56,5 +58,33 @@ public class RoomReservation {
     @OneToOne
     @JoinColumn(name = "room_id", nullable = false)
     private RoomDetails rooms;
+
+    public RoomReservedListDto listFromEntity(int no) {
+
+        RoomReservedListDto roomReservedListDto = RoomReservedListDto.builder()
+                .no(no)
+                .roomType(this.getRooms().getRoomInfo().getRoomTypeName())
+                .checkInDate(this.checkInDate)
+                .checkOutDate(this.checkOutDate)
+                .build();
+        return roomReservedListDto;
+    }
+
+    public RoomReservedDetailDto detailFromEntity() {
+        RoomReservedDetailDto roomReservation = RoomReservedDetailDto.builder()
+                .adultCnt(this.adultCnt)
+                .childCnt(this.childCnt)
+                .roomType(this.getRooms().getRoomInfo().getRoomTypeName())
+                .checkInDate(this.checkInDate)
+                .checkOutDate(this.checkOutDate)
+                .parkingYN(this.parkingYN)
+                .payment("kakaopay")
+                .adultBfCnt(this.adultBfCnt)
+                .childBfCnt(this.childBfCnt)
+                .requestContents(this.requestContents)
+                .build();
+
+        return roomReservation;
+    }
 
 }
