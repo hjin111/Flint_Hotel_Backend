@@ -1,5 +1,6 @@
 package com.hotel.flint.reserve.dining.controller;
 
+import com.hotel.flint.reserve.dining.dto.ReservationDeleteDto;
 import com.hotel.flint.reserve.dining.dto.ReservationSaveReqDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
@@ -26,21 +27,31 @@ public class DiningReservationController {
         return "ok";
     }
 
+    // 예약 전체 목록 조회
     @GetMapping("/dining/list")
     public List<ReservationListResDto> diningReservationList(){
         List<ReservationListResDto> reservationListResDtos = diningReservationService.list();
         return reservationListResDtos;
     }
 
-    @DeleteMapping("/dining/delete/{id}")
-    public String diningDelete(@PathVariable Long id){
-        diningReservationService.delete(id);
+    // 회원별 예약 전체 목록 조회
+    @GetMapping("/dining/list/{userId}")
+    public List<ReservationListResDto> diningReservationUserList(@PathVariable Long userId ){
+        List<ReservationListResDto> reservationListResDtos = diningReservationService.userList(userId);
+        return reservationListResDtos;
+    }
+
+    // 예약 삭제/취소
+    @DeleteMapping("/dining/delete")
+    public String diningDelete(@RequestBody ReservationDeleteDto dto){
+        diningReservationService.delete(dto);
         return "예약 취소";
     }
 
-    @PostMapping("/dining/update/{id}")
-    public String diningUpdate(@PathVariable Long id, @RequestBody ReservationUpdateDto dto){
-        diningReservationService.update(id, dto);
+    // 예약 수정
+    @PostMapping("/dining/update")
+    public String diningUpdate(@RequestBody ReservationUpdateDto dto){
+        diningReservationService.update(dto);
         return "예약 수정 완료";
     }
 

@@ -1,6 +1,7 @@
 package com.hotel.flint.reserve.dining.domain;
 
 import com.hotel.flint.dining.domain.Dining;
+import com.hotel.flint.reserve.dining.dto.ReservationDeleteDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
 import com.hotel.flint.user.member.domain.Member;
@@ -42,8 +43,8 @@ public class DiningReservation {
     public ReservationListResDto fromEntity(){
         ReservationListResDto reservationListResDto = ReservationListResDto.builder()
                 .id(this.id)
-                .memberId(this.memberId)
-                .diningId(this.diningId)
+                .memberId(this.memberId.getId())
+                .diningName(this.diningId.getDiningName())
                 .adult(this.adult)
                 .child(this.child)
                 .comment(this.comment)
@@ -53,12 +54,29 @@ public class DiningReservation {
         return reservationListResDto;
     }
 
-    public void update(ReservationUpdateDto dto){
-//        this.diningId = dto.getDiningId();
+//    public void update(ReservationUpdateDto dto){
+////        this.diningId = dto.getDiningId();
+//        this.adult = dto.getAdult();
+//        this.child = dto.getChild();
+//        this.comment = dto.getComment();
+//        this.reservationDateTime = dto.getReservationDateTime();
+//
+//    }
+
+    public DiningReservation(Member member, ReservationDeleteDto dto){
+        this.memberId = member;
+        this.id = dto.getReservationId();
+    }
+
+    public DiningReservation(Member member, Dining dining, ReservationUpdateDto dto){
+
+        this.id = dto.getReservationId();
         this.adult = dto.getAdult();
         this.child = dto.getChild();
         this.comment = dto.getComment();
         this.reservationDateTime = dto.getReservationDateTime();
+        this.diningId = dining;
+        this.memberId = member;
 
     }
 }
