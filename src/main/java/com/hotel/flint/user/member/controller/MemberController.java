@@ -102,7 +102,7 @@ public class MemberController {
     @PutMapping("/modify")
     public ResponseEntity<?> userModify(@RequestBody MemberModResDto dto) {
         try {
-            memberService.memberModify(dto);
+            memberService.updatePassword(dto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "수정 완료", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException | IllegalArgumentException e) {
