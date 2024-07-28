@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberUpdateDto {
+public class MemberModResDto {
     private String password;
     private String phoneNumber;
 }
