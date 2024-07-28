@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomPricesDto {
+public class RoomPricesDTO {
     private Long id;
     private Long roomTypeId;
     private Season season;
@@ -21,3 +21,4 @@ public class RoomPricesDto {
     private Double additionalPercentage;
     private Option isWeekend;
 }
+

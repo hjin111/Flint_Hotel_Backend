@@ -16,3 +16,7 @@ spring:
 # 사원증 만들때 사용하기 위해 설정.
 fixed:
   prefix: FL
+
+jwt:
+  expiration: 30
+  secretKey: my_token_secret

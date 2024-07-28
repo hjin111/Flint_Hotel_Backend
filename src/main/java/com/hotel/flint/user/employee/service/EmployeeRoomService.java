@@ -43,14 +43,6 @@ public class EmployeeRoomService {
         this.memberRepository = memberRepository;
     }
 
-    public void setRoomState(Long id, RoomStateDto roomStateDto) {
-        RoomDetails roomDetails = roomDetailsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 방입니다."));
-
-        roomDetails.updateRoomState(roomStateDto);
-        roomDetailsRepository.save(roomDetails);
-    }
-
     public void modRoomPrice(Long id, Double newPrice) {
         RoomInfo roomInfo = roomInfoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 타입의 객실은 존재하지 않습니다."));

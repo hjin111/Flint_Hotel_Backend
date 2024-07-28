@@ -1,7 +1,6 @@
-package com.hotel.flint.employee.domain;
+package com.hotel.flint.user.employee.domain;
 
-
-import com.hotel.flint.common.enumdir.DepartMent;
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.EmployeeRank;
 import com.hotel.flint.common.enumdir.Gender;
 import com.hotel.flint.common.enumdir.Option;
@@ -25,6 +24,10 @@ public class Employee {
     @Column(nullable = false, unique = true)
     private String employeeNumber;
 
+    @Column(nullable = false)
+    private String firstName;
+    @Column(nullable = false)
+    private String lastName;
     @Enumerated(EnumType.STRING)
     private EmployeeRank employeeRank;
 
@@ -49,11 +52,11 @@ public class Employee {
 
     @Enumerated(EnumType.STRING)
     @ColumnDefault("'N'")
-    private Option delYn;
+    private Option delYN;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DepartMent department;
+    private Department department;
 
     public EmployeeDetResDto EmpDetEntity(){
         return EmployeeDetResDto.builder()

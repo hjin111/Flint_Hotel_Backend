@@ -7,9 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface RoomReservationRepository extends JpaRepository<RoomReservation, Long> {
 
-    RoomReservation findByMember(Member member);
+    Optional<RoomReservation> findByMember(Member member);
     Page<RoomReservation> findByMember(Pageable pageable, Member member);
 }

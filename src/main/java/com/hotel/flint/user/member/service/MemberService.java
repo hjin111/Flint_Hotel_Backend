@@ -32,31 +32,31 @@ public class MemberService {
 
 
     public Member memberSignUp(MemberSignUpDto dto) {
-        if (memberRepository.findByEmailAndDelYn(dto.getEmail(), Option.N).isPresent() ||
-                employeeRepository.findByEmailAndDelYn(dto.getEmail(), Option.N).isPresent()) {
+        if (memberRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).isPresent() ||
+                employeeRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).isPresent()) {
             throw new IllegalArgumentException("해당 이메일로 이미 가입한 계정이 존재합니다.");
         }
-        if (memberRepository.findByPhoneNumberAndDelYn(dto.getPhoneNumber(), Option.N).isPresent() ||
-                employeeRepository.findByPhoneNumberAndDelYn(dto.getPhoneNumber(), Option.N).isPresent()) {
+        if (memberRepository.findByPhoneNumberAndDelYN(dto.getPhoneNumber(), Option.N).isPresent() ||
+                employeeRepository.findByPhoneNumberAndDelYN(dto.getPhoneNumber(), Option.N).isPresent()) {
             throw new IllegalArgumentException("해당 번호로 이미 가입한 계정이 존재합니다");
         }
         return memberRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
     }
 
     public String findEmail(String phoneNumber) {
-        Member member = memberRepository.findByPhoneNumberAndDelYn(phoneNumber, Option.N).orElseThrow(
+        Member member = memberRepository.findByPhoneNumberAndDelYN(phoneNumber, Option.N).orElseThrow(
                 () -> new EntityNotFoundException("해당 번호로 가입한 아이디가 없습니다."));
         return member.getEmail();
     }
 
     public void updatePassword(String email) {
-        Member member = memberRepository.findByEmailAndDelYn(email, Option.N).orElseThrow(
+        Member member = memberRepository.findByEmailAndDelYN(email, Option.N).orElseThrow(
                 () -> new EntityNotFoundException("해당 이메일로 가입한 아이디가 없습니다."));
         // 비밀번호 업데이트 로직 필요
     }
 
     public Member login(UserLoginDto dto) {
-        Member member = memberRepository.findByEmailAndDelYn(dto.getEmail(), Option.N).orElseThrow(
+        Member member = memberRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).orElseThrow(
                 () -> new EntityNotFoundException("해당 이메일로 가입한 아이디가 없습니다."));
         if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
