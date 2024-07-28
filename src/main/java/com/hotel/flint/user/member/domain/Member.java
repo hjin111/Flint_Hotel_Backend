@@ -1,7 +1,7 @@
 package com.hotel.flint.user.member.domain;
 
-
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.member.dto.MemberDetResDto;
 import lombok.AllArgsConstructor;
@@ -9,8 +9,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -35,8 +38,13 @@ public class Member {
     private String password;
     @Column(nullable = false)
     private LocalDate birthday;
+
+    @ColumnDefault("'N'")
     @Enumerated(EnumType.STRING)
     private Option delYN;
+
+    @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL)
+    private List<DiningReservation> diningReservationList;
 
 
     public InfoUserResDto infoUserEntity(){

@@ -4,6 +4,8 @@ import com.hotel.flint.common.enumdir.DiningName;
 import com.hotel.flint.common.enumdir.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import com.hotel.flint.reserve.dining.domain.DiningReservation;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,9 +42,11 @@ public class Dining {
 
     @Column(nullable = false)
     private LocalTime closeTime;
+    
+    @OneToMany(mappedBy = "diningId", cascade = CascadeType.ALL )
+    private List<DiningReservation> diningReservations;
 
     @OneToMany(mappedBy = "dining", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private List<Menu> menu;
 
 }
-

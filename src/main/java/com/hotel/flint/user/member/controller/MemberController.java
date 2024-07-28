@@ -7,6 +7,8 @@ import com.hotel.flint.common.dto.CommonResDto;
 import com.hotel.flint.common.dto.UserLoginDto;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.dto.MemberSignUpDto;
+import com.hotel.flint.user.member.dto.MemberDetResDto;
+import com.hotel.flint.user.member.dto.MemberModResDto;
 import com.hotel.flint.user.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,33 +34,33 @@ public class MemberController {
     }
 
     @GetMapping("/findemail")
-    public ResponseEntity<?> findEmail(@RequestBody Map<String, String> request){
+    public ResponseEntity<?> findEmail(@RequestBody Map<String, String> request) {
         try {
             String memberEmail = memberService.findEmail(request.get("phoneNumber"));
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회에 성공하였습니다.",
                     "회원님의 이메일은 " + memberEmail + "입니다");
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> memberSignUp(@RequestBody MemberSignUpDto dto){
+    public ResponseEntity<?> memberSignUp(@RequestBody MemberSignUpDto dto) {
         try {
             Member member = memberService.memberSignUp(dto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED,
                     member.getLastName() + member.getFirstName() + "님, 회원 가입을 축하합니다.", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> doLogin(@RequestBody UserLoginDto dto){
+    public ResponseEntity<?> doLogin(@RequestBody UserLoginDto dto) {
         try {
             Member member = memberService.login(dto);
             String jwtToken = jwtTokenProvider.createToken(member.getEmail(), member.getId());
@@ -66,7 +68,42 @@ public class MemberController {
             loginInfo.put("token", jwtToken);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "환영합니다 " + member.getFirstName() + member.getLastName() + "님!", loginInfo);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-        } catch (EntityNotFoundException | IllegalArgumentException e){
+        } catch (EntityNotFoundException | IllegalArgumentException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> userDetail(@PathVariable Long id) {
+        try {
+            MemberDetResDto memberDetail = memberService.memberDetail(id);
+            return new ResponseEntity<>(memberDetail, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> userDelete(@PathVariable Long id) {
+        try {
+            memberService.memberDelete(id);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "삭제 완료", null);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/modify")
+    public ResponseEntity<?> userModify(@RequestBody MemberModResDto dto) {
+        try {
+            memberService.memberModify(dto);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "수정 완료", null);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException | IllegalArgumentException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }

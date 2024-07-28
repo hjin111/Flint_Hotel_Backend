@@ -21,11 +21,11 @@ public class RoomInfo {
     private String roomTypeName;
     private Double roomTypePrice;
 
-    @Column(nullable = false)
-    private Long roomCnt;
-
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomPrices> roomPrices;
+
+    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomPrice> roomPrices;
 
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomDetails> roomDetails;

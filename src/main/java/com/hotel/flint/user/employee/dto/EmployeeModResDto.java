@@ -1,19 +1,13 @@
-package com.hotel.flint.user.member.dto;
+package com.hotel.flint.user.employee.dto;
 
 import lombok.AllArgsConstructor;
-
-import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Getter
-public class MemberModResDto {
+public class EmployeeModResDto {
     private Long id;
     private String password;
-    private String phoneNumber;
 }
