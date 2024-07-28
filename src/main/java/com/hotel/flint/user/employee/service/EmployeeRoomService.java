@@ -59,4 +59,8 @@ public class EmployeeRoomService {
         return infoRoomResDto;
     }
 
+//    고객 객실 예약 취소하는 메서드
+    public void memberReservationCncRoomByEmployee(InfoRoomResDto dto){
+        roomReservationRepository.deleteById(dto.getId());
+    }
 }

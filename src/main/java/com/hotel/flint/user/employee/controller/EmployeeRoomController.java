@@ -36,4 +36,13 @@ public class EmployeeRoomController {
 
         return infoRoomResDto;
     }
+
+//    고객의 객실 예약 취소하는 로직
+    @PostMapping("/cancel_reserve_dining/{id}")
+    @ResponseBody
+    public String memberReservationCncDiningByEmployee(@RequestBody Long id){
+        InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(id);
+        employeeRoomService.memberReservationCncRoomByEmployee(infoRoomResDto);
+        return "삭제 완료";
+    }
 }
