@@ -17,9 +17,24 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private int experiation;
 
-    public String createToken(String email, Long id){
+    public String createMemberToken(String email, Long id){
         Claims claims = Jwts.claims().setSubject(email);
         claims.put("id", id);
+        Date now = new Date();
+        String token = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + experiation*60*1000L))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+        return token;
+    }
+
+    public String createEmployeeToken(String email, Long id, String department){
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("id", id);
+        claims.put("department", department);
+
         Date now = new Date();
         String token = Jwts.builder()
                 .setClaims(claims)

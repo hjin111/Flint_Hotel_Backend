@@ -2,7 +2,6 @@ package com.hotel.flint.reserve.room.domain;
 
 import com.hotel.flint.common.enumdir.RoomState;
 import com.hotel.flint.common.enumdir.RoomView;
-import com.hotel.flint.reserve.room.dto.RoomStateDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,7 +36,4 @@ public class RoomDetails {
     @Column(nullable = false)
     private Integer roomArea;
 
-    public void updateRoomState(RoomStateDto roomStateDto){
-        this.roomState = roomStateDto.getRoomState();
-    }
 }

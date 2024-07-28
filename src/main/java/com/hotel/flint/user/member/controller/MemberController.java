@@ -61,7 +61,7 @@ public class MemberController {
     public ResponseEntity<?> doLogin(@RequestBody UserLoginDto dto){
         try {
             Member member = memberService.login(dto);
-            String jwtToken = jwtTokenProvider.createToken(member.getEmail(), member.getId());
+            String jwtToken = jwtTokenProvider.createMemberToken(member.getEmail(), member.getId());
             Map<String, Object> loginInfo = new HashMap<>();
             loginInfo.put("token", jwtToken);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "환영합니다 " + member.getFirstName() + member.getLastName() + "님!", loginInfo);

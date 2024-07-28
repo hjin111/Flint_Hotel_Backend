@@ -34,7 +34,6 @@ public class EmployeeDiningService {
         System.out.println("인증 값::" + authentication + "\n 여기가 끝");
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//
             String email = userDetails.getUsername();
             return employeeRepository.findByEmailAndDelYN(email, Option.N)
                     .orElseThrow(() -> new SecurityException("인증되지 않은 사용자입니다."));
@@ -48,6 +47,9 @@ public class EmployeeDiningService {
 
         Dining dining = diningRepository.findById(menuSaveDto.getDiningId())
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 Dining ID"));
+        if(authenticatedEmployee.getDepartment().toString() != dining.getDiningName().toString()){
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
         Menu menu = menuSaveDto.toEntity(dining);
         menuRepository.save(menu);
     }
@@ -57,6 +59,12 @@ public class EmployeeDiningService {
 
         Menu menu = menuRepository.findById(menuId).orElseThrow(
                 () -> new EntityNotFoundException("존재하지 않는 메뉴"));
+        Dining dining = diningRepository.findById(menu.getDining().getId()).
+                orElseThrow(() -> new EntityNotFoundException("존재하지 않는 Dining ID"));
+        if(authenticatedEmployee.getDepartment().toString() != dining.getDiningName().toString()){
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
+
         menu.menuUpdate(newCost);
         menuRepository.save(menu);
     }
@@ -64,10 +72,13 @@ public class EmployeeDiningService {
     public void delDiningMenu(Long menuId){
         Employee authenticatedEmployee = getAuthenticatedEmployee();
 
-        if(menuRepository.findById(menuId).isPresent()){
-            menuRepository.deleteById(menuId);
-        } else{
-            throw new EntityNotFoundException("삭제하려는 메뉴가 존재하지 않습니다.");
+        Menu menu = menuRepository.findById(menuId).orElseThrow(
+                () -> new EntityNotFoundException("삭제하려는 메뉴가 존재하지 않습니다."));
+        Dining dining = diningRepository.findById(menu.getDining().getId()).
+                orElseThrow(() -> new EntityNotFoundException("존재하지 않는 Dining ID"));
+        if(authenticatedEmployee.getDepartment().toString() != dining.getDiningName().toString()){
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
+        menuRepository.deleteById(menuId);
     }
 }
