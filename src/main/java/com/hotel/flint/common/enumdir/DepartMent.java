@@ -1,6 +1,6 @@
 package com.hotel.flint.common.enumdir;
 
-public enum DepartMent {
+public enum Department {
     Room,
     KorDining,
     ChiDining,

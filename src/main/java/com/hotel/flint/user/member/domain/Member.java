@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
@@ -23,7 +24,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     private String email;
     @Column(nullable = false)
     private String firstName;
@@ -37,12 +38,14 @@ public class Member {
     private String password;
     @Column(nullable = false)
     private LocalDate birthday;
+
     @ColumnDefault("'N'")
     @Enumerated(EnumType.STRING)
-    private Option delYn;
+    private Option delYN;
 
     @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL)
     private List<DiningReservation> diningReservationList;
+
 
     public InfoUserResDto infoUserEntity(){
         return InfoUserResDto.builder()
@@ -68,7 +71,7 @@ public class Member {
     }
 
     public Member deleteUser(){
-        this.delYn = Option.Y;
+        this.delYN = Option.Y;
         return this;
     }
 
