@@ -5,17 +5,12 @@ import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.RoomState;
 import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.common.enumdir.Season;
-import com.hotel.flint.reserve.room.domain.RoomDetails;
-import com.hotel.flint.reserve.room.domain.RoomInfo;
-import com.hotel.flint.reserve.room.domain.RoomPrice;
-import com.hotel.flint.reserve.room.domain.RoomReservation;
+import com.hotel.flint.reserve.room.domain.*;
+import com.hotel.flint.reserve.room.dto.CheckedReservedDateDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
-import com.hotel.flint.reserve.room.repository.RoomDetailRepository;
-import com.hotel.flint.reserve.room.repository.RoomInfoRepository;
-import com.hotel.flint.reserve.room.repository.RoomPriceRepository;
-import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
+import com.hotel.flint.reserve.room.repository.*;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -42,17 +37,26 @@ public class RoomReservedService {
     private final RoomPriceRepository roomPriceRepository;
     private final RoomInfoRepository roomInfoRepository;
     private final MemberRepository memberRepository;
+    private final CheckReservedDateRepository checkReservedDateRepository;
 
     private final HolidayService holidayService;
     private final SeasonService seasonService;
 
     @Autowired
-    public RoomReservedService (RoomReservationRepository roomReservationRepository, RoomDetailRepository roomDetailRepository, RoomPriceRepository roomPriceRepository, RoomInfoRepository roomInfoRepository, MemberRepository memberRepository, HolidayService holidayService, SeasonService seasonService) {
+    public RoomReservedService (RoomReservationRepository roomReservationRepository,
+                                RoomDetailRepository roomDetailRepository,
+                                RoomPriceRepository roomPriceRepository,
+                                RoomInfoRepository roomInfoRepository,
+                                MemberRepository memberRepository,
+                                CheckReservedDateRepository checkReservedDateRepository,
+                                HolidayService holidayService,
+                                SeasonService seasonService) {
         this.roomReservationRepository = roomReservationRepository;
         this.roomDetailRepository = roomDetailRepository;
         this.roomPriceRepository = roomPriceRepository;
         this.roomInfoRepository = roomInfoRepository;
         this.memberRepository = memberRepository;
+        this.checkReservedDateRepository = checkReservedDateRepository;
 
         this.holidayService = holidayService;
         this.seasonService = seasonService;
@@ -73,34 +77,52 @@ public class RoomReservedService {
                 () -> new IllegalArgumentException("해당 id의 방이 없음")
         );
 
-        // CO(check out) 상태의 룸만 예약 가능
-        if (!roomDetails.getRoomState().toString().equals("CO")) {
-            throw new IllegalArgumentException("예약 가능한 룸의 상태가 아님");
-        }
-
         // 수용할 수 있는 최대 인원수 체크하기
         if (roomDetails.getMaxOccupancy() < dto.getAdultCnt() + dto.getChildCnt()) {
             throw new IllegalArgumentException("최대 수용 가능한 인원 수 초과");
+        }
+
+        // 해당 날짜에 해당 객실을 예약할 수 있는지 날짜별로 확인 ⭐⭐
+        if (!checkReserved(dto, roomDetails)) {
+            throw new IllegalArgumentException("해당 날짜에 해당 객실을 이용할 수 없음");
         }
 
         RoomReservation roomReservation = dto.toEntity(member, roomDetails);
         RoomReservation savedRoomReservation = roomReservationRepository.save(roomReservation);
         log.info("room reservation : " + savedRoomReservation);
 
-        // 예약 save가 되면 -> roomInfo 테이블의 roomCnt를 -1로 업데이트
-        log.info("예약 전, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
-        roomDetails.getRoomInfo().updateRoomStock(1L);
-        log.info("예약 후, 남은 방의 개수 : " + roomDetails.getRoomInfo().getRoomCnt());
-
-        // 예약 성공 후 룸 상태변경 CO -> RS
-        roomDetails.updateRoomStateAfterReservation(RoomState.RS);
-        log.info("예약 후 룸의 상태: " + roomDetails.getRoomState().toString());
-
         // 날짜 가져가서 계산
         double totalPrice = calculatePrice(dto);
 
         return totalPrice;
 
+    }
+
+    /**
+     * 예약 가능한 날짜 및 객실인지 확인
+     */
+    private boolean checkReserved(RoomReservedDto dto, RoomDetails roomDetails) {
+
+        // 체크인,아웃 날짜
+        LocalDate checkInDate= dto.getCheckInDate();
+        LocalDate checkOutDate = dto.getCheckOutDate();
+
+        while (checkInDate.isBefore(checkOutDate)) { // checkInDate < checkOutDate
+            if (checkReservedDateRepository.findByDateAndRooms(checkInDate, roomDetails).isPresent()) {
+                log.info("이 날짜 안됨 : " + checkInDate);
+                return false;
+            }
+            checkInDate = checkInDate.plusDays(1);
+        }
+
+        // 모든 날짜에 대해 예약이 가능한 경우 예약 데이터 저장
+        checkInDate = dto.getCheckInDate();
+        while (checkInDate.isBefore(checkOutDate)) {
+            ReservedRoom reservedRoom = dto.toEntity(checkInDate, roomDetails);
+            checkReservedDateRepository.save(reservedRoom);
+            checkInDate = checkInDate.plusDays(1);
+        }
+        return true;
     }
 
     /**
@@ -188,15 +210,18 @@ public class RoomReservedService {
         RoomReservation roomReservation = roomReservationRepository.findById(roomReservedId).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 예약 내역 없음")
         );
+        // 객실 예약 내역 취소
         roomReservationRepository.delete(roomReservation);
 
-        log.info("예약 취소 전, 남은 방의 개수 : " + roomReservation.getRooms().getRoomInfo().getRoomCnt());
-        roomReservation.getRooms().getRoomInfo().updateRoomStockAfterCanceled(1L);
-        log.info("예약 취소 후, 남은 방의 개수 : " + roomReservation.getRooms().getRoomInfo().getRoomCnt());
+        // 예약된 객실 테이블에서도 삭제
+        LocalDate checkInDate = roomReservation.getCheckInDate();
+        LocalDate checkOutDate = roomReservation.getCheckOutDate();
+        RoomDetails roomDetails = roomReservation.getRooms();
 
-        // 예약 취소 후 룸 상태변경 RS -> CO
-        roomReservation.getRooms().updateRoomStateAfterReservation(RoomState.CO);
-        log.info("예약 취소 후 룸의 상태: " + roomReservation.getRooms().getRoomState().toString());
+        while (checkInDate.isBefore(checkOutDate)) {
+            checkReservedDateRepository.deleteByDateAndRooms(checkInDate, roomDetails);
+            checkInDate = checkInDate.plusDays(1);
+        }
     }
 
     /**
