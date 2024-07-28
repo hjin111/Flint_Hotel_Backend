@@ -6,7 +6,7 @@ import com.hotel.flint.dining.domain.Menu;
 import com.hotel.flint.dining.dto.MenuSaveDto;
 import com.hotel.flint.dining.repository.DiningRepository;
 import com.hotel.flint.dining.repository.MenuRepository;
-import com.hotel.flint.user.employee.dto.Employee;
+import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

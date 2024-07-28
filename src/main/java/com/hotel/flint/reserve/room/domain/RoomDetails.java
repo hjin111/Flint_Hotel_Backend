@@ -1,7 +1,7 @@
 package com.hotel.flint.reserve.room.domain;
 
-import com.hotel.flint.common.enumdir.RoomState;
 import com.hotel.flint.common.enumdir.RoomView;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,10 +23,9 @@ public class RoomDetails {
     @JoinColumn(name = "room_type_id", nullable = false)
     private RoomInfo roomInfo;
 
-    private Integer roomNumber;
 
-    @Enumerated(value = EnumType.STRING)
-    private RoomState roomState;
+    @Column(nullable = false, unique = true)
+    private Integer roomNumber;
 
     @Enumerated(value = EnumType.STRING)
     private RoomView roomView;

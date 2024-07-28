@@ -20,3 +20,4 @@ public class MemberDetResDto {
     private String password;
     private LocalDate birthday;
 }
+

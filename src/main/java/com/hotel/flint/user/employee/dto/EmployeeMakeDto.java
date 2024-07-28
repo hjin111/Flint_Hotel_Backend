@@ -1,9 +1,10 @@
 package com.hotel.flint.user.employee.dto;
 
-import com.hotel.flint.common.enumdir.DepartMent;
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.EmployeeRank;
 import com.hotel.flint.common.enumdir.Gender;
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.user.employee.domain.Employee;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,7 @@ public class EmployeeMakeDto {
     private String lastName;
     private String phoneNumber;
     private String email;
-    private DepartMent departMent;
+    private Department departMent;
     private EmployeeRank employeeRank;
     private LocalDate dateOfEmployment;
     private String password;

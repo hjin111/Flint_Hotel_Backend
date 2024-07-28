@@ -69,5 +69,4 @@ public class EmployeeDiningController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
-
 }
