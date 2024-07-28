@@ -21,9 +21,8 @@ public class RoomInfo {
     private String roomTypeName;
     private Double roomTypePrice;
 
-//    방 남은 개수
-    @Column(nullable = false)
-    private Long roomCnt;
+    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RoomPrices> roomPrices;
 
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomPrice> roomPrices;
@@ -31,7 +30,7 @@ public class RoomInfo {
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomDetails> roomDetails;
 
-    public void updateRoomStock(Long cnt) {
-        this.roomCnt = this.roomCnt - 1;
+    public void updateRoomPrice(Double newPrice){
+        this.roomTypePrice = newPrice;
     }
 }
