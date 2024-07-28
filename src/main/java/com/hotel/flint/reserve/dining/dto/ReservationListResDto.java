@@ -1,7 +1,6 @@
 package com.hotel.flint.reserve.dining.dto;
 
-import com.hotel.flint.dining.domain.Dining;
-import com.hotel.flint.user.member.domain.Member;
+import com.hotel.flint.common.enumdir.DiningName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,11 +12,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReservationResDto {
+public class ReservationListResDto {
 
     private Long id;
-    private Member memberId;
-    private Dining diningId;
+    private Long memberId;
+    private DiningName diningName;
     private int adult;
     private int child;
     private String comment;

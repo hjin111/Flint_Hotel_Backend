@@ -1,6 +1,5 @@
 package com.hotel.flint.user.employee.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,4 +19,5 @@ public class InfoUserResDto {
     private String lastName;
     private String nation;
     private LocalDate birthday;
+
 }

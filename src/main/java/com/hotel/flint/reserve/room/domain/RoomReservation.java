@@ -5,6 +5,8 @@ import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.user.employee.dto.InfoRoomDetResDto;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
+import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
+import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -60,7 +62,7 @@ public class RoomReservation {
     @JoinColumn(name = "room_id", nullable = false)
     private RoomDetails rooms;
 
-
+//    고객 객실 예약 정보를 담은 데이터 반환 
     public InfoRoomResDto toInfoRoomResDto(InfoUserResDto infoUserResDto) {
         InfoRoomDetResDto infoRoomDetResDto = InfoRoomDetResDto.builder()
                 .roomType(rooms.getRoomInfo().getRoomTypeName())
@@ -78,4 +80,32 @@ public class RoomReservation {
                 .infoRoomDetResDto(infoRoomDetResDto)
                 .build();
     }
+    public RoomReservedListDto listFromEntity(int no) {
+
+        RoomReservedListDto roomReservedListDto = RoomReservedListDto.builder()
+                .no(no)
+                .roomType(this.getRooms().getRoomInfo().getRoomTypeName())
+                .checkInDate(this.checkInDate)
+                .checkOutDate(this.checkOutDate)
+                .build();
+        return roomReservedListDto;
+    }
+
+    public RoomReservedDetailDto detailFromEntity() {
+        RoomReservedDetailDto roomReservation = RoomReservedDetailDto.builder()
+                .adultCnt(this.adultCnt)
+                .childCnt(this.childCnt)
+                .roomType(this.getRooms().getRoomInfo().getRoomTypeName())
+                .checkInDate(this.checkInDate)
+                .checkOutDate(this.checkOutDate)
+                .parkingYN(this.parkingYN)
+                .payment("kakaopay")
+                .adultBfCnt(this.adultBfCnt)
+                .childBfCnt(this.childBfCnt)
+                .requestContents(this.requestContents)
+                .build();
+
+        return roomReservation;
+    }
+
 }

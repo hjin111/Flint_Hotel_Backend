@@ -1,9 +1,8 @@
 package com.hotel.flint.reserve.room.domain;
 
-import com.hotel.flint.common.enumdir.RoomState;
+import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.RoomView;
-import com.hotel.flint.reserve.room.dto.RoomStateDto;
-
+import com.hotel.flint.common.enumdir.Season;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoomDetails {
+public class RoomPrices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,19 +24,18 @@ public class RoomDetails {
     @JoinColumn(name = "room_type_id", nullable = false)
     private RoomInfo roomInfo;
 
+    @Enumerated(value = EnumType.STRING)
+    private Season season;
 
-    @Column(nullable = false, unique = true)
-    private Integer roomNumber;
+    @Enumerated(value = EnumType.STRING)
+    private Option isHoliday;
 
     @Enumerated(value = EnumType.STRING)
     private RoomView roomView;
 
-    @Column(nullable = false)
-    private Integer maxOccupancy;
-    @Column(nullable = false)
-    private Integer roomArea;
+    private Double additionalPercentage;
 
-    public void updateRoomState(RoomStateDto roomStateDto){
-        this.roomState = roomStateDto.getRoomState();
-    }
+    @Enumerated(value = EnumType.STRING)
+    private Option isWeekend;
 }
+
