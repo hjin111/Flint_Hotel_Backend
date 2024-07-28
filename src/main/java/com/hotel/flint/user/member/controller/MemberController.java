@@ -97,6 +97,8 @@ public class MemberController {
         }
     }
 
+
+//    멤버 비밀번호 수정하는 기능
     @PutMapping("/modify")
     public ResponseEntity<?> userModify(@RequestBody MemberModResDto dto) {
         try {

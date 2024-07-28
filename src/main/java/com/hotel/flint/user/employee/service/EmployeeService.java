@@ -70,24 +70,30 @@ public class EmployeeService {
         return member.infoUserEntity();
     }
 
-    public EmployeeDetResDto employeeDetail(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+//    직원 상세 정보
+    public EmployeeDetResDto employeeDetail(Long id){
+        Employee employee = employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
         return employee.EmpDetEntity();
     }
 
-    public void employeeModify(EmployeeModResDto dto) {
+//    직원 계정 비밀번호 수정
+    public void employeeModify(EmployeeModResDto dto){
         Employee employee = this.findByEmpId(dto.getId());
         employee.modifyEmp(dto.getPassword());
         employeeRepository.save(employee);
     }
 
-    public Employee findByEmpId(Long id) {
-        return employeeRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+
+//    직원 ID 찾는 로직
+    public Employee findByEmpId(Long id){
+        return employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
     }
 
-    public Employee modEmployeeRank(EmployeeRankModResDto dto) {
-        Employee officeEmployee = employeeRepository.findById(dto.getOfficeId()).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
-        if (!officeEmployee.getDepartment().equals(DepartMent.Office))
+//    직원 직급 수정 로직
+    public Employee modEmployeeRank(EmployeeRankModResDto dto){
+        Employee officeEmployee = employeeRepository.findById(dto.getOfficeId()).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+        if(!officeEmployee.getDepartment().equals(DepartMent.Office))
+
             throw new IllegalArgumentException("Office 부서만 수정이 가능합니다.");
         Employee targetEmployee = employeeRepository.findById(dto.getTargetId()).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
 

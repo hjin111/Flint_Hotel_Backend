@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RoomReservationRepository extends JpaRepository<RoomReservation, Long> {
 
+    RoomReservation findByMember(Member member);
     Page<RoomReservation> findByMember(Pageable pageable, Member member);
 }
