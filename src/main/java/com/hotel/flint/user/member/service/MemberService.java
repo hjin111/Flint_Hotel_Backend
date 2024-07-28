@@ -30,7 +30,6 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     public Member memberSignUp(MemberSignUpDto dto) {
         if (memberRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).isPresent() ||
                 employeeRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).isPresent()) {
@@ -48,11 +47,14 @@ public class MemberService {
                 () -> new EntityNotFoundException("해당 번호로 가입한 아이디가 없습니다."));
         return member.getEmail();
     }
-
-    public void updatePassword(String email) {
-        Member member = memberRepository.findByEmailAndDelYN(email, Option.N).orElseThrow(
+/*
+* 멤버 비밀번호 수정 로직
+* */
+    public void updatePassword(MemberModResDto dto) {
+        Member member = memberRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).orElseThrow(
                 () -> new EntityNotFoundException("해당 이메일로 가입한 아이디가 없습니다."));
-        // 비밀번호 업데이트 로직 필요
+//        수정된 비밀번호 + token 을 담은 dto 값
+        member.modifyUser(passwordEncoder.encode(dto.getAfterPassword()));
     }
 
     public Member login(UserLoginDto dto) {
@@ -74,14 +76,6 @@ public class MemberService {
     public void memberDelete(Long id){
         Member member = memberRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("해당 id가 존재하지 않습니다."));
         member.deleteUser();
-        memberRepository.save(member);
-    }
-    
-//    멤버 비밀번호 수정 로직
-    public void memberModify(MemberModResDto dto){
-
-        Member member = this.findByUserId(dto.getId());
-        member.modifyUser(dto.getPassword());
         memberRepository.save(member);
     }
     /*
