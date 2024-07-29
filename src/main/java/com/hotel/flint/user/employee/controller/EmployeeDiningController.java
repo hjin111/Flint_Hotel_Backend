@@ -2,7 +2,6 @@ package com.hotel.flint.user.employee.controller;
 
 import com.hotel.flint.dining.dto.MenuSaveDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
-import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.service.EmployeeDiningService;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
@@ -74,7 +73,7 @@ public class EmployeeDiningController {
     }
 
     @PostMapping("/reserve")
-    public ResponseEntity<?> memberDiningReservationRoomCheck(@RequestParam("id") Long id) {
+    public ResponseEntity<?> memberReservationDiningCheck(@RequestParam("id") Long id) {
         try {
             List<InfoDiningResDto> infoDiningResDto = employeeDiningService.memberReservationDiningCheck(id);
             return new ResponseEntity<>(infoDiningResDto, HttpStatus.OK);
@@ -86,4 +85,5 @@ public class EmployeeDiningController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
+
 }
