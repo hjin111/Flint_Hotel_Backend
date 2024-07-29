@@ -65,7 +65,7 @@ public class MemberController {
             Member member = memberService.login(dto);
             String jwtToken = jwtTokenProvider.createMemberToken(member.getEmail(), member.getId());
             Map<String, Object> loginInfo = new HashMap<>();
-            loginInfo.put("token", jwtToken);
+            loginInfo.put("membertoken", jwtToken);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "환영합니다 " + member.getFirstName() + member.getLastName() + "님!", loginInfo);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException | IllegalArgumentException e) {

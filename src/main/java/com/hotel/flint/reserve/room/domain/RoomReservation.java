@@ -2,6 +2,7 @@ package com.hotel.flint.reserve.room.domain;
 
 
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.room.domain.RoomDetails;
 import com.hotel.flint.user.employee.dto.InfoRoomDetResDto;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
