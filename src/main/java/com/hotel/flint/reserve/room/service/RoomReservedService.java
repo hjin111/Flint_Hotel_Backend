@@ -21,10 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.Security;
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -67,11 +69,13 @@ public class RoomReservedService {
      * 룸 예약 진행
      */
     @Transactional
-    public double roomReservation(RoomReservedDto dto, Long userId) {
+    public double roomReservation(RoomReservedDto dto) {
+
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // user 찾기
-        Member member = memberRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 회원이 없음")
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.valueOf("N")).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 없음")
         );
         // RoomDetail 찾아오기
         RoomDetails roomDetails = roomDetailsRepository.findById(dto.getRoomId()).orElseThrow(
@@ -226,13 +230,17 @@ public class RoomReservedService {
     }
 
     /**
-     * 객실 예약 내역 조회 - 목록
+     * 객실 예약 내역 조회 - 목록 (내 예약 목록)
      */
-    public Page<RoomReservedListDto> roomReservedList(Pageable pageable, Long userId) {
+    public Page<RoomReservedListDto> roomReservedList(Pageable pageable) {
 
-        Member member = memberRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 회원이 없음")
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // user 찾기
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.valueOf("N")).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 없음")
         );
+
         Page<RoomReservation> reservations = roomReservationRepository.findByMember(pageable, member);
 
         log.info("Total reservations found: {}", reservations.getTotalElements());
