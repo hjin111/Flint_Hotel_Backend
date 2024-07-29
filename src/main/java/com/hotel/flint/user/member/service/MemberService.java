@@ -76,22 +76,22 @@ public class MemberService {
     }
 
     public MemberDetResDto memberDetail() {
-        Member member = memberRepository.findByEmail(
+        Member member = memberRepository.findByEmailAndDelYN(
                 SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getName()
-        ).orElseThrow(()-> new EntityNotFoundException("member not found"));
+        , Option.N).orElseThrow(()-> new EntityNotFoundException("member not found"));
         return member.detUserEntity();
     }
 
 
 //    멤버 삭제 로직
     public void memberDelete(String password){
-        Member member = memberRepository.findByEmail(
+        Member member = memberRepository.findByEmailAndDelYN(
                 SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getName()
-        ).orElseThrow(()-> new EntityNotFoundException("member not found"));
+        , Option.N).orElseThrow(()-> new EntityNotFoundException("member not found"));
         if(!passwordEncoder.matches(password, member.getPassword())){
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
