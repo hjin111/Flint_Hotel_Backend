@@ -73,14 +73,21 @@ public class MemberService {
                 SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getName()
-        ).orElseThrow(()-> new EntityNotFoundException("not found"));
+        ).orElseThrow(()-> new EntityNotFoundException("member not found"));
         return member.detUserEntity();
     }
 
 
 //    멤버 삭제 로직
-    public void memberDelete(Long id){
-        Member member = memberRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("해당 id가 존재하지 않습니다."));
+    public void memberDelete(String password){
+        Member member = memberRepository.findByEmail(
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName()
+        ).orElseThrow(()-> new EntityNotFoundException("member not found"));
+        if(!passwordEncoder.matches(password, member.getPassword())){
+            throw new EntityNotFoundException("비밀번호가 일치하지 않습니다.");
+        }
         member.deleteUser();
         memberRepository.save(member);
     }

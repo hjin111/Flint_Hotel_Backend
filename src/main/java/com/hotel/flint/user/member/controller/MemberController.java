@@ -85,10 +85,10 @@ public class MemberController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> userDelete(@PathVariable Long id) {
+    @PostMapping("/delete")
+    public ResponseEntity<?> userDelete(@RequestBody String password) {
         try {
-            memberService.memberDelete(id);
+            memberService.memberDelete(password);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "삭제 완료", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
