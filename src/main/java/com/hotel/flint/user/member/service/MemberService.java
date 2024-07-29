@@ -53,8 +53,15 @@ public class MemberService {
 * 멤버 비밀번호 수정 로직
 * */
     public void updatePassword(MemberModResDto dto) {
-        Member member = memberRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).orElseThrow(
-                () -> new EntityNotFoundException("해당 이메일로 가입한 아이디가 없습니다."));
+        Member member = memberRepository.findByEmailAndDelYN(
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName()
+                , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 이메일로 가입한 아이디가 없습니다."));
+
+        if(!passwordEncoder.matches(dto.getBeforePassword(), member.getPassword())){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
 //        수정된 비밀번호 + token 을 담은 dto 값
         member.modifyUser(passwordEncoder.encode(dto.getAfterPassword()));
     }
@@ -86,7 +93,7 @@ public class MemberService {
                         .getName()
         ).orElseThrow(()-> new EntityNotFoundException("member not found"));
         if(!passwordEncoder.matches(password, member.getPassword())){
-            throw new EntityNotFoundException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         member.deleteUser();
         memberRepository.save(member);

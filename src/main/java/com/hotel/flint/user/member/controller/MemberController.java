@@ -85,7 +85,7 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/delete")
+    @PatchMapping("/delete")
     public ResponseEntity<?> userDelete(@RequestBody String password) {
         try {
             memberService.memberDelete(password);
