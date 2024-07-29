@@ -68,10 +68,20 @@ public class EmployeeMemberController {
 //    직원의 직급을 수정
 //    직원 수정은 office 부서만 가능
 //    dto 안에 수정하는 직원 id, 수정 대상 id, 수정할 값 이 들어있다.
-    @PostMapping("/mod_rank")
+    @PutMapping("/mod_rank")
     @ResponseBody
-    public String modEmployeeRank(@RequestBody EmployeeRankModResDto dto){
-        employeeService.modEmployeeRank(dto);
-        return "수정완료";
+    public ResponseEntity<?> modEmployeeRank(@RequestBody EmployeeRankModResDto dto){
+        try {
+            employeeService.modEmployeeRank(dto);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Rank Modify" , null);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        }
+        catch(EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }
     }
 }

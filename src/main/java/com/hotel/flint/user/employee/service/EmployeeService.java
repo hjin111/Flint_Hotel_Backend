@@ -121,11 +121,13 @@ public class EmployeeService {
 
 //    직원 직급 수정 로직
     public Employee modEmployeeRank(EmployeeRankModResDto dto){
-        Employee officeEmployee = employeeRepository.findById(dto.getOfficeId()).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
-        if(!officeEmployee.getDepartment().equals(Department.Office))
+        Employee employee = employeeRepository.findByEmailAndDelYN(
+                SecurityContextHolder.getContext().getAuthentication().getName(), Option.N
+        ).orElseThrow(()->new EntityNotFoundException("해당 하는 관리자 정보가 존재하지 않습니다."));
+
+        if(!employee.getDepartment().equals(Department.Office))
             throw new IllegalArgumentException("Office 부서만 수정이 가능합니다.");
         Employee targetEmployee = employeeRepository.findById(dto.getTargetId()).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
-
         targetEmployee.modifyRank(dto.getEmployeeRank());
         return employeeRepository.save(targetEmployee);
     }

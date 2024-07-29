@@ -1,6 +1,7 @@
 package com.hotel.flint.common.controller;
 
 import com.hotel.flint.common.enumdir.Department;
+import com.hotel.flint.common.enumdir.EmployeeRank;
 import com.hotel.flint.common.enumdir.Gender;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.user.employee.dto.EmployeeMakeDto;
@@ -35,10 +36,11 @@ public class InitialDataLoader implements CommandLineRunner {
                             .phoneNumber("02-1111-2222")
                             .departMent(Department.Office)
                             .password("12341234")
+                    .employeeRank(EmployeeRank.사장)
                             .birthday(date)
                     .dateOfEmployment(date)
                     .gender(Gender.FEMALE)
-                            .employeeNumber("FN010001")
+                            .employeeNumber("FL0000001")
                     .build();
             employeeRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
         }
