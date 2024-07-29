@@ -100,8 +100,16 @@ public class EmployeeService {
 
 //    직원 계정 비밀번호 수정
     public void employeeModify(EmployeeModResDto dto){
-        Employee employee = this.findByEmpId(dto.getId());
-        employee.modifyEmp(dto.getPassword());
+        Employee employee = employeeRepository.findByEmailAndDelYN(
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName()
+        , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 하는 관리자 정보가 존재하지 않습니다."));
+
+        if(!passwordEncoder.matches(dto.getBeforePassword(), employee.getPassword())){
+            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+        }
+        employee.modifyEmp(passwordEncoder.encode(dto.getAfterPassword()));
         employeeRepository.save(employee);
     }
 

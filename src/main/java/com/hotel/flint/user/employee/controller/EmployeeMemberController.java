@@ -49,11 +49,20 @@ public class EmployeeMemberController {
 
 //    직원 정보 수정 : 비밀번호 수정만 있음.
 //    해당 직원 id, 수정할 값이 들어있음.
-    @PostMapping("/modify")
+    @PutMapping("/modify")
     @ResponseBody
-    public String userModify(@RequestBody EmployeeModResDto dto){
-        employeeService.employeeModify(dto);
-        return "수정 완료";
+    public ResponseEntity<?> userModify(@RequestBody EmployeeModResDto dto){
+        try {
+            employeeService.employeeModify(dto);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Password Modify" , null);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }catch (EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }
     }
 
 //    직원의 직급을 수정
