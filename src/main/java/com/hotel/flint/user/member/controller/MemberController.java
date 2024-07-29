@@ -65,7 +65,7 @@ public class MemberController {
             Member member = memberService.login(dto);
             String jwtToken = jwtTokenProvider.createMemberToken(member.getEmail(), member.getId());
             Map<String, Object> loginInfo = new HashMap<>();
-            loginInfo.put("token", jwtToken);
+            loginInfo.put("membertoken", jwtToken);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "환영합니다 " + member.getFirstName() + member.getLastName() + "님!", loginInfo);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException | IllegalArgumentException e) {
@@ -74,10 +74,10 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<?> userDetail(@PathVariable Long id) {
+    @GetMapping("/detail")
+    public ResponseEntity<?> userDetail() {
         try {
-            MemberDetResDto memberDetail = memberService.memberDetail(id);
+            MemberDetResDto memberDetail = memberService.memberDetail();
             return new ResponseEntity<>(memberDetail, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.NOT_FOUND.value(), e.getMessage());

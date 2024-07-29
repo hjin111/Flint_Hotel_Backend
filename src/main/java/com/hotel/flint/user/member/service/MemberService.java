@@ -9,6 +9,7 @@ import com.hotel.flint.user.member.dto.MemberDetResDto;
 import com.hotel.flint.user.member.dto.MemberModResDto;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,8 +68,12 @@ public class MemberService {
         return member;
     }
 
-    public MemberDetResDto memberDetail(Long id) {
-        Member member = findByUserId(id);
+    public MemberDetResDto memberDetail() {
+        Member member = memberRepository.findByEmail(
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName()
+        ).orElseThrow(()-> new EntityNotFoundException("not found"));
         return member.detUserEntity();
     }
 

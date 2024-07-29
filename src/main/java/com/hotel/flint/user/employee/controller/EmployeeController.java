@@ -55,7 +55,7 @@ public class EmployeeController {
             Employee employee = employeeService.login(dto);
             String jwtToken = jwtTokenProvider.createEmployeeToken(employee.getEmail(), employee.getId(), employee.getDepartment().toString());
             Map<String, Object> loginInfo = new HashMap<>();
-            loginInfo.put("token", jwtToken);
+            loginInfo.put("employeetoken", jwtToken);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "환영합니다 " + employee.getFirstName() + employee.getLastName() + "님!", loginInfo);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException | IllegalArgumentException e){
