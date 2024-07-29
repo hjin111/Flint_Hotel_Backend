@@ -8,6 +8,7 @@ import com.hotel.flint.dining.dto.MenuSaveDto;
 import com.hotel.flint.dining.repository.DiningRepository;
 import com.hotel.flint.dining.repository.MenuRepository;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
+import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
@@ -118,5 +119,13 @@ public class EmployeeDiningService {
         }
 
         return infoDiningResDtoList;
+    }
+
+    public ReservationDetailDto memberReservationCncDiningByEmployee(Long id){
+        DiningReservation diningReservation = diningReservationRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("해당 ID의 예약 내역이 없습니다."));
+        ReservationDetailDto dto = diningReservation.fromEntity(id);
+        diningReservationRepository.deleteById(id);
+        return dto;
     }
 }

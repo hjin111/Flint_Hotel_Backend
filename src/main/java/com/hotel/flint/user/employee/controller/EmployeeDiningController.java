@@ -1,6 +1,8 @@
 package com.hotel.flint.user.employee.controller;
 
 import com.hotel.flint.dining.dto.MenuSaveDto;
+import com.hotel.flint.reserve.dining.domain.DiningReservation;
+import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
 import com.hotel.flint.user.employee.service.EmployeeDiningService;
 import com.hotel.flint.common.dto.CommonErrorDto;
@@ -86,4 +88,14 @@ public class EmployeeDiningController {
         }
     }
 
+    @PostMapping("/cancel_reserve_dining/{id}")
+    public ResponseEntity<?> memberReservationCncDiningByEmployee(@PathVariable Long id){
+        try{
+            ReservationDetailDto dto = employeeDiningService.memberReservationCncDiningByEmployee(id);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        }catch (EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
+        }
+    }
 }
