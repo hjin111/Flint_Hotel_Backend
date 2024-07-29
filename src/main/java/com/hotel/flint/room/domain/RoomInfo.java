@@ -1,4 +1,4 @@
-package com.hotel.flint.reserve.room.domain;
+package com.hotel.flint.room.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +22,7 @@ public class RoomInfo {
     private Double roomTypePrice;
 
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RoomPrices> roomPrices;
+    private List<RoomPrice> roomPrices;
 
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomDetails> roomDetails;

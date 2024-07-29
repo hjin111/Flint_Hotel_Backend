@@ -1,11 +1,11 @@
 package com.hotel.flint.user.employee.service;
 
 import com.hotel.flint.common.enumdir.Option;
-import com.hotel.flint.reserve.room.domain.RoomInfo;
+import com.hotel.flint.room.domain.RoomInfo;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
-import com.hotel.flint.reserve.room.repository.RoomDetailsRepository;
-import com.hotel.flint.reserve.room.repository.RoomInfoRepository;
-import com.hotel.flint.reserve.room.repository.RoomPriceRepository;
+import com.hotel.flint.room.repository.RoomDetailsRepository;
+import com.hotel.flint.room.repository.RoomInfoRepository;
+import com.hotel.flint.room.repository.RoomPriceRepository;
 import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
@@ -50,7 +50,6 @@ public class EmployeeRoomService {
 
     private Employee getAuthenticatedEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("인증 값::" + authentication + "\n 여기가 끝");
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String email = userDetails.getUsername();
@@ -61,9 +60,10 @@ public class EmployeeRoomService {
         }
     }
 
+//
     public void modRoomPrice(Long id, Double newPrice) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
-        if(!authenticatedEmployee.getDepartment().toString().equals("ROOM")){
+        if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
 

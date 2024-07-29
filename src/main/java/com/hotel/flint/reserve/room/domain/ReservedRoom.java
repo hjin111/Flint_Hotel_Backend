@@ -1,5 +1,6 @@
 package com.hotel.flint.reserve.room.domain;
 
+import com.hotel.flint.room.domain.RoomDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
