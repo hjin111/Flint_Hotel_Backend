@@ -88,8 +88,13 @@ public class EmployeeService {
     }
 
 //    직원 상세 정보
-    public EmployeeDetResDto employeeDetail(Long id){
-        Employee employee = employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+    public EmployeeDetResDto employeeDetail(){
+        Employee employee = employeeRepository.findByEmailAndDelYN(
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName()
+        , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 계정이 존재하지 않습니다."));
+
         return employee.EmpDetEntity();
     }
 
