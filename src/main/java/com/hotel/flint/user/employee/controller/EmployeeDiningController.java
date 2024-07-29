@@ -1,6 +1,8 @@
 package com.hotel.flint.user.employee.controller;
 
 import com.hotel.flint.dining.dto.MenuSaveDto;
+import com.hotel.flint.user.employee.dto.InfoDiningResDto;
+import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.service.EmployeeDiningService;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -65,6 +68,20 @@ public class EmployeeDiningController {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         } catch (SecurityException | IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @PostMapping("/reserve")
+    public ResponseEntity<?> memberDiningReservationRoomCheck(@RequestParam("id") Long id) {
+        try {
+            List<InfoDiningResDto> infoDiningResDto = employeeDiningService.memberReservationDiningCheck(id);
+            return new ResponseEntity<>(infoDiningResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }

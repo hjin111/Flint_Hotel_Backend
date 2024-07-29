@@ -52,8 +52,8 @@ public class EmployeeRoomController {
         }
     }
 
-    @PostMapping("/cancel_reserve_dining/{id}")
-    public ResponseEntity<?> memberReservationCncDiningByEmployee(@PathVariable Long id) {
+    @PostMapping("/cancel_reserve_room/{id}")
+    public ResponseEntity<?> memberReservationCncRoomByEmployee(@PathVariable Long id) {
         try {
             InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(id);
             employeeRoomService.memberReservationCncRoomByEmployee(infoRoomResDto);

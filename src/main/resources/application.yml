@@ -18,5 +18,3 @@ fixed:
 jwt:
   expiration: 30
   secretKey: my_token_secret
-  profiles:
-    active: local

@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InfoRoomResDto {
-
+public class InfoDiningResDto {
     private Long id;
     private String firstname;
     private String lastname;
 
-    private InfoRoomDetResDto infoRoomDetResDto;
-
+    private InfoDiningDetResDto infoDiningDetResDto;
 }
