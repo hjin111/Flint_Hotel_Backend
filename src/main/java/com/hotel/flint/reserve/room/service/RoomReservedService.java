@@ -152,7 +152,7 @@ public class RoomReservedService {
             boolean isSeason = seasonService.isSeason(checkInDate);
             log.info("Checking date: {} isHoliday: {}, isSeason: {}", checkInDate, isHoliday, isSeason);
 
-            double percentage = getAdditionalPercentage(roomDetails.getId(), roomDetails.getRoomInfo(), isHoliday, isSeason, String.valueOf(roomDetails.getRoomView()));
+            double percentage = getAdditionalPercentage(roomDetails.getId(), roomDetails.getRoomInfo(), isHoliday, isSeason);
 
             // 총액 계산
             log.info("roomBasePrice " + roomBasePrice);
@@ -190,7 +190,7 @@ public class RoomReservedService {
     /**
      * 각 방의 정보 확인해서 퍼센티지 가져오기
      */
-    private double getAdditionalPercentage(Long roomId, RoomInfo roomInfo, boolean isHoliday, boolean isSeason, String roomView) {
+    private double getAdditionalPercentage(Long roomId, RoomInfo roomInfo, boolean isHoliday, boolean isSeason) {
         log.info("isHoliday: " + isHoliday);
         Option holiday = isHoliday ? Option.Y : Option.N;
         Season season = isSeason ? Season.PEAK : Season.ROW;
@@ -248,7 +248,7 @@ public class RoomReservedService {
         // no구하기
         AtomicInteger start = new AtomicInteger((int) pageable.getOffset());
 
-        Page<RoomReservedListDto> roomReservedListDtos = reservations.map((a -> a.listFromEntity(start.incrementAndGet())));
+        Page<RoomReservedListDto> roomReservedListDtos = reservations.map(a -> a.listFromEntity(start.incrementAndGet()));
 
         return roomReservedListDtos;
     }

@@ -3,14 +3,16 @@ package com.hotel.flint.support.qna.controller;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
 import com.hotel.flint.support.qna.dto.CreateQnaDto;
+import com.hotel.flint.support.qna.dto.QnaListDto;
 import com.hotel.flint.support.qna.service.QnaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/support/qna")
@@ -37,5 +39,15 @@ public class QnaController {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    /**
+     * qna 목록 조회
+     */
+    @GetMapping("/list")
+    public Page<QnaListDto> qnaList(@PageableDefault(size=10, sort = "writeTime"
+            , direction = Sort.Direction.DESC) Pageable pageable) {
+
+        return qnaService.qnaList(pageable);
     }
 }
