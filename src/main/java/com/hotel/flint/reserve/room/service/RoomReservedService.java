@@ -74,7 +74,7 @@ public class RoomReservedService {
         String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // user 찾기
-        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.valueOf("N")).orElseThrow(
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 없음")
         );
         // RoomDetail 찾아오기
@@ -237,7 +237,7 @@ public class RoomReservedService {
         String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // user 찾기
-        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.valueOf("N")).orElseThrow(
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
                 () -> new IllegalArgumentException("해당 회원이 없음")
         );
 

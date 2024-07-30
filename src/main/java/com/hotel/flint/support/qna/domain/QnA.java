@@ -1,4 +1,4 @@
-package com.hotel.flint.support.qna;
+package com.hotel.flint.support.qna.domain;
 
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.Service;
@@ -34,8 +34,8 @@ public class QnA {
     private String contents;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Option respond; // 응답 여부
+    @Builder.Default
+    private Option respond = Option.N; // 응답 여부
 
     @Column(nullable = false)
     @CreationTimestamp
