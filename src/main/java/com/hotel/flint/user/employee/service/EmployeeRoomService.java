@@ -1,5 +1,6 @@
 package com.hotel.flint.user.employee.service;
 
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.room.domain.RoomInfo;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
@@ -78,18 +79,19 @@ public class EmployeeRoomService {
         roomInfoRepository.save(roomInfo);
     }
 
-    public InfoRoomResDto memberReservationRoomCheck(String email) {
+    public InfoRoomResDto memberReservationRoomCheck(Long id) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
-        if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
+        String auth = authenticatedEmployee.getDepartment().toString();
+        if(!auth.equals("Room") && !auth.equals(Department.Office.toString())){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
-        Member member = memberService.findByMemberEmail(email);
 
-        RoomReservation roomReservation = roomReservationRepository.findByMember(member)
-                .orElseThrow(() -> new EntityNotFoundException("해당 회원의 예약 정보가 없습니다."));
+        RoomReservation roomReservation = roomReservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 예약 정보가 없습니다."));
 
-        InfoUserResDto infoUserResDto = employeeService.memberInfo(email);
-        return roomReservation.toInfoRoomResDto(infoUserResDto);
+        InfoRoomResDto infoRoomResDto = roomReservation.toInfoRoomResDto();
+
+        return infoRoomResDto;
     }
 
     public void memberReservationCncRoomByEmployee(InfoRoomResDto dto) {

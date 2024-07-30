@@ -1,5 +1,6 @@
 package com.hotel.flint.user.employee.service;
 
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.DiningName;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.dining.domain.Dining;
@@ -104,9 +105,11 @@ public class EmployeeDiningService {
                 .orElseThrow(()-> new EntityNotFoundException("해당 예약이 없습니다."));
         DiningName dining = diningReservation1.getDiningId().getDiningName();
 
-        if(!authenticateEmployee.getDepartment().toString().equals(dining.toString())){
+        String auth = authenticateEmployee.getDepartment().toString();
+        if(!auth.equals(dining.toString()) && !auth.equals(Department.Office.toString())){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
+
         Member member = memberRepository.findById(diningReservation1.getMemberId().getId())
                 .orElseThrow(()->new EntityNotFoundException("해당 ID의 멤버가 없습니다."));
 

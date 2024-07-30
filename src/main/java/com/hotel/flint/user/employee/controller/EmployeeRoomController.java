@@ -2,6 +2,7 @@ package com.hotel.flint.user.employee.controller;
 
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
+import com.hotel.flint.reserve.room.domain.RoomReservation;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.service.EmployeeRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,10 @@ public class EmployeeRoomController {
     }
 
     @PostMapping("/reserve")
-    public ResponseEntity<?> memberReservationRoomCheck(@RequestParam("email") String email) {
+    public ResponseEntity<?> memberReservationRoomCheck(@RequestParam("id") Long id) {
         try {
-            InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(email);
-            return new ResponseEntity<>(infoRoomResDto, HttpStatus.OK);
+            InfoRoomResDto dto = employeeRoomService.memberReservationRoomCheck(id);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
@@ -53,9 +54,9 @@ public class EmployeeRoomController {
     }
 
     @PostMapping("/cancel_reserve_room")
-    public ResponseEntity<?> memberReservationCncRoomByEmployee(@RequestParam String email) {
+    public ResponseEntity<?> memberReservationCncRoomByEmployee(@RequestParam Long id) {
         try {
-            InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(email);
+            InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(id);
             employeeRoomService.memberReservationCncRoomByEmployee(infoRoomResDto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "삭제 완료", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
