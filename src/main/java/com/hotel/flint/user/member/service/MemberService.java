@@ -101,8 +101,8 @@ public class MemberService {
     /*
     * 멤버 id로 member 객체 찾는 로직
     * */
-    public Member findByUserId(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 id가 존재하지 않습니다."));
+    public Member findByMemberEmail(String email) {
+        Member member = memberRepository.findByEmailAndDelYN(email,Option.N).orElseThrow(() -> new EntityNotFoundException("해당 id가 존재하지 않습니다."));
         return member;
     }
 }

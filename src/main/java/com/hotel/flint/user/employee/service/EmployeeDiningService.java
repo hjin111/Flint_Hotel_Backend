@@ -107,11 +107,11 @@ public class EmployeeDiningService {
         if(!authenticateEmployee.getDepartment().toString().equals(dining.toString())){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
-        Member member = memberRepository.findById(id)
+        Member member = memberRepository.findById(diningReservation1.getMemberId().getId())
                 .orElseThrow(()->new EntityNotFoundException("해당 ID의 멤버가 없습니다."));
 
         List<DiningReservation> diningReservation = diningReservationRepository.findByMemberId(member);
-        InfoUserResDto infoUserResDto = employeeService.memberInfo(id);
+        InfoUserResDto infoUserResDto = employeeService.memberInfo(member.getEmail());
         List<InfoDiningResDto> infoDiningResDtoList = new ArrayList<>();
 
         for(DiningReservation revs : diningReservation){

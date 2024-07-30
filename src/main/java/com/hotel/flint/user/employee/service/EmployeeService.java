@@ -82,8 +82,8 @@ public class EmployeeService {
         return employee;
     }
 
-    public InfoUserResDto memberInfo(Long id) {
-        Member member = memberService.findByUserId(id);
+    public InfoUserResDto memberInfo(String email) {
+        Member member = memberService.findByMemberEmail(email);
         return member.infoUserEntity();
     }
 
@@ -130,5 +130,13 @@ public class EmployeeService {
         Employee targetEmployee = employeeRepository.findById(dto.getTargetId()).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
         targetEmployee.modifyRank(dto.getEmployeeRank());
         return employeeRepository.save(targetEmployee);
+    }
+
+    public InfoMemberReseveListResDto employeeMemberReserveList(String email){
+        Member member = memberService.findByMemberEmail(email);
+
+        InfoMemberReseveListResDto info = member.memberReserveListEntity();
+
+        return info;
     }
 }

@@ -1,11 +1,13 @@
 package com.hotel.flint.user.employee.dto;
 
+import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @Getter
@@ -19,5 +21,6 @@ public class InfoUserResDto {
     private String lastName;
     private String nation;
     private LocalDate birthday;
-
+    private int countRoomResevation;
+    private int countDiningReservation;
 }

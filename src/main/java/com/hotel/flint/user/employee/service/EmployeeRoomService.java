@@ -13,6 +13,7 @@ import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
+import com.hotel.flint.user.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,13 +33,15 @@ public class EmployeeRoomService {
     private final EmployeeService employeeService;
     private final MemberRepository memberRepository;
     private final EmployeeRepository employeeRepository;
+    private final MemberService memberService;
+
     @Autowired
     public EmployeeRoomService(RoomPriceRepository roomPriceRepository,
                                RoomDetailsRepository roomDetailsRepository,
                                RoomInfoRepository roomInfoRepository,
                                RoomReservationRepository roomReservationRepository,
                                EmployeeService employeeService,
-                               MemberRepository memberRepository, EmployeeRepository employeeRepository) {
+                               MemberRepository memberRepository, EmployeeRepository employeeRepository, MemberService memberService) {
         this.roomPriceRepository = roomPriceRepository;
         this.roomDetailsRepository = roomDetailsRepository;
         this.roomInfoRepository = roomInfoRepository;
@@ -46,6 +49,7 @@ public class EmployeeRoomService {
         this.employeeService = employeeService;
         this.memberRepository = memberRepository;
         this.employeeRepository = employeeRepository;
+        this.memberService = memberService;
     }
 
     private Employee getAuthenticatedEmployee() {
@@ -74,18 +78,17 @@ public class EmployeeRoomService {
         roomInfoRepository.save(roomInfo);
     }
 
-    public InfoRoomResDto memberReservationRoomCheck(Long id) {
+    public InfoRoomResDto memberReservationRoomCheck(String email) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
         if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
-        Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 회원입니다."));
+        Member member = memberService.findByMemberEmail(email);
 
         RoomReservation roomReservation = roomReservationRepository.findByMember(member)
                 .orElseThrow(() -> new EntityNotFoundException("해당 회원의 예약 정보가 없습니다."));
 
-        InfoUserResDto infoUserResDto = employeeService.memberInfo(id);
+        InfoUserResDto infoUserResDto = employeeService.memberInfo(email);
         return roomReservation.toInfoRoomResDto(infoUserResDto);
     }
 
