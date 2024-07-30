@@ -88,8 +88,8 @@ public class EmployeeDiningController {
         }
     }
 
-    @PostMapping("/cancel_reserve_dining/{id}")
-    public ResponseEntity<?> memberReservationCncDiningByEmployee(@PathVariable Long id){
+    @PostMapping("/cancel_reserve_dining")
+    public ResponseEntity<?> memberReservationCncDiningByEmployee(@RequestParam("id") Long id){
         try{
             ReservationDetailDto dto = employeeDiningService.memberReservationCncDiningByEmployee(id);
             return new ResponseEntity<>(dto, HttpStatus.OK);
