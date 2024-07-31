@@ -14,4 +14,5 @@ import java.util.Optional;
 public interface QnaRepository extends JpaRepository<QnA, Long> {
 
     Page<QnA> findByMember(Pageable pageable, Member member);
+    Optional<QnA> findByIdAndMember(Long id, Member member);
 }

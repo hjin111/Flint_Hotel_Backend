@@ -2,7 +2,9 @@ package com.hotel.flint.support.qna.domain;
 
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.Service;
+import com.hotel.flint.support.qna.dto.QnaDetailDto;
 import com.hotel.flint.support.qna.dto.QnaListDto;
+import com.hotel.flint.support.qna.dto.QnaUpdateDto;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
@@ -64,6 +66,26 @@ public class QnA {
                 .writeTime(this.writeTime)
                 .build();
         return qnaListDto;
+    }
+
+    public QnaDetailDto detailFromEntity(String email) {
+        QnaDetailDto qnaDetailDto = QnaDetailDto.builder()
+                .service(this.service)
+                .title(this.title)
+                .contents(this.contents)
+                .writeTime(this.writeTime)
+                .memberEmail(email)
+                .build();
+        return qnaDetailDto;
+    }
+
+    public QnA updateFromEntity(QnaUpdateDto dto) {
+
+        this.service = dto.getService();
+        this.title = dto.getTitle();
+        this.contents = dto.getContents();
+
+        return this;
     }
 
 }
