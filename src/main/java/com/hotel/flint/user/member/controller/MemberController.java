@@ -10,11 +10,13 @@ import com.hotel.flint.user.member.dto.MemberModResDto;
 import com.hotel.flint.user.member.dto.MemberSignUpDto;
 import com.hotel.flint.user.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,7 +79,14 @@ public class MemberController {
         }
     }
 
-
+    @PostMapping("/findpassword")
+    public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequest request) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+//        로그인 페이지로 리다이렉트
+        httpHeaders.setLocation(URI.create("http://localhost:8080/member/login"));
+        mailService.sendTempPassword(request.getEmail());
+        return new ResponseEntity<>("임시 비밀번호를 이메일로 발송했습니다.", httpHeaders,HttpStatus.OK);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> doLogin(@RequestBody UserLoginDto dto) {
@@ -116,7 +125,6 @@ public class MemberController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.NOT_FOUND);
         }
     }
-
 
 //    멤버 비밀번호 수정하는 기능
     @PutMapping("/modify")
