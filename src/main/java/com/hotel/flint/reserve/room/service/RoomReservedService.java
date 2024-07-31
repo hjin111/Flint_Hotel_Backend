@@ -212,7 +212,12 @@ public class RoomReservedService {
     @Transactional
     public void delete(Long roomReservedId) {
 
-        RoomReservation roomReservation = roomReservationRepository.findById(roomReservedId).orElseThrow(
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        // user 찾기
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 없음")
+        );
+        RoomReservation roomReservation = roomReservationRepository.findByIdAndMember(roomReservedId, member).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 예약 내역 없음")
         );
         // 객실 예약 내역 취소
@@ -258,7 +263,12 @@ public class RoomReservedService {
      */
     public RoomReservedDetailDto roomReservedDetail(Long roomReservationId) {
 
-        RoomReservation detail = roomReservationRepository.findById(roomReservationId).orElseThrow(
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        // user 찾기
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 없음")
+        );
+        RoomReservation detail = roomReservationRepository.findByIdAndMember(roomReservationId, member).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 예약 내역이 없음")
         );
 
