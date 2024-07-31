@@ -122,4 +122,15 @@ public class EmployeeService {
         targetEmployee.modifyRank(dto.getEmployeeRank());
         return employeeRepository.save(targetEmployee);
     }
+
+    public void delAccount(Long id){
+        Employee authenticatedEmployee = getAuthenticatedEmployee();
+        if(!authenticatedEmployee.getDepartment().toString().equals("Office")){
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
+        Employee delEmp = employeeRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("존재하지 않는 직원입니다."));
+        delEmp.delEmp();
+    }
+
 }

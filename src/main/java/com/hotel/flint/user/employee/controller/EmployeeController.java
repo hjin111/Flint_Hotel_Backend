@@ -73,4 +73,16 @@ public class EmployeeController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PatchMapping("/delaccount")
+    public ResponseEntity<?> delEmployee(@RequestBody Map<String, Long> request){
+        try {
+            employeeService.delAccount(request.get("employeeId"));
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "퇴사 처리 완료", null);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }
+    }
 }
