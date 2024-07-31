@@ -30,18 +30,18 @@ public class MemberService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     public Member memberSignUp(MemberSignUpDto dto) {
         if (memberRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).isPresent() ||
                 employeeRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).isPresent()) {
             throw new IllegalArgumentException("해당 이메일로 이미 가입한 계정이 존재합니다.");
         }
-        if (memberRepository.findByPhoneNumberAndDelYN(dto.getPhoneNumber(), Option.N).isPresent() ||
+        else if (memberRepository.findByPhoneNumberAndDelYN(dto.getPhoneNumber(), Option.N).isPresent() ||
                 employeeRepository.findByPhoneNumberAndDelYN(dto.getPhoneNumber(), Option.N).isPresent()) {
             throw new IllegalArgumentException("해당 번호로 이미 가입한 계정이 존재합니다");
         }
-        return memberRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
+        else return memberRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
     }
+
 
     public String findEmail(String phoneNumber) {
         Member member = memberRepository.findByPhoneNumberAndDelYN(phoneNumber, Option.N).orElseThrow(

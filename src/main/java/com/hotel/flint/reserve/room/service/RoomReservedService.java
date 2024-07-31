@@ -2,15 +2,19 @@ package com.hotel.flint.reserve.room.service;
 
 
 import com.hotel.flint.common.enumdir.Option;
-import com.hotel.flint.common.enumdir.RoomState;
 import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.common.enumdir.Season;
 import com.hotel.flint.reserve.room.domain.*;
-import com.hotel.flint.reserve.room.dto.CheckedReservedDateDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
 import com.hotel.flint.reserve.room.repository.*;
+import com.hotel.flint.room.domain.RoomDetails;
+import com.hotel.flint.room.domain.RoomInfo;
+import com.hotel.flint.room.domain.RoomPrice;
+import com.hotel.flint.room.repository.RoomDetailsRepository;
+import com.hotel.flint.room.repository.RoomInfoRepository;
+import com.hotel.flint.room.repository.RoomPriceRepository;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +23,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -33,7 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RoomReservedService {
 
     private final RoomReservationRepository roomReservationRepository;
-    private final RoomDetailRepository roomDetailRepository;
+    private final RoomDetailsRepository roomDetailsRepository;
     private final RoomPriceRepository roomPriceRepository;
     private final RoomInfoRepository roomInfoRepository;
     private final MemberRepository memberRepository;
@@ -44,7 +45,7 @@ public class RoomReservedService {
 
     @Autowired
     public RoomReservedService (RoomReservationRepository roomReservationRepository,
-                                RoomDetailRepository roomDetailRepository,
+                                RoomDetailsRepository roomDetailsRepository,
                                 RoomPriceRepository roomPriceRepository,
                                 RoomInfoRepository roomInfoRepository,
                                 MemberRepository memberRepository,
@@ -52,7 +53,7 @@ public class RoomReservedService {
                                 HolidayService holidayService,
                                 SeasonService seasonService) {
         this.roomReservationRepository = roomReservationRepository;
-        this.roomDetailRepository = roomDetailRepository;
+        this.roomDetailsRepository = roomDetailsRepository;
         this.roomPriceRepository = roomPriceRepository;
         this.roomInfoRepository = roomInfoRepository;
         this.memberRepository = memberRepository;
@@ -73,7 +74,7 @@ public class RoomReservedService {
                 () -> new IllegalArgumentException("해당 id의 회원이 없음")
         );
         // RoomDetail 찾아오기
-        RoomDetails roomDetails = roomDetailRepository.findById(dto.getRoomId()).orElseThrow(
+        RoomDetails roomDetails = roomDetailsRepository.findById(dto.getRoomId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 방이 없음")
         );
 
@@ -141,7 +142,7 @@ public class RoomReservedService {
         // 체크인 체크아웃 날짜를 비교해서 holiday, season 결과 가져오기
         // 뷰 찾기
         Long roomId = dto.getRoomId();
-        RoomDetails roomDetails = roomDetailRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("해당 id의 방이 없습니다."));
+        RoomDetails roomDetails = roomDetailsRepository.findById(roomId).orElseThrow(() -> new IllegalArgumentException("해당 id의 방이 없습니다."));
         while (checkInDate.isBefore(checkOutDate)) { // checkInDate <= checkOutdate
             boolean isHoliday = holidayService.isHoliday(checkInDate);
             boolean isSeason = seasonService.isSeason(checkInDate);
@@ -176,7 +177,7 @@ public class RoomReservedService {
     private double getBasePrice(Long id) {
 
         // room_id를 가지고 해당 방의 detail 정보를 반환
-        RoomDetails room = roomDetailRepository.findById(id)
+        RoomDetails room = roomDetailsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 id의 방이 없습니다."));
 
         return room.getRoomInfo().getRoomTypePrice();
@@ -189,7 +190,7 @@ public class RoomReservedService {
         log.info("isHoliday: " + isHoliday);
         Option holiday = isHoliday ? Option.Y : Option.N;
         Season season = isSeason ? Season.PEAK : Season.ROW;
-        RoomDetails findRoom = roomDetailRepository.findById(roomId).orElseThrow(() -> new EntityNotFoundException("해당 id의 방이 없습니다."));
+        RoomDetails findRoom = roomDetailsRepository.findById(roomId).orElseThrow(() -> new EntityNotFoundException("해당 id의 방이 없습니다."));
         RoomView view = findRoom.getRoomView();
         log.info("holiday : " + holiday);
         log.info("season : " + season);

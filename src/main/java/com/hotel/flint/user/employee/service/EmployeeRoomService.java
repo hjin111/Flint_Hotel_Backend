@@ -1,12 +1,10 @@
 package com.hotel.flint.user.employee.service;
 
-import com.hotel.flint.reserve.room.domain.RoomDetails;
-import com.hotel.flint.reserve.room.domain.RoomInfo;
+import com.hotel.flint.room.domain.RoomInfo;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
-import com.hotel.flint.reserve.room.dto.RoomStateDto;
-import com.hotel.flint.reserve.room.repository.RoomDetailsRepository;
-import com.hotel.flint.reserve.room.repository.RoomInfoRepository;
-import com.hotel.flint.reserve.room.repository.RoomPriceRepository;
+import com.hotel.flint.room.repository.RoomDetailsRepository;
+import com.hotel.flint.room.repository.RoomInfoRepository;
+import com.hotel.flint.room.repository.RoomPriceRepository;
 import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;

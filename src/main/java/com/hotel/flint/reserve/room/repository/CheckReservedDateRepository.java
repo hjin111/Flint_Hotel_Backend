@@ -1,8 +1,7 @@
 package com.hotel.flint.reserve.room.repository;
 
-import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.room.domain.ReservedRoom;
-import com.hotel.flint.reserve.room.domain.RoomDetails;
+import com.hotel.flint.room.domain.RoomDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

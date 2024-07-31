@@ -1,7 +1,5 @@
 package com.hotel.flint.reserve.room.dto;
 
-import com.hotel.flint.reserve.room.domain.ReservedRoom;
-import com.hotel.flint.reserve.room.domain.RoomDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -2,7 +2,6 @@ package com.hotel.flint.user.employee.controller;
 
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
-import com.hotel.flint.reserve.room.dto.RoomStateDto;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.service.EmployeeRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
