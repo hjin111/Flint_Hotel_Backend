@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/support/qna")
+@RequestMapping("/mypage/qna")
 public class QnaController {
 
     private final QnaService qnaService;
@@ -42,7 +42,7 @@ public class QnaController {
     }
 
     /**
-     * qna 목록 조회
+     * qna 목록 조회 - 마이페이지에서 본인것 조회
      */
     @GetMapping("/list")
     public Page<QnaListDto> qnaList(@PageableDefault(size=10, sort = "writeTime"
@@ -50,4 +50,12 @@ public class QnaController {
 
         return qnaService.qnaList(pageable);
     }
+
+//    /**
+//     * qna 상세 조회
+//     */
+//    @GetMapping("/detail/{id}")
+//    public ResponseEntity<?> detailQnA() {
+//
+//    }
 }

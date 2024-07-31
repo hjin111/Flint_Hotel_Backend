@@ -47,12 +47,17 @@ public class QnaService {
     }
 
     /**
-     * qna 목록 조회
+     * qna 목록 조회 - 마이페이지에서 본인 것만
      */
     public Page<QnaListDto> qnaList(Pageable pageable) {
 
-        Page<QnA> list = qnaRepository.findAll(pageable); //qna 리스트 가져오기
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
+                () -> new IllegalArgumentException("해당 email의 회원 없음")
+        );
+
+        Page<QnA> list = qnaRepository.findByMember(pageable, member); //qna 리스트 가져오기
 
         // no구하기
         AtomicInteger start = new AtomicInteger((int) pageable.getOffset());
