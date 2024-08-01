@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 public class InfoRoomResDto {
 
     private Long id;
-    private String firstname;
-    private String lastname;
 
     private InfoRoomDetResDto infoRoomDetResDto;
 

@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
+// 기존에 있던 phoneNumber 삭제
+// 기존에 있던 id 와 email 삭제
 public class MemberModResDto {
-    private Long id;
-    private String password;
-    private String phoneNumber;
+    private String beforePassword;
+    private String afterPassword;
 }

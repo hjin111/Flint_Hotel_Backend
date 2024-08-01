@@ -30,10 +30,10 @@ public class RoomReservedController {
      * 객실 예약 진행
      */
     @PostMapping("/room")
-    public ResponseEntity<?> roomReservation(@RequestBody RoomReservedDto dto, @RequestParam Long userId) {
+    public ResponseEntity<?> roomReservation(@RequestBody RoomReservedDto dto) {
 
         try {
-            double totalPrice = roomReservedService.roomReservation(dto, userId);
+            double totalPrice = roomReservedService.roomReservation(dto);
 
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "예약 금액은 " + totalPrice + "원 입니다.", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.CREATED);
@@ -67,9 +67,9 @@ public class RoomReservedController {
      */
     @GetMapping("/room/list")
     public Page<RoomReservedListDto> reservationRoomListCheck(@PageableDefault(size=10, sort = "checkInDate"
-            , direction = Sort.Direction.ASC) Pageable pageable, @RequestParam Long userId) {
+            , direction = Sort.Direction.ASC) Pageable pageable) {
 
-        return roomReservedService.roomReservedList(pageable, userId);
+        return roomReservedService.roomReservedList(pageable);
     }
 
     /**
