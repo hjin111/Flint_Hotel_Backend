@@ -103,10 +103,10 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/detail/{id}")
-    public ResponseEntity<?> userDetail(@PathVariable Long id) {
+    @GetMapping("/detail")
+    public ResponseEntity<?> userDetail() {
         try {
-            MemberDetResDto memberDetail = memberService.memberDetail(id);
+            MemberDetResDto memberDetail = memberService.memberDetail();
             return new ResponseEntity<>(memberDetail, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
@@ -114,10 +114,10 @@ public class MemberController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> userDelete(@PathVariable Long id) {
+    @PatchMapping("/delete")
+    public ResponseEntity<?> userDelete(@RequestBody String password) {
         try {
-            memberService.memberDelete(id);
+            memberService.memberDelete(password);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "삭제 완료", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
@@ -130,7 +130,7 @@ public class MemberController {
     @PutMapping("/modify")
     public ResponseEntity<?> userModify(@RequestBody MemberModResDto dto) {
         try {
-            memberService.memberModify(dto);
+            memberService.updatePassword(dto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "수정 완료", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException | IllegalArgumentException e) {

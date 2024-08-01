@@ -94,15 +94,28 @@ public class EmployeeService {
     }
 
 //    직원 상세 정보
-    public EmployeeDetResDto employeeDetail(Long id){
-        Employee employee = employeeRepository.findById(id).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
+    public EmployeeDetResDto employeeDetail(){
+        Employee employee = employeeRepository.findByEmailAndDelYN(
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName()
+        , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 계정이 존재하지 않습니다."));
+
         return employee.EmpDetEntity();
     }
 
 //    직원 계정 비밀번호 수정
     public void employeeModify(EmployeeModResDto dto){
-        Employee employee = this.findByEmpId(dto.getId());
-        employee.modifyEmp(dto.getPassword());
+        Employee employee = employeeRepository.findByEmailAndDelYN(
+                SecurityContextHolder.getContext()
+                        .getAuthentication()
+                        .getName()
+        , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 하는 관리자 정보가 존재하지 않습니다."));
+
+        if(!passwordEncoder.matches(dto.getBeforePassword(), employee.getPassword())){
+            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+        }
+        employee.modifyEmp(passwordEncoder.encode(dto.getAfterPassword()));
         employeeRepository.save(employee);
     }
 
@@ -114,11 +127,13 @@ public class EmployeeService {
 
 //    직원 직급 수정 로직
     public Employee modEmployeeRank(EmployeeRankModResDto dto){
-        Employee officeEmployee = employeeRepository.findById(dto.getOfficeId()).orElseThrow(()->new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
-        if(!officeEmployee.getDepartment().equals(Department.Office))
+        Employee employee = employeeRepository.findByEmailAndDelYN(
+                SecurityContextHolder.getContext().getAuthentication().getName(), Option.N
+        ).orElseThrow(()->new EntityNotFoundException("해당 하는 관리자 정보가 존재하지 않습니다."));
+
+        if(!employee.getDepartment().equals(Department.Office))
             throw new IllegalArgumentException("Office 부서만 수정이 가능합니다.");
         Employee targetEmployee = employeeRepository.findById(dto.getTargetId()).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
-
         targetEmployee.modifyRank(dto.getEmployeeRank());
         return employeeRepository.save(targetEmployee);
     }
@@ -133,4 +148,11 @@ public class EmployeeService {
         delEmp.delEmp();
     }
 
+    public InfoMemberReseveListResDto employeeMemberReserveList(String email){
+        Member member = memberService.findByMemberEmail(email);
+
+        InfoMemberReseveListResDto info = member.memberReserveListEntity();
+
+        return info;
+    }
 }

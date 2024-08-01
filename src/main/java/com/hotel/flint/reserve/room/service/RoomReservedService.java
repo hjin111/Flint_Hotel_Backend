@@ -21,10 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.Security;
 import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -67,11 +69,13 @@ public class RoomReservedService {
      * 룸 예약 진행
      */
     @Transactional
-    public double roomReservation(RoomReservedDto dto, Long userId) {
+    public double roomReservation(RoomReservedDto dto) {
+
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // user 찾기
-        Member member = memberRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 회원이 없음")
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 없음")
         );
         // RoomDetail 찾아오기
         RoomDetails roomDetails = roomDetailsRepository.findById(dto.getRoomId()).orElseThrow(
@@ -148,7 +152,7 @@ public class RoomReservedService {
             boolean isSeason = seasonService.isSeason(checkInDate);
             log.info("Checking date: {} isHoliday: {}, isSeason: {}", checkInDate, isHoliday, isSeason);
 
-            double percentage = getAdditionalPercentage(roomDetails.getId(), roomDetails.getRoomInfo(), isHoliday, isSeason, String.valueOf(roomDetails.getRoomView()));
+            double percentage = getAdditionalPercentage(roomDetails.getId(), roomDetails.getRoomInfo(), isHoliday, isSeason);
 
             // 총액 계산
             log.info("roomBasePrice " + roomBasePrice);
@@ -186,7 +190,7 @@ public class RoomReservedService {
     /**
      * 각 방의 정보 확인해서 퍼센티지 가져오기
      */
-    private double getAdditionalPercentage(Long roomId, RoomInfo roomInfo, boolean isHoliday, boolean isSeason, String roomView) {
+    private double getAdditionalPercentage(Long roomId, RoomInfo roomInfo, boolean isHoliday, boolean isSeason) {
         log.info("isHoliday: " + isHoliday);
         Option holiday = isHoliday ? Option.Y : Option.N;
         Season season = isSeason ? Season.PEAK : Season.ROW;
@@ -208,7 +212,12 @@ public class RoomReservedService {
     @Transactional
     public void delete(Long roomReservedId) {
 
-        RoomReservation roomReservation = roomReservationRepository.findById(roomReservedId).orElseThrow(
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        // user 찾기
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 없음")
+        );
+        RoomReservation roomReservation = roomReservationRepository.findByIdAndMember(roomReservedId, member).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 예약 내역 없음")
         );
         // 객실 예약 내역 취소
@@ -226,13 +235,17 @@ public class RoomReservedService {
     }
 
     /**
-     * 객실 예약 내역 조회 - 목록
+     * 객실 예약 내역 조회 - 목록 (내 예약 목록)
      */
-    public Page<RoomReservedListDto> roomReservedList(Pageable pageable, Long userId) {
+    public Page<RoomReservedListDto> roomReservedList(Pageable pageable) {
 
-        Member member = memberRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 회원이 없음")
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // user 찾기
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 없음")
         );
+
         Page<RoomReservation> reservations = roomReservationRepository.findByMember(pageable, member);
 
         log.info("Total reservations found: {}", reservations.getTotalElements());
@@ -240,7 +253,7 @@ public class RoomReservedService {
         // no구하기
         AtomicInteger start = new AtomicInteger((int) pageable.getOffset());
 
-        Page<RoomReservedListDto> roomReservedListDtos = reservations.map((a -> a.listFromEntity(start.incrementAndGet())));
+        Page<RoomReservedListDto> roomReservedListDtos = reservations.map(a -> a.listFromEntity(start.incrementAndGet()));
 
         return roomReservedListDtos;
     }
@@ -250,7 +263,12 @@ public class RoomReservedService {
      */
     public RoomReservedDetailDto roomReservedDetail(Long roomReservationId) {
 
-        RoomReservation detail = roomReservationRepository.findById(roomReservationId).orElseThrow(
+        String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        // user 찾기
+        Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 없음")
+        );
+        RoomReservation detail = roomReservationRepository.findByIdAndMember(roomReservationId, member).orElseThrow(
                 () -> new IllegalArgumentException("해당 id의 예약 내역이 없음")
         );
 
