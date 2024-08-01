@@ -9,6 +9,7 @@ import com.hotel.flint.room.repository.RoomInfoRepository;
 import com.hotel.flint.room.repository.RoomPriceRepository;
 import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
+import com.hotel.flint.user.employee.dto.EmployeeModRoomDto;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
@@ -96,5 +97,26 @@ public class EmployeeRoomService {
 
     public void memberReservationCncRoomByEmployee(InfoRoomResDto dto) {
         roomReservationRepository.deleteById(dto.getId());
+    }
+
+    /**
+     * 고객의 요청 시, 객실 예약 내역 수정
+     */
+    @Transactional
+    public void updateRoomReservation(Long id, EmployeeModRoomDto dto) {
+
+        String employeeEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmailAndDelYN(employeeEmail, Option.N).orElseThrow(
+                () -> new EntityNotFoundException("해당 이메일의 직원 없음")
+        );
+        RoomReservation roomReservation = roomReservationRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("해당 id의 예약 내역이 없음")
+        );
+
+        if (employee.getDepartment().equals(Department.Room)) { // room부서일 경우만 수정 가능
+            roomReservation.updateFromEntity(dto);
+        } else {
+            throw new IllegalArgumentException("객실 담당자만 접근 가능함");
+        }
     }
 }

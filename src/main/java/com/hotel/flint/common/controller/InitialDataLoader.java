@@ -23,24 +23,24 @@ public class InitialDataLoader implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    실행 시점에 office 부서의 유저 한개를 만들겠다.
+    //    실행 시점에 office 부서의 유저 한개를 만들겠다.
     @Override
     public void run(String... args) throws Exception{
         if (employeeRepository.findByEmailAndDelYN("flinthotelcom@gmail.com", Option.N).isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             LocalDate date = LocalDate.parse("2024/07/29", formatter);
             EmployeeMakeDto dto = EmployeeMakeDto.builder()
-                            .firstName("flint")
-                            .lastName("hotel")
-                            .email("flinthotelcom@gmail.com")
-                            .phoneNumber("02-1111-2222")
-                            .departMent(Department.Office)
-                            .password("12341234")
+                    .firstName("flint")
+                    .lastName("hotel")
+                    .email("flint@gmail.com")
+                    .phoneNumber("02-1111-2222")
+                    .departMent(Department.Office)
+                    .password("12341234")
                     .employeeRank(EmployeeRank.사장)
-                            .birthday(date)
+                    .birthday(date)
                     .dateOfEmployment(date)
                     .gender(Gender.FEMALE)
-                            .employeeNumber("FL0000001")
+                    .employeeNumber("FL0000001")
                     .build();
             employeeRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
         }

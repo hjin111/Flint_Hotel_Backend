@@ -3,6 +3,7 @@ package com.hotel.flint.reserve.room.domain;
 
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.room.domain.RoomDetails;
+import com.hotel.flint.user.employee.dto.EmployeeModRoomDto;
 import com.hotel.flint.user.employee.dto.InfoRoomDetResDto;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
@@ -105,6 +106,20 @@ public class RoomReservation {
                 .build();
 
         return roomReservation;
+    }
+
+    /**
+     * 요청 시, 객실 예약 내역 수정 (직원용)
+     */
+    public RoomReservation updateFromEntity(EmployeeModRoomDto dto) {
+
+        this.adultCnt = dto.getAdultCnt();
+        this.adultBfCnt = dto.getAdultBfCnt();
+        this.childCnt = dto.getChildCnt();
+        this.childBfCnt = dto.getChildBfCnt();
+        this.parkingYN = dto.getParkingYN();
+        this.requestContents = dto.getRequestContents();
+        return this;
     }
 
 }
