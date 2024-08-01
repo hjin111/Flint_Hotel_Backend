@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ReservationDetailDto extends BaseTimeEntity {
 
-    private Long reservationId;
+    private Long id;
     private Long memberId;
     private DiningName diningName;
     private int adult;
