@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @Builder
 public class ReservationSaveReqDto {
 
-    private Long memberId;
     private DiningName diningName;
     private int adult;
     private int child;

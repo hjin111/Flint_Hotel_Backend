@@ -18,7 +18,6 @@ public class InfoRoomDetResDto {
     private String roomType;
     private LocalDate checkin;
     private LocalDate checkout;
-
     private int adultCnt;
     private int childCnt;
 

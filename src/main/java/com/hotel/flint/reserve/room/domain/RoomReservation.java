@@ -65,7 +65,7 @@ public class RoomReservation {
     private RoomDetails rooms;
 
 //    고객 객실 예약 정보를 담은 데이터 반환 
-    public InfoRoomResDto toInfoRoomResDto(InfoUserResDto infoUserResDto) {
+    public InfoRoomResDto toInfoRoomResDto() {
         InfoRoomDetResDto infoRoomDetResDto = InfoRoomDetResDto.builder()
                 .roomType(rooms.getRoomInfo().getRoomTypeName())
                 .checkin(this.checkInDate)
@@ -77,8 +77,6 @@ public class RoomReservation {
                 .build();
         return InfoRoomResDto.builder()
                 .id(this.id)
-                .firstname(infoUserResDto.getFirstName())
-                .lastname(infoUserResDto.getLastName())
                 .infoRoomDetResDto(infoRoomDetResDto)
                 .build();
     }

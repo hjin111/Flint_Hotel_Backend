@@ -2,10 +2,12 @@ package com.hotel.flint.reserve.dining.domain;
 
 import com.hotel.flint.common.domain.BaseTimeEntity;
 import com.hotel.flint.dining.domain.Dining;
-import com.hotel.flint.reserve.dining.dto.ReservationDeleteDto;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
+import com.hotel.flint.user.employee.dto.InfoDiningDetResDto;
+import com.hotel.flint.user.employee.dto.InfoDiningResDto;
+import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +44,7 @@ public class DiningReservation extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member memberId;
 
+    // 예약 전체 조회
     public ReservationListResDto fromEntity(){
         ReservationListResDto reservationListResDto = ReservationListResDto.builder()
                 .id(this.id)
@@ -56,14 +59,16 @@ public class DiningReservation extends BaseTimeEntity {
         return reservationListResDto;
     }
 
-    public DiningReservation(Member member, ReservationDeleteDto dto){
+    // 예약 삭제시 필요
+    public DiningReservation(Member member, Long id){
         this.memberId = member;
-        this.id = dto.getReservationId();
+        this.id = id;
     }
 
-    public DiningReservation(Member member, Dining dining, ReservationUpdateDto dto){
+    // 예약 수정시 필요
+    public DiningReservation( Long id, Member member, Dining dining, ReservationUpdateDto dto){
 
-        this.id = dto.getReservationId();
+        this.id = id;
         this.adult = dto.getAdult();
         this.child = dto.getChild();
         this.comment = dto.getComment();
@@ -73,11 +78,12 @@ public class DiningReservation extends BaseTimeEntity {
 
     }
 
-    public ReservationDetailDto fromEntity(Long diningReservationId){
+    // 예약 단건 조회
+    public ReservationDetailDto fromEntity(Long diningReservationId, Member member){
 
         return ReservationDetailDto.builder()
-                .reservationId(diningReservationId)
-                .memberId(this.memberId.getId())
+                .id(diningReservationId)
+                .memberId(member.getId())
                 .diningName(this.diningId.getDiningName())
                 .adult(this.adult)
                 .child(this.child)
@@ -85,6 +91,23 @@ public class DiningReservation extends BaseTimeEntity {
                 .reservationDateTime(this.reservationDateTime)
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
+                .build();
+    }
+
+    public InfoDiningResDto toInfoDiningResDto(InfoUserResDto infoUserResDto){
+        InfoDiningDetResDto infoDiningDetResDto = InfoDiningDetResDto.builder()
+                .diningName(this.diningId.getDiningName())
+                .adult(this.adult)
+                .child(this.child)
+                .comment(this.comment)
+                .reservationDateTime(this.reservationDateTime)
+                .build();
+
+        return InfoDiningResDto.builder()
+                .id(infoUserResDto.getId())
+                .firstname(infoUserResDto.getFirstName())
+                .lastname(infoUserResDto.getLastName())
+                .infoDiningDetResDto(infoDiningDetResDto)
                 .build();
     }
 }

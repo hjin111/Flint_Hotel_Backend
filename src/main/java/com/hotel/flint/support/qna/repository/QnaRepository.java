@@ -1,8 +1,10 @@
 package com.hotel.flint.support.qna.repository;
 
+
 import com.hotel.flint.reserve.room.domain.RoomReservation;
 import com.hotel.flint.support.qna.domain.QnA;
 import com.hotel.flint.user.member.domain.Member;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

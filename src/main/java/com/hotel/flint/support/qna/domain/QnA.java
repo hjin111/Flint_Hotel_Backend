@@ -5,6 +5,8 @@ import com.hotel.flint.common.enumdir.Service;
 import com.hotel.flint.support.qna.dto.QnaDetailDto;
 import com.hotel.flint.support.qna.dto.QnaListDto;
 import com.hotel.flint.support.qna.dto.QnaUpdateDto;
+import com.hotel.flint.support.qna.dto.EmployeeQnaDetailDto;
+import com.hotel.flint.support.qna.dto.EmployeeQnaListDto;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
@@ -86,6 +88,39 @@ public class QnA {
         this.contents = dto.getContents();
 
         return this;
+    }
+
+}
+
+    public void DeleteQna(){
+
+        this.answer = null;
+        this.answerTime = null;
+        this.respond = Option.N;
+        this.employee = null;
+    }
+
+    public EmployeeQnaListDto ListEntity(){
+        return EmployeeQnaListDto.builder()
+                .id(this.id)
+                .title(this.title)
+                .memberEmail(this.member.getEmail())
+                .writeTime(this.writeTime)
+                .build();
+    }
+
+    public EmployeeQnaDetailDto DetailEntity() {
+        return EmployeeQnaDetailDto.builder()
+                .title(this.title)
+                .contents(this.contents)
+                .memberEmail(this.member != null ? this.member.getEmail() : null)
+                .writeTime(this.writeTime)
+                .answer((this.answer != null && !this.answer.isEmpty()) ? this.answer : null)
+                .answerTime(this.answerTime != null ? this.answerTime : null)
+                .employeeName((this.employee != null && (this.employee.getFirstName() != null || this.employee.getLastName() != null))
+                        ? (this.employee.getFirstName() + this.employee.getLastName())
+                        : null)
+                .build();
     }
 
 }

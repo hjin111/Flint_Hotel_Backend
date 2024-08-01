@@ -32,7 +32,7 @@ public class InitialDataLoader implements CommandLineRunner {
             EmployeeMakeDto dto = EmployeeMakeDto.builder()
                     .firstName("flint")
                     .lastName("hotel")
-                    .email("flinthotelcom@gmail.com")
+                    .email("flint@gmail.com")
                     .phoneNumber("02-1111-2222")
                     .departMent(Department.Office)
                     .password("12341234")

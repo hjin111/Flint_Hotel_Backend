@@ -1,4 +1,4 @@
-package com.hotel.flint.reserve.dining.dto;
+package com.hotel.flint.user.employee.dto;
 
 import com.hotel.flint.common.enumdir.DiningName;
 import lombok.AllArgsConstructor;
@@ -8,17 +8,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class ReservationUpdateDto {
-
-    private Long memberId; // 회원 ID
-    private DiningName diningName; // 한식, 중식, 일식, 라운지
+@Data
+public class InfoDiningDetResDto {
+    private DiningName diningName;
     private int adult;
     private int child;
     private String comment;
     private LocalDateTime reservationDateTime;
-
 }
