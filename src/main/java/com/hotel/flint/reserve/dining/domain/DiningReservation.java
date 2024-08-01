@@ -45,7 +45,7 @@ public class DiningReservation extends BaseTimeEntity {
     private Member memberId;
 
     // 예약 전체 조회
-    public ReservationListResDto fromEntity(){
+    public ReservationListResDto fromListEntity(){
         ReservationListResDto reservationListResDto = ReservationListResDto.builder()
                 .id(this.id)
                 .memberId(this.memberId.getId())
@@ -79,11 +79,10 @@ public class DiningReservation extends BaseTimeEntity {
     }
 
     // 예약 단건 조회
-    public ReservationDetailDto fromEntity(Long diningReservationId, Member member){
-
+    public ReservationDetailDto fromEntity(Long diningReservationId){
         return ReservationDetailDto.builder()
                 .id(diningReservationId)
-                .memberId(member.getId())
+                .memberId(this.memberId.getId())
                 .diningName(this.diningId.getDiningName())
                 .adult(this.adult)
                 .child(this.child)

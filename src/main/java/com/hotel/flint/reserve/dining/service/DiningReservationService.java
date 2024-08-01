@@ -119,7 +119,7 @@ public class DiningReservationService {
         List<ReservationListResDto> reservationListResDtos = diningReservationList
                 .stream()
                 .filter(reservation -> employee.getDepartment().toString().equals(reservation.getDiningId().getDiningName().toString()))
-                .map(a -> a.fromEntity())
+                .map(a -> a.fromListEntity())
                 .collect(Collectors.toList());
 
         System.out.println(reservationListResDtos);
@@ -133,8 +133,9 @@ public class DiningReservationService {
 
         Member member = getAuthenticatedMember();
 
-        DiningReservation dto = diningReservationRepository.findById(diningReservationId).orElseThrow(() -> new EntityNotFoundException("예약 내역이 없습니다."));
-        ReservationDetailDto reservationDetailDto = dto.fromEntity(diningReservationId, member);
+        DiningReservation dto = diningReservationRepository.findById(diningReservationId)
+                .orElseThrow(() -> new EntityNotFoundException("예약 내역이 없습니다."));
+        ReservationDetailDto reservationDetailDto = dto.fromEntity(diningReservationId);
         return reservationDetailDto;
 
     }
@@ -148,7 +149,7 @@ public class DiningReservationService {
         List<DiningReservation> diningReservationList = diningReservationRepository.findByMemberId(member);
 
         for(DiningReservation reservation : diningReservationList ){
-            reservationListResDtos.add( reservation.fromEntity() );
+            reservationListResDtos.add( reservation.fromListEntity() );
         }
 
         return reservationListResDtos;

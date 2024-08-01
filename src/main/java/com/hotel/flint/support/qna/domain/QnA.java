@@ -90,7 +90,6 @@ public class QnA {
         return this;
     }
 
-}
 
     public void DeleteQna(){
 

@@ -64,7 +64,7 @@ public class EmployeeController {
     @GetMapping("/findemail")
     public ResponseEntity<?> findEmail(@RequestBody Map<String, String> request) {
         try {
-            String Email = employeeService.findEmail(request.get("phoneNumber"));
+            String Email = employeeService.findEmailToPhoneNum(request.get("phoneNumber"));
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회에 성공하였습니다.",
                     "회원님의 이메일은 " + Email + "입니다");
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);

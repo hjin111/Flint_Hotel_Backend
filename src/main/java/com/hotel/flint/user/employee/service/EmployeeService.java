@@ -82,14 +82,14 @@ public class EmployeeService {
         return employee;
     }
 
-    public String findEmail(String phoneNumber){
+    public String findEmailToPhoneNum(String phoneNumber){
         Employee employee = employeeRepository.findByPhoneNumberAndDelYN(phoneNumber, Option.N).orElseThrow(
                 ()-> new EntityNotFoundException("해당 번호로 가입한 계정이 없습니다. 관리자에게 문의해주세요."));
         return employee.getEmail();
     }
 
-    public InfoUserResDto memberInfo(Long id) {
-        Member member = memberService.findByUserId(id);
+    public InfoUserResDto memberInfo(String email) {
+        Member member = memberService.findByMemberEmail(email);
         return member.infoUserEntity();
     }
 
