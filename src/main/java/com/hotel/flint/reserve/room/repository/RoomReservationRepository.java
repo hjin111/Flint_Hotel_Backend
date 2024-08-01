@@ -14,4 +14,5 @@ public interface RoomReservationRepository extends JpaRepository<RoomReservation
 
     Optional<RoomReservation> findByMember(Member member);
     Page<RoomReservation> findByMember(Pageable pageable, Member member);
+    Optional<RoomReservation> findByIdAndMember(Long id, Member member);
 }

@@ -25,7 +25,9 @@ public class SecurityConfigs {
                 .cors().and()
                 .httpBasic().disable()
                 .authorizeRequests()
-                    .antMatchers("/member/signup", "/", "/*/login", "/employee/create")
+                    .antMatchers("/member/signup","/member/signup/verified",
+                            "/*/findemail", "/", "/*/login", "/sendEmail",
+                            "/*/findpassword")
                     .permitAll()
                 .anyRequest().authenticated()
                 .and()

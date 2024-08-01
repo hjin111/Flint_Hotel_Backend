@@ -5,6 +5,9 @@ import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
+import com.hotel.flint.user.employee.dto.InfoDiningDetResDto;
+import com.hotel.flint.user.employee.dto.InfoDiningResDto;
+import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,7 +45,7 @@ public class DiningReservation extends BaseTimeEntity {
     private Member memberId;
 
     // 예약 전체 조회
-    public ReservationListResDto fromEntity(){
+    public ReservationListResDto fromListEntity(){
         ReservationListResDto reservationListResDto = ReservationListResDto.builder()
                 .id(this.id)
                 .memberId(this.memberId.getId())
@@ -76,11 +79,10 @@ public class DiningReservation extends BaseTimeEntity {
     }
 
     // 예약 단건 조회
-    public ReservationDetailDto fromEntity(Long diningReservationId, Member member){
-
+    public ReservationDetailDto fromEntity(Long diningReservationId){
         return ReservationDetailDto.builder()
                 .id(diningReservationId)
-                .memberId(member.getId())
+                .memberId(this.memberId.getId())
                 .diningName(this.diningId.getDiningName())
                 .adult(this.adult)
                 .child(this.child)
@@ -88,6 +90,23 @@ public class DiningReservation extends BaseTimeEntity {
                 .reservationDateTime(this.reservationDateTime)
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
+                .build();
+    }
+
+    public InfoDiningResDto toInfoDiningResDto(InfoUserResDto infoUserResDto){
+        InfoDiningDetResDto infoDiningDetResDto = InfoDiningDetResDto.builder()
+                .diningName(this.diningId.getDiningName())
+                .adult(this.adult)
+                .child(this.child)
+                .comment(this.comment)
+                .reservationDateTime(this.reservationDateTime)
+                .build();
+
+        return InfoDiningResDto.builder()
+                .id(infoUserResDto.getId())
+                .firstname(infoUserResDto.getFirstName())
+                .lastname(infoUserResDto.getLastName())
+                .infoDiningDetResDto(infoDiningDetResDto)
                 .build();
     }
 }

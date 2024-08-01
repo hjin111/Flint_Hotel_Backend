@@ -79,4 +79,8 @@ public class Employee {
     public void modifyRank(EmployeeRank employeeRank){
         this.employeeRank = employeeRank;
     }
+
+    public void delEmp(){
+        this.delYN = Option.Y;
+    }
 }

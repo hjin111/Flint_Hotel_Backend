@@ -2,6 +2,9 @@ package com.hotel.flint.support.qna.domain;
 
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.Service;
+import com.hotel.flint.support.qna.dto.QnaDetailDto;
+import com.hotel.flint.support.qna.dto.QnaListDto;
+import com.hotel.flint.support.qna.dto.QnaUpdateDto;
 import com.hotel.flint.support.qna.dto.EmployeeQnaDetailDto;
 import com.hotel.flint.support.qna.dto.EmployeeQnaListDto;
 import com.hotel.flint.user.employee.domain.Employee;
@@ -56,6 +59,37 @@ public class QnA {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee; // 답변 전에는 null일 수 있음
+
+    public QnaListDto listFromEntity(Long no) {
+        QnaListDto qnaListDto = QnaListDto.builder()
+                .no(no)
+                .title(this.title)
+                .memberEmail(this.getMember().getEmail())
+                .writeTime(this.writeTime)
+                .build();
+        return qnaListDto;
+    }
+
+    public QnaDetailDto detailFromEntity(String email) {
+        QnaDetailDto qnaDetailDto = QnaDetailDto.builder()
+                .service(this.service)
+                .title(this.title)
+                .contents(this.contents)
+                .writeTime(this.writeTime)
+                .memberEmail(email)
+                .build();
+        return qnaDetailDto;
+    }
+
+    public QnA updateFromEntity(QnaUpdateDto dto) {
+
+        this.service = dto.getService();
+        this.title = dto.getTitle();
+        this.contents = dto.getContents();
+
+        return this;
+    }
+
 
     public void DeleteQna(){
 
