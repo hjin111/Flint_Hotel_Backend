@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 // 직원 비밀번호 수정 Dto
 public class EmployeeModResDto {
-    private Long id;
-    private String password;
+    private String beforePassword;
+    private String afterPassword;
 }

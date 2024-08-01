@@ -1,7 +1,10 @@
 package com.hotel.flint.user.member.domain;
 
+import com.hotel.flint.common.domain.BaseTimeEntity;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
+import com.hotel.flint.reserve.room.domain.RoomReservation;
+import com.hotel.flint.user.employee.dto.InfoMemberReseveListResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.member.dto.MemberDetResDto;
 import lombok.AllArgsConstructor;
@@ -13,6 +16,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-public class Member {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,6 +50,10 @@ public class Member {
     @OneToMany(mappedBy = "memberId", cascade = CascadeType.ALL)
     private List<DiningReservation> diningReservationList;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<RoomReservation> roomReservations;
+
+
 
     public InfoUserResDto infoUserEntity(){
         return InfoUserResDto.builder()
@@ -55,6 +63,8 @@ public class Member {
                 .lastName(this.lastName)
                 .nation(this.nation)
                 .birthday(this.birthday)
+                .countDiningReservation(this.diningReservationList.size())
+                .countRoomResevation(this.roomReservations.size())
                 .build();
     }
 
@@ -67,6 +77,23 @@ public class Member {
                 .nation(this.nation)
                 .password(this.password)
                 .birthday(this.birthday)
+                .build();
+    }
+
+    public InfoMemberReseveListResDto memberReserveListEntity(){
+        List<InfoMemberReseveListResDto.RoomReserveId> roomDto = new ArrayList<>();
+        for(RoomReservation dto : this.roomReservations){
+            roomDto.add(InfoMemberReseveListResDto.fromRoomEntity(dto));
+        }
+
+        List<InfoMemberReseveListResDto.DiningReserveId> diningDto = new ArrayList<>();
+        for(DiningReservation dto : this.diningReservationList){
+            diningDto.add(InfoMemberReseveListResDto.fromDiningEntity(dto));
+        }
+
+        return InfoMemberReseveListResDto.builder()
+                .roomReservations(roomDto)
+                .diningReservations(diningDto)
                 .build();
     }
 

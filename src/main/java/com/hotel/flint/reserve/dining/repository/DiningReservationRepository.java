@@ -8,12 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DiningReservationRepository extends JpaRepository<DiningReservation, Long> {
     List<DiningReservation> findByMemberId(Member member);
-
-    // 페이징 처리
     Page<DiningReservation> findAll(Pageable pageable);
-
 }

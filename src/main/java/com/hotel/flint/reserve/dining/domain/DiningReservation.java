@@ -5,6 +5,9 @@ import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
+import com.hotel.flint.user.employee.dto.InfoDiningDetResDto;
+import com.hotel.flint.user.employee.dto.InfoDiningResDto;
+import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -88,6 +91,23 @@ public class DiningReservation extends BaseTimeEntity {
                 .reservationDateTime(this.reservationDateTime)
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
+                .build();
+    }
+
+    public InfoDiningResDto toInfoDiningResDto(InfoUserResDto infoUserResDto){
+        InfoDiningDetResDto infoDiningDetResDto = InfoDiningDetResDto.builder()
+                .diningName(this.diningId.getDiningName())
+                .adult(this.adult)
+                .child(this.child)
+                .comment(this.comment)
+                .reservationDateTime(this.reservationDateTime)
+                .build();
+
+        return InfoDiningResDto.builder()
+                .id(infoUserResDto.getId())
+                .firstname(infoUserResDto.getFirstName())
+                .lastname(infoUserResDto.getLastName())
+                .infoDiningDetResDto(infoDiningDetResDto)
                 .build();
     }
 }

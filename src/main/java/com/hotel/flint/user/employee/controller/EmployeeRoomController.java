@@ -32,22 +32,28 @@ public class EmployeeRoomController {
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
 
     @PostMapping("/reserve")
     public ResponseEntity<?> memberReservationRoomCheck(@RequestParam("id") Long id) {
         try {
-            InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(id);
-            return new ResponseEntity<>(infoRoomResDto, HttpStatus.OK);
+            InfoRoomResDto dto = employeeRoomService.memberReservationRoomCheck(id);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
 
-    @PostMapping("/cancel_reserve_dining/{id}")
-    public ResponseEntity<?> memberReservationCncDiningByEmployee(@PathVariable Long id) {
+    @PostMapping("/cancel_reserve_room")
+    public ResponseEntity<?> memberReservationCncRoomByEmployee(@RequestParam Long id) {
         try {
             InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(id);
             employeeRoomService.memberReservationCncRoomByEmployee(infoRoomResDto);
@@ -56,6 +62,9 @@ public class EmployeeRoomController {
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
 }
