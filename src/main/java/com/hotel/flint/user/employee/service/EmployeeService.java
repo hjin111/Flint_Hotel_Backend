@@ -45,7 +45,6 @@ public class EmployeeService {
 
     private Employee getAuthenticatedEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("인증 값::" + authentication + "\n 여기가 끝");
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String email = userDetails.getUsername();
@@ -56,7 +55,7 @@ public class EmployeeService {
         }
     }
 
-
+//    직원 생성(Office 부서만 가능함)
     public Employee makeEmployee(EmployeeMakeDto dto) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
         if(!authenticatedEmployee.getDepartment().toString().equals("Office")){
@@ -73,6 +72,7 @@ public class EmployeeService {
         return employeeRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
     }
 
+//    직원 로그인
     public Employee login(UserLoginDto dto) {
         Employee employee = employeeRepository.findByEmailAndDelYN(dto.getEmail(), Option.N).orElseThrow(
             () -> new EntityNotFoundException("아이디가 틀렸습니다."));
@@ -82,8 +82,14 @@ public class EmployeeService {
         return employee;
     }
 
-    public InfoUserResDto memberInfo(String email) {
-        Member member = memberService.findByMemberEmail(email);
+    public String findEmail(String phoneNumber){
+        Employee employee = employeeRepository.findByPhoneNumberAndDelYN(phoneNumber, Option.N).orElseThrow(
+                ()-> new EntityNotFoundException("해당 번호로 가입한 계정이 없습니다. 관리자에게 문의해주세요."));
+        return employee.getEmail();
+    }
+
+    public InfoUserResDto memberInfo(Long id) {
+        Member member = memberService.findByUserId(id);
         return member.infoUserEntity();
     }
 
@@ -130,6 +136,16 @@ public class EmployeeService {
         Employee targetEmployee = employeeRepository.findById(dto.getTargetId()).orElseThrow(() -> new EntityNotFoundException("해당 ID가 존재하지 않습니다."));
         targetEmployee.modifyRank(dto.getEmployeeRank());
         return employeeRepository.save(targetEmployee);
+    }
+
+    public void delAccount(Long id){
+        Employee authenticatedEmployee = getAuthenticatedEmployee();
+        if(!authenticatedEmployee.getDepartment().toString().equals("Office")){
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
+        Employee delEmp = employeeRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("존재하지 않는 직원입니다."));
+        delEmp.delEmp();
     }
 
     public InfoMemberReseveListResDto employeeMemberReserveList(String email){

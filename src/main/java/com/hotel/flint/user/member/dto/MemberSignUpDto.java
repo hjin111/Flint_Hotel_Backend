@@ -20,14 +20,14 @@ public class MemberSignUpDto {
     private String email;
     private String nation;
     private String password;
-    private LocalDate birthday;
+    private String birthday; // LocalDate를 String으로 변환
 
     public Member toEntity(String password){
         Member member = Member.builder()
                 .email(this.email)
                 .firstName(this.firstName)
                 .lastName(this.lastName)
-                .birthday(this.birthday)
+                .birthday(LocalDate.parse(this.birthday)) // String을 LocalDate로 변환
                 .phoneNumber(this.phoneNumber)
                 .password(password)
                 .nation(this.nation)

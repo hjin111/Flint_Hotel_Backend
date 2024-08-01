@@ -56,7 +56,6 @@ public class EmployeeRoomService {
 
     private Employee getAuthenticatedEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("인증 값::" + authentication + "\n 여기가 끝");
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String email = userDetails.getUsername();
@@ -67,6 +66,7 @@ public class EmployeeRoomService {
         }
     }
 
+//
     public void modRoomPrice(Long id, Double newPrice) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
         if(!authenticatedEmployee.getDepartment().toString().equals("Room")){

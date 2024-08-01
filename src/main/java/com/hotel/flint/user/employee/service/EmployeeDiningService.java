@@ -48,9 +48,9 @@ public class EmployeeDiningService {
 
     private Employee getAuthenticatedEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("인증 값::" + authentication + "\n 여기가 끝");
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            System.out.println(userDetails);
             String email = userDetails.getUsername();
             return employeeRepository.findByEmailAndDelYN(email, Option.N)
                     .orElseThrow(() -> new SecurityException("인증되지 않은 사용자입니다."));
