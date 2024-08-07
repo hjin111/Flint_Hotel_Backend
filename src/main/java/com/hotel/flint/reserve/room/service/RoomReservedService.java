@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.security.Security;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -274,5 +275,14 @@ public class RoomReservedService {
 
         RoomReservedDetailDto roomReservedDetailDto = detail.detailFromEntity();
         return roomReservedDetailDto;
+    }
+
+    /**
+     * 원하는 날짜에 남은 객실이 있는지 목록 조회
+     */
+    public List<RoomReservedDto> checkRemainRoom() {
+
+
+        return null;
     }
 }

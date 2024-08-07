@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/reserve")
 public class RoomReservedController {
@@ -88,6 +90,14 @@ public class RoomReservedController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    /**
+     * 원하는 날짜에 남은 객실이 있는지 목록 조회
+     */
+    @GetMapping("/room/remain")
+    public List<RoomReservedDto> checkRemainRoom() {
+        return roomReservedService.checkRemainRoom();
     }
 
 }
