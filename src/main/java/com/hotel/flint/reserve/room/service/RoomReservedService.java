@@ -5,6 +5,7 @@ import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.common.enumdir.Season;
 import com.hotel.flint.reserve.room.domain.*;
+import com.hotel.flint.reserve.room.dto.PossibleRoomDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
@@ -27,7 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.security.Security;
+import java.sql.Array;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -164,14 +167,14 @@ public class RoomReservedService {
         }
 
         // 조식 금액 추가하기
-        int adultBfCnt = dto.getAdultBfCnt();
-        int childBfCnt = dto.getChildBfCnt();
-
-        double bf_total = (adultBfCnt * 50000) + (childBfCnt * 35000);
-        log.info("조식 총가격 :" + bf_total);
-
-        total += bf_total;
-        log.info("조식 + 객실 total :" + total);
+//        int adultBfCnt = dto.getAdultBfCnt();
+//        int childBfCnt = dto.getChildBfCnt();
+//
+//        double bf_total = (adultBfCnt * 50000) + (childBfCnt * 35000);
+//        log.info("조식 총가격 :" + bf_total);
+//
+//        total += bf_total;
+//        log.info("조식 + 객실 total :" + total);
 
         return total;
     }
@@ -280,9 +283,28 @@ public class RoomReservedService {
     /**
      * 원하는 날짜에 남은 객실이 있는지 목록 조회
      */
-    public List<RoomReservedDto> checkRemainRoom() {
+    public List<PossibleRoomDto> checkRemainRoom(LocalDate checkInDate, LocalDate checkOutDate) {
 
+        List<RoomDetails> allRooms = roomDetailsRepository.findAll(); // 모든 방 리스트 찾아오기
+        List<PossibleRoomDto> possibleRoomDtos = new ArrayList<>();
 
-        return null;
+        for (RoomDetails room : allRooms) {
+            boolean possible = true;
+            LocalDate date = checkInDate;
+
+            while (date.isBefore(checkOutDate)) { // checkInDate < checkOutDate
+                if (checkReservedDateRepository.findByDateAndRooms(date, room).isPresent()) {
+                    log.info("이 날짜 안됨 : " + date);
+                    possible = false;
+                    break;
+                }
+                date = date.plusDays(1);
+            }
+            if (possible) {
+                possibleRoomDtos.add(room.possibleListFromEntity());
+            }
+        }
+
+        return possibleRoomDtos;
     }
 }

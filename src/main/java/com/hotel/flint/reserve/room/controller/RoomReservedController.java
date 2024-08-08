@@ -3,6 +3,7 @@ package com.hotel.flint.reserve.room.controller;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
+import com.hotel.flint.reserve.room.dto.PossibleRoomDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedListDto;
@@ -16,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -96,8 +99,13 @@ public class RoomReservedController {
      * 원하는 날짜에 남은 객실이 있는지 목록 조회
      */
     @GetMapping("/room/remain")
-    public List<RoomReservedDto> checkRemainRoom() {
-        return roomReservedService.checkRemainRoom();
+    public List<PossibleRoomDto> checkRemainRoom(@RequestParam("checkInDate") String checkInStr,
+                                                 @RequestParam("checkOutDate") String checkOutStr) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate checkInDate = LocalDate.parse(checkInStr, formatter);
+        LocalDate checkOutDate = LocalDate.parse(checkOutStr, formatter);
+
+        return roomReservedService.checkRemainRoom(checkInDate, checkOutDate);
     }
 
 }
