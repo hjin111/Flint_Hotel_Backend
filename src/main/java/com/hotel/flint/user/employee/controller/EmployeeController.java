@@ -4,7 +4,9 @@ import com.hotel.flint.common.auth.JwtAuthFilter;
 import com.hotel.flint.common.auth.JwtTokenProvider;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
+import com.hotel.flint.common.dto.FindPasswordRequest;
 import com.hotel.flint.common.dto.UserLoginDto;
+import com.hotel.flint.common.service.MailService;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.EmployeeMakeDto;
 import com.hotel.flint.user.employee.service.EmployeeService;
@@ -23,6 +25,9 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthFilter jwtAuthFilter;
+
+    @Autowired
+    MailService mailService;
 
     @Autowired
     public EmployeeController(EmployeeService employeeService, JwtTokenProvider jwtTokenProvider, JwtAuthFilter jwtAuthFilter) {
@@ -72,6 +77,12 @@ public class EmployeeController {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/findpassword")
+    public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequest request) {
+        mailService.sendTempPassword(request.getEmail());
+        return new ResponseEntity<>("임시 비밀번호를 이메일로 발송했습니다.", HttpStatus.OK);
     }
 
     @PatchMapping("/delaccount")
