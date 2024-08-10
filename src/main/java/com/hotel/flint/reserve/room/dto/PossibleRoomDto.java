@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PossibleRoomDto {
 
+    private Long roomId;
     private String roomTypeName;
-    private double roomPrice;
+    private long roomPrice;
 }

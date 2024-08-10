@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.security.Security;
 import java.sql.Array;
 import java.time.LocalDate;
@@ -73,7 +74,7 @@ public class RoomReservedService {
      * 룸 예약 진행
      */
     @Transactional
-    public double roomReservation(RoomReservedDto dto) {
+    public long roomReservation(RoomReservedDto dto) {
 
         String memberEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -97,11 +98,12 @@ public class RoomReservedService {
         }
 
         RoomReservation roomReservation = dto.toEntity(member, roomDetails);
+        log.info("toEntity넘어감");
         RoomReservation savedRoomReservation = roomReservationRepository.save(roomReservation);
         log.info("room reservation : " + savedRoomReservation);
 
         // 날짜 가져가서 계산
-        double totalPrice = calculatePrice(dto);
+        long totalPrice = calculatePrice(dto);
 
         return totalPrice;
 
@@ -135,13 +137,21 @@ public class RoomReservedService {
     }
 
     /**
+     * 객실 가격 조회용
+     */
+    public long getPrice(RoomReservedDto dto) {
+        return calculatePrice(dto);
+    }
+
+
+    /**
      * 예약 룸 총액 계산
      */
-    private double calculatePrice(RoomReservedDto dto) {
+    private long calculatePrice(RoomReservedDto dto) {
 
         // 해당 방의 base 가격 가져오기
-        double roomBasePrice = getBasePrice(dto.getRoomId());
-        double total = 0.0;
+        long roomBasePrice = getBasePrice(dto.getRoomId());
+        long total = 0;
 
         // 체크인,아웃 날짜
         LocalDate checkInDate= dto.getCheckInDate();
@@ -161,7 +171,7 @@ public class RoomReservedService {
             // 총액 계산
             log.info("roomBasePrice " + roomBasePrice);
             log.info("percentage " + percentage);
-            total += roomBasePrice * percentage;
+            total += (long)(roomBasePrice * percentage);
             log.info("total :" + total);
             checkInDate = checkInDate.plusDays(1); // 체크인날짜 +1 (체크아웃 전까지)
         }
@@ -182,7 +192,7 @@ public class RoomReservedService {
     /**
      * 룸의 원가 가져오기
      */
-    private double getBasePrice(Long id) {
+    private long getBasePrice(Long id) {
 
         // room_id를 가지고 해당 방의 detail 정보를 반환
         RoomDetails room = roomDetailsRepository.findById(id)
@@ -294,7 +304,6 @@ public class RoomReservedService {
 
             while (date.isBefore(checkOutDate)) { // checkInDate < checkOutDate
                 if (checkReservedDateRepository.findByDateAndRooms(date, room).isPresent()) {
-                    log.info("이 날짜 안됨 : " + date);
                     possible = false;
                     break;
                 }

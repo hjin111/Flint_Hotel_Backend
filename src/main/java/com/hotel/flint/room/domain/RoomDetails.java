@@ -38,6 +38,7 @@ public class RoomDetails {
 
     public PossibleRoomDto possibleListFromEntity() {
         PossibleRoomDto possibleRoomDto = PossibleRoomDto.builder()
+                .roomId(this.id)
                 .roomTypeName(this.roomInfo.getRoomTypeName())
                 .roomPrice(this.roomInfo.getRoomTypePrice())
                 .build();

@@ -25,7 +25,7 @@ public class EmployeeRoomController {
 
     @PatchMapping("/modprice/{room_type_id}")
     public ResponseEntity<?> modRoomPrice(@PathVariable Long room_type_id,
-                                          @RequestBody Map<String, Double> request) {
+                                          @RequestBody Map<String, Long> request) {
         try {
             employeeRoomService.modRoomPrice(room_type_id, request.get("newPrice"));
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "가격 수정 완료", null);
