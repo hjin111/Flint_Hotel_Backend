@@ -81,8 +81,14 @@ public class EmployeeController {
 
     @PostMapping("/findpassword")
     public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequest request) {
-        mailService.sendTempPassword(request.getEmail());
-        return new ResponseEntity<>("임시 비밀번호를 이메일로 발송했습니다.", HttpStatus.OK);
+        try {
+            mailService.sendTempPassword(request.getEmail());
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "임시 비밀번호를 이메일로 발송했습니다.", null);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PatchMapping("/delaccount")

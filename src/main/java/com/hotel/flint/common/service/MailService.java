@@ -1,5 +1,6 @@
 package com.hotel.flint.common.service;
 
+import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.persistence.EntityNotFoundException;
 import java.util.Random;
 
 @Transactional
@@ -50,6 +52,10 @@ public class MailService {
     }
 
     public void sendTempPassword(String email) {
+        if(!memberRepository.findByEmailAndDelYN(email, Option.N).isPresent()
+                || !employeeRepository.findByEmailAndDelYN(email, Option.N).isPresent()){
+            throw new EntityNotFoundException("해당 이메일은 존재하지 않습니다");
+        }
         // 10자리 임시 비밀번호 생성
         String tempPassword = generateTempPassword(10);
 
