@@ -53,7 +53,7 @@ public class MailService {
 
     public void sendTempPassword(String email) {
         if(!memberRepository.findByEmailAndDelYN(email, Option.N).isPresent()
-                || !employeeRepository.findByEmailAndDelYN(email, Option.N).isPresent()){
+                && !employeeRepository.findByEmailAndDelYN(email, Option.N).isPresent()){
             throw new EntityNotFoundException("해당 이메일은 존재하지 않습니다");
         }
         // 10자리 임시 비밀번호 생성

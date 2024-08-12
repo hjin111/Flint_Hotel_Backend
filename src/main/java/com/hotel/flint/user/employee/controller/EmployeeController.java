@@ -63,7 +63,7 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("/findemail")
+    @PostMapping("/findemail")
     public ResponseEntity<?> findEmail(@RequestBody Map<String, String> request) {
         try {
             String Email = employeeService.findEmailToPhoneNum(request.get("phoneNumber"));

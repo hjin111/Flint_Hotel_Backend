@@ -36,7 +36,7 @@ public class MemberController {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
-    @GetMapping("/findemail")
+    @PostMapping("/findemail")
     public ResponseEntity<?> findEmail(@RequestBody Map<String, String> request) {
         try {
             String memberEmail = memberService.findEmail(request.get("phoneNumber"));
