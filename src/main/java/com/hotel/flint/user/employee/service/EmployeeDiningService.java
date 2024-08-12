@@ -12,6 +12,7 @@ import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
+import com.hotel.flint.user.employee.dto.DiningMenuDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
@@ -59,6 +60,40 @@ public class EmployeeDiningService {
         }
     }
 
+    public List<DiningMenuDto> getMenuList(Department department){
+        department = getAuthenticatedEmployee().getDepartment();
+        DiningName diningName = mapToDepartmentToDining(department);
+        Dining dining = diningRepository.findByDiningName(diningName).orElseThrow(
+                ()-> new EntityNotFoundException("해당 부서는 존재하지 않습니다"));
+        List<Menu> menus = menuRepository.findAllByDining(dining);
+
+        List<DiningMenuDto> dtos = new ArrayList<>();
+        for(Menu menu: menus){
+            dtos.add(menu.fromEntity(menu));
+        }
+
+        return dtos;
+    }
+
+    private DiningName mapToDepartmentToDining(Department department){
+        switch (department){
+            case KorDining:
+                return DiningName.KorDining;
+            case JapDining:
+                return DiningName.JapDining;
+            case ChiDining:
+                return DiningName.ChiDining;
+            case Lounge:
+                return DiningName.Lounge;
+            case Room:
+                throw new IllegalArgumentException("접근권한이 없습니다.");
+            case Office:
+                throw new IllegalArgumentException("접근권한이 없습니다.");
+            default:
+                throw new IllegalArgumentException("접근권한이 없습니다.");
+        }
+    }
+
     public void addDiningMenu(MenuSaveDto menuSaveDto){
         Employee authenticatedEmployee = getAuthenticatedEmployee();
 
@@ -79,6 +114,7 @@ public class EmployeeDiningService {
         Dining dining = diningRepository.findById(menu.getDining().getId()).
                 orElseThrow(() -> new EntityNotFoundException("존재하지 않는 Dining ID"));
         if(authenticatedEmployee.getDepartment().toString() != dining.getDiningName().toString()){
+            System.out.println("여기 문제");
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
 

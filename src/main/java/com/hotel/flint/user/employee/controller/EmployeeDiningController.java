@@ -1,12 +1,13 @@
 package com.hotel.flint.user.employee.controller;
 
-import com.hotel.flint.dining.dto.MenuSaveDto;
-import com.hotel.flint.reserve.dining.domain.DiningReservation;
-import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
-import com.hotel.flint.user.employee.dto.InfoDiningResDto;
-import com.hotel.flint.user.employee.service.EmployeeDiningService;
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
+import com.hotel.flint.common.enumdir.Department;
+import com.hotel.flint.dining.dto.MenuSaveDto;
+import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
+import com.hotel.flint.user.employee.dto.DiningMenuDto;
+import com.hotel.flint.user.employee.dto.InfoDiningResDto;
+import com.hotel.flint.user.employee.service.EmployeeDiningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,21 @@ public class EmployeeDiningController {
     @Autowired
     public EmployeeDiningController(EmployeeDiningService employeeDiningService){
         this.employeeDiningService = employeeDiningService;
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> menuList(@RequestParam("department") Department department){
+        List<DiningMenuDto> dtos = employeeDiningService.getMenuList(department);
+        try {
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회 성공", dtos);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
+        }
     }
 
     @PostMapping("/addmenu")
