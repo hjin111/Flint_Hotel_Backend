@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class QnaDetailDto {
 
+    private Long id;
     private Service service;
     private String title;
     private String contents;
