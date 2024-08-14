@@ -1,6 +1,5 @@
 package com.hotel.flint.reserve.dining.dto;
 
-import com.hotel.flint.common.enumdir.DiningName;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.user.member.domain.Member;
@@ -17,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ReservationSaveReqDto {
 
-    private DiningName diningName;
+    private Long diningId;
     private int adult;
     private int child;
     private String comment;

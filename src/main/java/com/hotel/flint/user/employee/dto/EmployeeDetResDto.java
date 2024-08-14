@@ -16,6 +16,8 @@ import java.time.LocalDate;
 // 직원의 상세정보를 반환해주는 Dto
 public class EmployeeDetResDto {
     private Long id;
+    private String firstName;
+    private String lastName;
     private String employeeNumber;
     private EmployeeRank employeeRank;
     private String email;

@@ -15,9 +15,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class InfoMemberReseveListResDto {
-    List<InfoMemberReseveListResDto.DiningReserveId> diningReservations;
-    List<InfoMemberReseveListResDto.RoomReserveId> roomReservations;
+public class InfoMemberReserveListResDto {
+    List<InfoMemberReserveListResDto.DiningReserveId> diningReservations;
+    List<InfoMemberReserveListResDto.RoomReserveId> roomReservations;
 
     @Data
     @AllArgsConstructor

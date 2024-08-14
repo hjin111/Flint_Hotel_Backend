@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/mypage/qna")
@@ -50,8 +51,7 @@ public class QnaController {
      * qna 목록 조회 - 마이페이지에서 본인것 조회
      */
     @GetMapping("/list")
-    public Page<QnaListDto> qnaList(@PageableDefault(size=10, sort = "writeTime"
-            , direction = Sort.Direction.DESC) Pageable pageable) {
+    public List<QnaListDto> qnaList(Pageable pageable) {
 
         return qnaService.qnaList(pageable);
     }
