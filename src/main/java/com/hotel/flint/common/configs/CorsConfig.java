@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer {
      */
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry) {
-        corsRegistry.addMapping("/**") // 어떤 url이든 허용
+        corsRegistry.addMapping("/**") // ex. localhost:8081/---/--- 모두 허용
                 .allowedOrigins("http://localhost:8081") // 허용 url 명시 (나중에 우리 서버로 들어올 url여기에 추가)
                 .allowedMethods("*") // 어떤 메서드든 허용
                 .allowedHeaders("*")

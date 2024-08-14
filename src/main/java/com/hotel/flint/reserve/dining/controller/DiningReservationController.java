@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -28,19 +29,20 @@ public class DiningReservationController {
     // 다이닝 예약
     @PostMapping("/dining/create")
     public ResponseEntity<?> diningReservation(@RequestBody ReservationSaveReqDto dto){
-
+        System.out.println(dto);
         try {
 
             DiningReservation diningReservation = diningReservationService.create(dto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "예약 성공", diningReservation.getId());
             return new ResponseEntity<>( commonResDto, HttpStatus.CREATED );
 
-        }catch (IllegalArgumentException e) {
+        }catch (IllegalArgumentException | EntityNotFoundException e) {
 
         CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
 
     }
+
 
     }
 
@@ -74,9 +76,13 @@ public class DiningReservationController {
 
         }catch (IllegalArgumentException e) {
 
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.UNAUTHORIZED);
+
+        }catch (EntityNotFoundException e){
+
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-
         }
 
     }
