@@ -37,6 +37,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/create")
+//  Office 부서만 가능. 직원 생성하는 로직
     public ResponseEntity<?> makeEmployee(@RequestBody EmployeeMakeDto dto){
         try {
             Employee employee = employeeService.makeEmployee(dto);
@@ -49,9 +50,11 @@ public class EmployeeController {
     }
 
     @PostMapping("/login")
+//    직원 로그인
     public ResponseEntity<?> doLogin(@RequestBody UserLoginDto dto){
         try {
             Employee employee = employeeService.login(dto);
+//            로그인 성공시 employeetoken 발급. payload에 department, id 담겨있음
             String jwtToken = jwtTokenProvider.createEmployeeToken(employee.getEmail(), employee.getId(), employee.getDepartment().toString());
             Map<String, Object> loginInfo = new HashMap<>();
             loginInfo.put("employeetoken", jwtToken);
@@ -64,6 +67,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/findemail")
+//    직원 이메일 찾기. 회원과 동일한 로직임
     public ResponseEntity<?> findEmail(@RequestBody Map<String, String> request) {
         try {
             String Email = employeeService.findEmailToPhoneNum(request.get("phoneNumber"));
@@ -77,6 +81,7 @@ public class EmployeeController {
     }
 
     @PostMapping("/findpassword")
+//    직원 비밀번호 찾기. 회원과 같은 로직
     public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequest request) {
         try {
             mailService.sendTempPassword(request.getEmail());
@@ -89,6 +94,7 @@ public class EmployeeController {
     }
 
     @PatchMapping("/delaccount")
+//    Office만 사용 가능. Id를 통해 DelYN Y로 변경시킴.
     public ResponseEntity<?> delEmployee(@RequestBody Map<String, Long> request){
         try {
             employeeService.delAccount(request.get("employeeId"));
