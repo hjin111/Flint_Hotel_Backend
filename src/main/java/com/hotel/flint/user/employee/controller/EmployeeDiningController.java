@@ -4,7 +4,11 @@ import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
 import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.dining.dto.MenuSaveDto;
+import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
+import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
+import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
+import com.hotel.flint.reserve.dining.service.DiningReservationService;
 import com.hotel.flint.user.employee.dto.DiningMenuDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
 import com.hotel.flint.user.employee.dto.MenuSearchDto;
@@ -22,10 +26,12 @@ import java.util.Map;
 @RequestMapping("/employee/dining")
 public class EmployeeDiningController {
     private final EmployeeDiningService employeeDiningService;
+    private final DiningReservationService diningReservationService;
 
     @Autowired
-    public EmployeeDiningController(EmployeeDiningService employeeDiningService){
+    public EmployeeDiningController(EmployeeDiningService employeeDiningService, DiningReservationService diningReservationService){
         this.employeeDiningService = employeeDiningService;
+        this.diningReservationService = diningReservationService;
     }
 
     @GetMapping("/list")
@@ -109,7 +115,7 @@ public class EmployeeDiningController {
         }
     }
 
-    @PostMapping("/reserve")
+    @GetMapping("/reserve")
     public ResponseEntity<?> memberReservationDiningCheck(@RequestParam("id") Long id) {
         try {
             List<InfoDiningResDto> infoDiningResDto = employeeDiningService.memberReservationDiningCheck(id);
@@ -131,6 +137,19 @@ public class EmployeeDiningController {
         }catch (EntityNotFoundException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    // 예약 수정
+    @PostMapping("/dining/update/{id}")
+    public ResponseEntity<?> reserveDiningUpdate(@PathVariable Long id, @RequestBody ReservationUpdateDto dto){
+        try {
+            DiningReservation diningReservation = diningReservationService.update(id, dto);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,  "예약 수정 완료", diningReservation.getId());
+            return new ResponseEntity<>( commonResDto, HttpStatus.OK );
+        }catch (IllegalArgumentException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
     }
 }

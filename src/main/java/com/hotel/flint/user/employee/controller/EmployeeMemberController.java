@@ -48,7 +48,7 @@ public class EmployeeMemberController {
 //    해당 직원 id, 수정할 값이 들어있음.
     @PutMapping("/modify")
     @ResponseBody
-    public ResponseEntity<?> userModify(@RequestBody EmployeeModResDto dto){
+    public ResponseEntity<?> memberModify(@RequestBody EmployeeModResDto dto){
         try {
             employeeService.employeeModify(dto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Password Modify" , null);
@@ -84,9 +84,9 @@ public class EmployeeMemberController {
 
     @GetMapping("/list_reserve")
     @ResponseBody
-    public ResponseEntity<?> employeeMemberReserveList(@RequestParam String email){
+    public ResponseEntity<?> employeeMemberReserveList(@RequestBody String email){
         try {
-            InfoMemberReseveListResDto info = employeeService.employeeMemberReserveList(email);
+            InfoMemberReserveListResDto info = employeeService.employeeMemberReserveList(email);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Member Reserve List" , info);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         }

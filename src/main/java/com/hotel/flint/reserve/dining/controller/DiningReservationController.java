@@ -31,118 +31,66 @@ public class DiningReservationController {
     public ResponseEntity<?> diningReservation(@RequestBody ReservationSaveReqDto dto){
         System.out.println(dto);
         try {
-
             DiningReservation diningReservation = diningReservationService.create(dto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "예약 성공", diningReservation.getId());
             return new ResponseEntity<>( commonResDto, HttpStatus.CREATED );
-
         }catch (IllegalArgumentException | EntityNotFoundException e) {
-
         CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-
-    }
-
-
+        }
     }
 
     // 예약 전체 조회
     @GetMapping("/dining/list")
     public ResponseEntity<?> resevationDiningListCheck(Pageable pageable){
-
         try {
             Page<ReservationListResDto> reservationListResDtos = diningReservationService.list(pageable);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "예약 성공", reservationListResDtos);
             return new ResponseEntity<>( commonResDto, HttpStatus.CREATED );
-
         }catch (IllegalArgumentException e) {
-
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-
         }
-
     }
 
     // 예약 단건 조회
     @GetMapping("/dining/detail/{diningReservationId}")
     public ResponseEntity<?> reservationDiningDetailCheck(@PathVariable Long diningReservationId){
-
         try {
-
             ReservationDetailDto reservationDetailDto = diningReservationService.detailList(diningReservationId);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,  reservationDetailDto.getId() + "번 예약 조회", reservationDetailDto);
             return new ResponseEntity<>( commonResDto, HttpStatus.OK );
-
         }catch (IllegalArgumentException e) {
-
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.UNAUTHORIZED);
-
         }catch (EntityNotFoundException e){
-
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
-
     }
 
     // 회원별 예약 전체 목록 조회
     @GetMapping("/dining/userList")
     public ResponseEntity<?> reservationDiningUserListCheck(){
-
         try {
-
             List<ReservationListResDto> reservationListResDtos = diningReservationService.userList();
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,  reservationListResDtos.get(0).getMemberId() + "님 예약 조회", reservationListResDtos);
             return new ResponseEntity<>( commonResDto, HttpStatus.OK );
-
         }catch (IllegalArgumentException e) {
-
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-
         }
-
     }
-
     // 예약 삭제/취소
     @DeleteMapping("/dining/delete/{id}")
     public ResponseEntity<?> reservationDiningCanceled(@PathVariable Long id){
-
         try {
-
             diningReservationService.delete(id);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,  "예약 취소 완료", id);
             return new ResponseEntity<>( commonResDto, HttpStatus.OK );
-
-
         }catch (IllegalArgumentException e) {
-
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-
         }
-
     }
-
-    // 예약 수정
-    @PostMapping("/dining/update/{id}")
-    public ResponseEntity<?> reserveDiningUpdate(@PathVariable Long id, @RequestBody ReservationUpdateDto dto){
-
-        try {
-
-            DiningReservation diningReservation = diningReservationService.update(id, dto);
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,  "예약 수정 완료", diningReservation.getId());
-            return new ResponseEntity<>( commonResDto, HttpStatus.OK );
-
-        }catch (IllegalArgumentException e) {
-
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-
-        }
-
-    }
-
 }

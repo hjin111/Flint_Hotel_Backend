@@ -39,7 +39,7 @@ public class EmployeeRoomController {
         }
     }
 
-    @PostMapping("/reserve")
+    @GetMapping("/reserve")
     public ResponseEntity<?> memberReservationRoomCheck(@RequestParam("id") Long id) {
         try {
             InfoRoomResDto dto = employeeRoomService.memberReservationRoomCheck(id);

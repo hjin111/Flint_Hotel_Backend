@@ -182,10 +182,10 @@ public class EmployeeService {
         delEmp.delEmp();
     }
 
-    public InfoMemberReseveListResDto employeeMemberReserveList(String email){
+    public InfoMemberReserveListResDto employeeMemberReserveList(String email){
         Member member = memberService.findByMemberEmail(email);
 
-        InfoMemberReseveListResDto info = member.memberReserveListEntity();
+        InfoMemberReserveListResDto info = member.memberReserveListEntity();
 
         return info;
     }

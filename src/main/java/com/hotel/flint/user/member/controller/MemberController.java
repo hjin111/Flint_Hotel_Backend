@@ -108,7 +108,8 @@ public class MemberController {
     public ResponseEntity<?> userDetail() {
         try {
             MemberDetResDto memberDetail = memberService.memberDetail();
-            return new ResponseEntity<>(memberDetail, HttpStatus.OK);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "member detail", memberDetail);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.NOT_FOUND);
