@@ -34,7 +34,7 @@ public class InitialDataLoader implements CommandLineRunner {
                     .lastName("hotel")
                     .email("flint@gmail.com")
                     .phoneNumber("02-1111-2222")
-                    .departMent(Department.Office)
+                    .department(Department.Office)
                     .password("12341234")
                     .employeeRank(EmployeeRank.사장)
                     .birthday(date)

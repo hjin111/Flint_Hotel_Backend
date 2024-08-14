@@ -10,13 +10,11 @@ import com.hotel.flint.user.member.dto.MemberModResDto;
 import com.hotel.flint.user.member.dto.MemberSignUpDto;
 import com.hotel.flint.user.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.net.URI;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +36,7 @@ public class MemberController {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
-    @GetMapping("/findemail")
+    @PostMapping("/findemail")
     public ResponseEntity<?> findEmail(@RequestBody Map<String, String> request) {
         try {
             String memberEmail = memberService.findEmail(request.get("phoneNumber"));
@@ -81,11 +79,14 @@ public class MemberController {
 
     @PostMapping("/findpassword")
     public ResponseEntity<?> findPassword(@RequestBody FindPasswordRequest request) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-//        로그인 페이지로 리다이렉트
-        httpHeaders.setLocation(URI.create("http://localhost:8080/member/login"));
-        mailService.sendTempPassword(request.getEmail());
-        return new ResponseEntity<>("임시 비밀번호를 이메일로 발송했습니다.", httpHeaders,HttpStatus.OK);
+        try {
+            mailService.sendTempPassword(request.getEmail());
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "임시 비밀번호를 이메일로 발송했습니다.", null);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/login")

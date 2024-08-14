@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.security.SecureRandom;
 
 @Service
 @Transactional
@@ -69,7 +70,40 @@ public class EmployeeService {
             memberRepository.findByPhoneNumberAndDelYN(dto.getPhoneNumber(), Option.N).isPresent()) {
             throw new IllegalArgumentException("해당 번호로 이미 가입한 계정이 존재합니다");
         }
+
+        String departmentCode = getDepartmentCode(dto.getDepartment());
+        String randomNumber = generateRandomNumber();
+        String employeeNumber = "FL" + departmentCode + randomNumber;
+
+        dto.setEmployeeNumber(employeeNumber);
         return employeeRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
+    }
+
+    // 부서 코드 생성
+    private String getDepartmentCode(Department department) {
+        switch(department) {
+            case Office:
+                return "10";
+            case Room:
+                return "11";
+            case KorDining:
+                return "12";
+            case JapDining:
+                return "13";
+            case ChiDining:
+                return "14";
+            case Lounge:
+                return "15";
+            default:
+                throw new IllegalArgumentException("Unknown department: " + department);
+        }
+    }
+
+    // 6자리 랜덤 숫자 생성
+    private String generateRandomNumber() {
+        SecureRandom random = new SecureRandom();
+        int randomNumber = random.nextInt(900000) + 100000; // 100000 ~ 999999
+        return String.valueOf(randomNumber);
     }
 
 //    직원 로그인
