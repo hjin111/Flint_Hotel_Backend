@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -54,6 +56,20 @@ public class EmployeeService {
         } else {
             throw new SecurityException("인증되지 않은 사용자입니다.");
         }
+    }
+
+    public List<EmployeeToMemberListDto> memberList(){
+        List<EmployeeToMemberListDto> dto = new ArrayList<>();
+        List<Member> member = memberRepository.findAll();
+
+        for(Member m : member){
+            dto.add(EmployeeToMemberListDto.builder()
+                            .id(m.getId())
+                            .name(m.getFirstName() + " " + m.getLastName())
+                            .email(m.getEmail())
+                    .build());
+        }
+        return dto;
     }
 
 //    직원 생성(Office 부서만 가능함)
