@@ -7,6 +7,7 @@ import com.hotel.flint.dining.dto.MenuSaveDto;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.user.employee.dto.DiningMenuDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
+import com.hotel.flint.user.employee.dto.MenuSearchDto;
 import com.hotel.flint.user.employee.service.EmployeeDiningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,22 +29,40 @@ public class EmployeeDiningController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> menuList(@RequestParam("department") Department department){
-        List<DiningMenuDto> dtos = employeeDiningService.getMenuList(department);
+    public ResponseEntity<?> menuList(
+            @RequestParam("department") Department department,
+            @RequestParam(value = "searchType", required = false) String searchType,
+            @RequestParam(value = "searchValue", required = false) String searchValue) {
+
+        MenuSearchDto searchDto = new MenuSearchDto();
+
+        if ("menuName".equals(searchType)) {
+            searchDto.setMenuName(searchValue);
+        } else if ("menuId".equals(searchType) && searchValue != null) {
+            try {
+                searchDto.setId(Long.parseLong(searchValue));
+            } catch (NumberFormatException e) {
+                return new ResponseEntity<>(new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), "Invalid menuId format"), HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        List<DiningMenuDto> dtos = employeeDiningService.getMenuList(department, searchDto);
         try {
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회 성공", dtos);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-        } catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
 
+
     @PostMapping("/addmenu")
     public ResponseEntity<?> addMenu(@RequestBody MenuSaveDto menuSaveDto) {
+        System.out.println(menuSaveDto);
         try {
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "메뉴가 성공적으로 생성되었습니다", menuSaveDto.getMenuName());
             employeeDiningService.addDiningMenu(menuSaveDto);

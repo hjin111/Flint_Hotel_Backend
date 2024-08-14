@@ -15,9 +15,11 @@ import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.DiningMenuDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
+import com.hotel.flint.user.employee.dto.MenuSearchDto;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,12 +66,35 @@ public class EmployeeDiningService {
         }
     }
 
-    public List<DiningMenuDto> getMenuList(Department department){
+    public List<DiningMenuDto> getMenuList(Department department, MenuSearchDto dto){
         department = getAuthenticatedEmployee().getDepartment();
         DiningName diningName = mapToDepartmentToDining(department);
         Dining dining = diningRepository.findByDiningName(diningName).orElseThrow(
                 ()-> new EntityNotFoundException("해당 부서는 존재하지 않습니다"));
-        List<Menu> menus = menuRepository.findAllByDining(dining);
+
+        Specification<Menu> specification = new Specification<Menu>() {
+            @Override
+            public Predicate toPredicate(Root<Menu> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList<>();
+
+                // 이름 검색 조건 추가
+                if (dto.getMenuName() != null && !dto.getMenuName().isEmpty()) {
+                    predicates.add(criteriaBuilder.like(root.get("menuName"), "%" + dto.getMenuName() + "%"));
+                }
+
+                // id 검색 조건 추가 - 정확히 일치하는 값으로 검색
+                if (dto.getId() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("id"), dto.getId()));
+                }
+
+                // 다이닝 필터링 조건 추가
+                predicates.add(criteriaBuilder.equal(root.get("dining"), dining));
+
+                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            }
+        };
+
+        List<Menu> menus = menuRepository.findAll(specification);
 
         List<DiningMenuDto> dtos = new ArrayList<>();
         for(Menu menu: menus){
@@ -74,6 +103,7 @@ public class EmployeeDiningService {
 
         return dtos;
     }
+
 
     private DiningName mapToDepartmentToDining(Department department){
         switch (department){
