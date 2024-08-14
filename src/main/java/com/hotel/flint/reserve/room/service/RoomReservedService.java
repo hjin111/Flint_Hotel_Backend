@@ -115,7 +115,7 @@ public class RoomReservedService {
     private boolean checkReserved(RoomReservedDto dto, RoomDetails roomDetails) {
 
         // 체크인,아웃 날짜
-        LocalDate checkInDate= dto.getCheckInDate();
+        LocalDate checkInDate = dto.getCheckInDate();
         LocalDate checkOutDate = dto.getCheckOutDate();
 
         while (checkInDate.isBefore(checkOutDate)) { // checkInDate < checkOutDate
