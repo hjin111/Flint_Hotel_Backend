@@ -19,7 +19,7 @@ public class RoomInfo {
     private Long id;
 
     private String roomTypeName;
-    private Double roomTypePrice;
+    private long roomTypePrice;
 
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomPrice> roomPrices;
@@ -27,7 +27,7 @@ public class RoomInfo {
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RoomDetails> roomDetails;
 
-    public void updateRoomPrice(Double newPrice){
+    public void updateRoomPrice(long newPrice){
         this.roomTypePrice = newPrice;
     }
 }
