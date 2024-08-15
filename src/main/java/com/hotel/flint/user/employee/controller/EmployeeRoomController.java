@@ -39,6 +39,7 @@ public class EmployeeRoomController {
         }
     }
 
+//    직원이 고객의 객실 예약 정보와 Deatil 을 조회.
     @GetMapping("/reserve")
     public ResponseEntity<?> memberReservationRoomCheck(@RequestParam("id") Long id) {
         try {
@@ -53,6 +54,7 @@ public class EmployeeRoomController {
         }
     }
 
+//    직원이 고객의 객실 예약 정보를 취소
     @PostMapping("/cancel_reserve_room")
     public ResponseEntity<?> memberReservationCncRoomByEmployee(@RequestParam Long id) {
         try {
