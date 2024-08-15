@@ -1,5 +1,6 @@
 package com.hotel.flint.support.qna.dto;
 
+import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.Service;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
