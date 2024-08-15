@@ -78,6 +78,8 @@ public class QnA {
                 .contents(this.contents)
                 .writeTime(this.writeTime)
                 .memberEmail(email)
+                .respond(this.respond)
+                .answer(this.answer)
                 .build();
         return qnaDetailDto;
     }
