@@ -6,9 +6,11 @@ import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
 import com.hotel.flint.common.dto.FindPasswordRequest;
 import com.hotel.flint.common.dto.UserLoginDto;
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.service.MailService;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.EmployeeMakeDto;
+import com.hotel.flint.user.employee.dto.EmployeeSearchDto;
 import com.hotel.flint.user.employee.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -104,5 +106,22 @@ public class EmployeeController {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<?> employeeList(
+            @RequestParam(value = "searchType", required = false) String searchType,
+            @RequestParam(value = "searchValue", required = false) String searchValue) {
+        EmployeeSearchDto dto = new EmployeeSearchDto();
+
+        if("email".equals(searchType)){
+            dto.setEmail(searchType);
+        } else if("employeeNumber".equals(searchType) && searchValue != null) {
+            dto.setEmployeeNumber(searchValue);
+        } else if("department".equals(searchType) && searchValue != null) {
+            dto.setDepartment(Department.valueOf(searchValue));
+        }
+        CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회 성공", employeeService.getEmployeeList(dto));
+        return new ResponseEntity<>(commonResDto, HttpStatus.OK);
     }
 }
