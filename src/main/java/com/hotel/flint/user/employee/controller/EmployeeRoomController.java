@@ -39,6 +39,17 @@ public class EmployeeRoomController {
         }
     }
 
+    @GetMapping("/roominfo")
+    public ResponseEntity<?> getRoomInfo(){
+        try {
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회 완료", employeeRoomService.roomInfoList());
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
+        }
+    }
+
     @GetMapping("/reserve")
     public ResponseEntity<?> memberReservationRoomCheck(@RequestParam("id") Long id) {
         try {

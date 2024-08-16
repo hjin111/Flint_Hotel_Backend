@@ -70,6 +70,7 @@ public class Employee {
                 .birthday(this.birthday)
                 .dateOfEmployment(this.dateOfEmployment)
                 .gender(this.gender)
+                .delYN(this.delYN)
                 .department(this.department)
                 .build();
     }
