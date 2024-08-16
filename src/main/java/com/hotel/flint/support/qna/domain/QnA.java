@@ -47,7 +47,6 @@ public class QnA {
     @CreationTimestamp
     private LocalDateTime writeTime; // qna 작성시간
 
-    @UpdateTimestamp
     private LocalDateTime answerTime; // 답변 작성시간 - 답변 전에는 null일 수 있음
 
     @Column(length = 3000)

@@ -1,5 +1,6 @@
 package com.hotel.flint.room.domain;
 
+import com.hotel.flint.room.dto.RoomInfoResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,5 +30,13 @@ public class RoomInfo {
 
     public void updateRoomPrice(long newPrice){
         this.roomTypePrice = newPrice;
+    }
+
+    public RoomInfoResDto fromEntity(){
+        return RoomInfoResDto.builder()
+                .id(this.id)
+                .roomTypeName(this.roomTypeName)
+                .roomTypePrice(this.roomTypePrice)
+                .build();
     }
 }
