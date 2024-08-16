@@ -74,6 +74,8 @@ public class RoomReservation {
                 .childCnt(this.childCnt)
                 .adultBfCnt(this.adultBfCnt)
                 .childBfCnt(this.childBfCnt)
+                .parkingYN(this.parkingYN)
+                .requestContents(this.requestContents)
                 .build();
         return InfoRoomResDto.builder()
                 .id(this.id)
