@@ -1,5 +1,6 @@
 package com.hotel.flint.reserve.dining.repository;
 
+import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.user.member.domain.Member;
 import org.springframework.data.domain.Page;
@@ -14,4 +15,5 @@ import java.util.Optional;
 public interface DiningReservationRepository extends JpaRepository<DiningReservation, Long> {
     List<DiningReservation> findByMemberId(Member member);
     Page<DiningReservation> findAll(Pageable pageable);
+    List<DiningReservation> findByMemberIdAndDiningId(Member memberId, Dining diningId);
 }

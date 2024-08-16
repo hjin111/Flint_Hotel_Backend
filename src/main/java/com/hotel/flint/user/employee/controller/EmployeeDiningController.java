@@ -119,11 +119,13 @@ public class EmployeeDiningController {
         }
     }
 
+//    직원의 고객 다이닝 예약 내역 리스트와 detail
     @GetMapping("/reserve")
-    public ResponseEntity<?> memberReservationDiningCheck(@RequestParam("id") Long id) {
+    public ResponseEntity<?> memberReservationDiningCheck(@RequestParam String email) {
         try {
-            List<InfoDiningResDto> infoDiningResDto = employeeDiningService.memberReservationDiningCheck(id);
-            return new ResponseEntity<>(infoDiningResDto, HttpStatus.OK);
+            List<InfoDiningResDto> infoDiningResDto = employeeDiningService.memberReservationDiningCheck(email);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "고객 예약 리스트 ", infoDiningResDto);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
@@ -133,6 +135,7 @@ public class EmployeeDiningController {
         }
     }
 
+//    직원이 고객의 다이닝 예약 내역을 취소.
     @PostMapping("/cancel_reserve_dining")
     public ResponseEntity<?> memberReservationCncDiningByEmployee(@RequestParam("id") Long id){
         try{
