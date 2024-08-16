@@ -39,6 +39,17 @@ public class EmployeeRoomController {
         }
     }
 
+    
+    @GetMapping("/roominfo")
+    public ResponseEntity<?> getRoomInfo(){
+        try {
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회 완료", employeeRoomService.roomInfoList());
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
+        }
+    }
     /**
      * 직원의 권한으로 회원의 객실 예약 조회 - 단건 (detail)
      */
