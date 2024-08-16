@@ -119,13 +119,26 @@ public class EmployeeController {
         }
     }
 
-    //    직원 계정의 정보 조회
-//    해당 직원 id값
+//    직원 자신의 상세 정보
     @GetMapping("/detail")
     @ResponseBody
     public ResponseEntity<?> empDetail(){
         try{
             EmployeeDetResDto dto = employeeService.employeeDetail();
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Details Find" , dto);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        }catch (EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+//    Office 직원이 해당 직원 id값을 통해 정보 조회.
+    @GetMapping("/detail/{id}")
+    @ResponseBody
+    public ResponseEntity<?> empDetail(@PathVariable("id") Long id){
+        try{
+            EmployeeDetResDto dto = employeeService.employeeDetail(id);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Details Find" , dto);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         }catch (EntityNotFoundException e){

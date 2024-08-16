@@ -143,12 +143,21 @@ public class EmployeeService {
         return member.infoUserEntity();
     }
 
-//    직원 상세 정보
+//    직원 자신의 상세 정보.
     public EmployeeDetResDto employeeDetail(){
         Employee employee = employeeRepository.findByEmailAndDelYN(
                 SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getName()
+                , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 하는 관리자 정보가 존재하지 않습니다."));
+
+        return employee.EmpDetEntity();
+    }
+
+//    직원 상세 정보
+    public EmployeeDetResDto employeeDetail(Long id){
+        Employee employee = employeeRepository.findByIdAndDelYN(
+                id
         , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 계정이 존재하지 않습니다."));
 
         return employee.EmpDetEntity();
