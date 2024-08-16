@@ -2,18 +2,16 @@ package com.hotel.flint.user.employee.service;
 
 import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.Option;
-import com.hotel.flint.room.domain.RoomInfo;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
+import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
+import com.hotel.flint.room.domain.RoomInfo;
 import com.hotel.flint.room.repository.RoomDetailsRepository;
 import com.hotel.flint.room.repository.RoomInfoRepository;
 import com.hotel.flint.room.repository.RoomPriceRepository;
-import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.EmployeeModRoomDto;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
-import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
-import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import com.hotel.flint.user.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +65,15 @@ public class EmployeeRoomService {
         }
     }
 
-//
+    public List<RoomInfo> roomInfoList(){
+        Employee authenticatedEmployee = getAuthenticatedEmployee();
+        if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
+
+        return roomInfoRepository.findAll();
+    }
+
     public void modRoomPrice(Long id, long newPrice) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
         if(!authenticatedEmployee.getDepartment().toString().equals("Room")){

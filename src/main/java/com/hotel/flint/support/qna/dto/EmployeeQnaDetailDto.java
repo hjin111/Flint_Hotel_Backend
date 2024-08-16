@@ -1,5 +1,6 @@
 package com.hotel.flint.support.qna.dto;
 
+import com.hotel.flint.common.enumdir.Service;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ public class EmployeeQnaDetailDto {
     private String contents;
     private String memberEmail;
     private LocalDateTime writeTime;
+    private Service service;
 
     private String answer;
     private String employeeName;
