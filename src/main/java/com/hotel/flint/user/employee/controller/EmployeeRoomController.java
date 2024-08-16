@@ -38,8 +38,6 @@ public class EmployeeRoomController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
-
-    
     @GetMapping("/roominfo")
     public ResponseEntity<?> getRoomInfo(){
         try {

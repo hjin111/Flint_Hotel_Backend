@@ -90,7 +90,7 @@ public class EmployeeRoomService {
     public InfoRoomResDto memberReservationRoomCheck(Long id) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
         String auth = authenticatedEmployee.getDepartment().toString();
-        if(!auth.equals("Room") && !auth.equals(Department.Office.toString())){
+        if(!auth.equals(Department.Room.toString()) && !auth.equals(Department.Office.toString())){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
 

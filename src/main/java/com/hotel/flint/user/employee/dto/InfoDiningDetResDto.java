@@ -13,9 +13,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class InfoDiningDetResDto {
+    private Long id;
+    private String firstname;
+    private String lastname;
     private DiningName diningName;
     private int adult;
     private int child;
     private String comment;
-    private LocalDateTime reservationDateTime;
 }

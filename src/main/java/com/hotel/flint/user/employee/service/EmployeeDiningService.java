@@ -165,29 +165,53 @@ public class EmployeeDiningService {
         menuRepository.deleteById(menuId);
     }
 
-    public List<InfoDiningResDto> memberReservationDiningCheck(Long id){
+    public List<InfoDiningResDto> memberReservationDiningCheck(String email){
         Employee authenticateEmployee = getAuthenticatedEmployee();
-        DiningReservation diningReservation1 = diningReservationRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("해당 예약이 없습니다."));
-        DiningName dining = diningReservation1.getDiningId().getDiningName();
+        Member member = memberRepository.findByEmailAndDelYN(email, Option.N)
+                .orElseThrow(() -> new EntityNotFoundException("해당 고객 email이 존재하지 않습니다."));
 
         String auth = authenticateEmployee.getDepartment().toString();
-        if(!auth.equals(dining.toString()) && !auth.equals(Department.Office.toString())){
+        System.out.println(auth);
+//        만약 Office 권한을 가진 관리자가 로그인 하면 해당 고객의 모든 예약 정보를 가져옴.
+        if(auth.equals(Department.Office.toString())){
+            List<DiningReservation> diningReservations = diningReservationRepository.findByMemberId(member);
+            InfoUserResDto infoUserResDto = employeeService.memberInfo(member.getEmail());
+            List<InfoDiningResDto> infoDiningResDtoList = new ArrayList<>();
+            for(DiningReservation revs : diningReservations){
+                infoDiningResDtoList.add(revs.toInfoDiningResDto(infoUserResDto));
+            }
+            return infoDiningResDtoList;
+//            만약 Dining 관계자자라면 해당하는 Dining 의 리스트를 가져옴.
+        } else if (!auth.equals(Department.Room.toString())) {
+            Dining dining = diningRepository.findById(mapToDiningNum(auth)).orElse(null);
+            System.out.println(dining.getId());
+            List<DiningReservation> diningReservations = diningReservationRepository.findByMemberIdAndDiningId(member, dining);
+            InfoUserResDto infoUserResDto = employeeService.memberInfo(member.getEmail());
+            List<InfoDiningResDto> infoDiningResDtoList = new ArrayList<>();
+            for(DiningReservation revs : diningReservations){
+                infoDiningResDtoList.add(revs.toInfoDiningResDto(infoUserResDto));
+            }
+            return infoDiningResDtoList;
+        }
+        else{
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
+//        만약 각 Dining 의 권한을 가진 관리자가 로그인 하면 해당하는 Dining 의 예약 리스트만 받아옴.
 
-        Member member = memberRepository.findById(diningReservation1.getMemberId().getId())
-                .orElseThrow(()->new EntityNotFoundException("해당 ID의 멤버가 없습니다."));
-
-        List<DiningReservation> diningReservation = diningReservationRepository.findByMemberId(member);
-        InfoUserResDto infoUserResDto = employeeService.memberInfo(member.getEmail());
-        List<InfoDiningResDto> infoDiningResDtoList = new ArrayList<>();
-
-        for(DiningReservation revs : diningReservation){
-            infoDiningResDtoList.add(revs.toInfoDiningResDto(infoUserResDto));
+    }
+    private Long mapToDiningNum(String depart){
+        switch (depart) {
+            case "KorDining":
+                return 1L;
+            case "JapDining":
+                return 3L;
+            case "ChiDining":
+                return 2L;
+            case "Lounge":
+                return 4L;
+            default:
+                throw new IllegalArgumentException("접근권한이 없습니다.");
         }
-
-        return infoDiningResDtoList;
     }
 
     public ReservationDetailDto memberReservationCncDiningByEmployee(Long id){
