@@ -219,21 +219,6 @@ public class EmployeeService {
 
         return info;
     }
-    public List<EmployeeListResDto> employeeList(){
-        List<Employee> employees = employeeRepository.findAll();
-        List<EmployeeListResDto> dto = new ArrayList<>();
-
-        for(Employee emp : employees){
-            dto.add(EmployeeListResDto.builder()
-                            .id(emp.getId())
-                            .empNo(emp.getEmployeeNumber())
-                            .department(emp.getDepartment())
-                            .name(emp.getFirstName() + " " + emp.getLastName())
-                    .build());
-        }
-
-        return dto;
-    }
     public List<EmployeeDetResDto> getEmployeeList(EmployeeSearchDto dto) {
         Specification<Employee> specification = new Specification<Employee>() {
             @Override
