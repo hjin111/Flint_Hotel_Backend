@@ -26,7 +26,7 @@ public class InitialDataLoader implements CommandLineRunner {
     //    실행 시점에 office 부서의 유저 한개를 만들겠다.
     @Override
     public void run(String... args) throws Exception{
-        if (employeeRepository.findByEmailAndDelYN("flinthotelcom@gmail.com", Option.N).isEmpty()) {
+        if (employeeRepository.findByEmailAndDelYN("flint@gmail.com", Option.N).isEmpty()) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
             LocalDate date = LocalDate.parse("2024/07/29", formatter);
             EmployeeMakeDto dto = EmployeeMakeDto.builder()
@@ -34,7 +34,7 @@ public class InitialDataLoader implements CommandLineRunner {
                     .lastName("hotel")
                     .email("flint@gmail.com")
                     .phoneNumber("02-1111-2222")
-                    .departMent(Department.Office)
+                    .department(Department.Office)
                     .password("12341234")
                     .employeeRank(EmployeeRank.사장)
                     .birthday(date)
