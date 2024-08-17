@@ -14,4 +14,3 @@ public class RoomInfoResDto {
     private String roomTypeName;
     private Long roomTypePrice;
 }
-

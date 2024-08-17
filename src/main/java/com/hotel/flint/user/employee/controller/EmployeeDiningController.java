@@ -11,6 +11,7 @@ import com.hotel.flint.reserve.dining.service.DiningReservationService;
 import com.hotel.flint.user.employee.dto.DiningMenuDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
 import com.hotel.flint.user.employee.dto.MenuSearchDto;
+import com.hotel.flint.user.employee.dto.memberDiningResDto;
 import com.hotel.flint.user.employee.service.EmployeeDiningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -136,8 +137,8 @@ public class EmployeeDiningController {
     }
 
 //    직원이 고객의 다이닝 예약 내역을 취소.
-    @PostMapping("/cancel_reserve_dining")
-    public ResponseEntity<?> memberReservationCncDiningByEmployee(@RequestParam("id") Long id){
+    @GetMapping("/cancel_reserve_dining/{id}")
+    public ResponseEntity<?> memberReservationCncDiningByEmployee(@PathVariable Long id){
         try{
             ReservationDetailDto dto = employeeDiningService.memberReservationCncDiningByEmployee(id);
             return new ResponseEntity<>(dto, HttpStatus.OK);
@@ -147,14 +148,31 @@ public class EmployeeDiningController {
         }
     }
 
-    // 예약 수정
-    @PostMapping("/dining/update/{id}")
-    public ResponseEntity<?> reserveDiningUpdate(@PathVariable Long id, @RequestBody ReservationUpdateDto dto){
-        try {
-            DiningReservation diningReservation = diningReservationService.update(id, dto);
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,  "예약 수정 완료", diningReservation.getId());
+    // 다이닝 예약 정보 ( 멤버랑 해당 다이닝 )
+    @GetMapping("/detail/{id}")
+    public ResponseEntity<?> reserveDiningDetail(@PathVariable Long id){
+        System.out.println(id);
+        try{
+            memberDiningResDto dto = diningReservationService.diningDetail(id);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK,  "예약 상세정보 출력", dto);
             return new ResponseEntity<>( commonResDto, HttpStatus.OK );
         }catch (IllegalArgumentException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<?> reserveDiningUpdate(@PathVariable Long id, @RequestBody ReservationUpdateDto dto) {
+        try {
+
+            DiningReservation diningReservation = diningReservationService.updateDiningFields(id, dto.getAdult(), dto.getChild(), dto.getComment(), dto.getReservationDateTime());
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "예약 수정 완료", diningReservation.getId());
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.NOT_FOUND.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }

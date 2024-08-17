@@ -39,4 +39,5 @@ public class RoomInfo {
                 .roomTypePrice(this.roomTypePrice)
                 .build();
     }
+
 }
