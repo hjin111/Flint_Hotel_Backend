@@ -1,13 +1,12 @@
 package com.hotel.flint.reserve.dining.service;
 
+import com.hotel.flint.common.enumdir.DiningName;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.dining.repository.DiningRepository;
+import com.hotel.flint.reserve.dining.controller.DiningSseController;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
-import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
-import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
-import com.hotel.flint.reserve.dining.dto.ReservationSaveReqDto;
-import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
+import com.hotel.flint.reserve.dining.dto.*;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
@@ -39,13 +38,15 @@ public class DiningReservationService {
     private final DiningRepository diningRepository;
 
     private final EmployeeRepository employeeRepository;
+    private final DiningSseController diningSseController;
 
     @Autowired
-    public DiningReservationService(DiningReservationRepository diningReservationRepository, MemberRepository memberRepository, DiningRepository diningRepository, EmployeeRepository employeeRepository){
+    public DiningReservationService(DiningReservationRepository diningReservationRepository, MemberRepository memberRepository, DiningRepository diningRepository, EmployeeRepository employeeRepository, DiningSseController diningSseController){
         this.diningReservationRepository = diningReservationRepository;
         this.memberRepository = memberRepository;
         this.diningRepository = diningRepository;
         this.employeeRepository = employeeRepository;
+        this.diningSseController = diningSseController;
     }
 
 
@@ -87,6 +88,14 @@ public class DiningReservationService {
 
         // DiningReservation에 저장
         DiningReservation diningReservation = dto.toEntity(member, dining);
+        DiningName diningName = diningReservation.getDiningId().getDiningName();
+
+        String email = "flint_" + diningName.toString().substring(0,3) + "@gmail.com";
+
+        System.out.println(email);
+        ReservationSseDetailDto reservationSseDetailDto = diningReservation.fromSseEntity(dto.getDiningId());
+
+        diningSseController.publishMessage(reservationSseDetailDto, email);
         return diningReservationRepository.save(diningReservation);
     }
 

@@ -70,7 +70,7 @@ public class EmployeeService {
         for(Member m : member){
             dto.add(EmployeeToMemberListDto.builder()
                             .id(m.getId())
-                            .name(m.getFirstName() + " " + m.getLastName())
+                            .name(m.getLastName() + " " + m.getFirstName())
                             .email(m.getEmail())
                     .build());
         }
@@ -213,6 +213,11 @@ public class EmployeeService {
     }
 
     public InfoMemberReserveListResDto employeeMemberReserveList(String email){
+        Employee authenticatedEmployee = getAuthenticatedEmployee();
+        System.out.println(authenticatedEmployee.getDepartment().toString());
+        if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
+            throw new SecurityException("인증되지 않은 사용자입니다.");
+        }
         Member member = memberService.findByMemberEmail(email);
 
         InfoMemberReserveListResDto info = member.memberReserveListEntity();

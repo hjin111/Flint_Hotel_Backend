@@ -4,6 +4,7 @@ import com.hotel.flint.common.domain.BaseTimeEntity;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
+import com.hotel.flint.reserve.dining.dto.ReservationSseDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
 import com.hotel.flint.user.employee.dto.InfoDiningDetResDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
@@ -90,6 +91,18 @@ public class DiningReservation extends BaseTimeEntity {
                 .reservationDateTime(this.reservationDateTime)
                 .createdTime(this.getCreatedTime())
                 .updatedTime(this.getUpdatedTime())
+                .build();
+    }
+
+    public ReservationSseDetailDto fromSseEntity(Long id){
+        return ReservationSseDetailDto.builder()
+                .id(id)
+                .memberId(this.memberId.getId())
+                .adult(this.adult)
+                .child(this.child)
+                .comment(this.comment)
+                .ReserveTime(this.reservationDateTime.toString().split("T")[1])
+                .ReserveDate(this.reservationDateTime.toString().split("T")[0])
                 .build();
     }
 
