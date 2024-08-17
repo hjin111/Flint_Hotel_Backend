@@ -5,6 +5,7 @@ import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
 import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
 import com.hotel.flint.room.domain.RoomInfo;
+import com.hotel.flint.room.dto.RoomInfoResDto;
 import com.hotel.flint.room.repository.RoomDetailsRepository;
 import com.hotel.flint.room.repository.RoomInfoRepository;
 import com.hotel.flint.room.repository.RoomPriceRepository;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,14 +67,21 @@ public class EmployeeRoomService {
         }
     }
 
-    public List<RoomInfo> roomInfoList(){
+    public List<RoomInfoResDto> roomInfoList(){
         Employee authenticatedEmployee = getAuthenticatedEmployee();
         if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
+        List<RoomInfo> infos = roomInfoRepository.findAll();
+        List<RoomInfoResDto> resDtos= new ArrayList<>();
 
-        return roomInfoRepository.findAll();
+        for(RoomInfo info : infos){
+            resDtos.add(info.fromEntity());
+        }
+
+        return resDtos;
     }
+
 
     public void modRoomPrice(Long id, long newPrice) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
