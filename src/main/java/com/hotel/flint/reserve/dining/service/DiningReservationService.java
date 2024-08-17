@@ -88,14 +88,8 @@ public class DiningReservationService {
 
         // DiningReservation에 저장
         DiningReservation diningReservation = dto.toEntity(member, dining);
-        DiningName diningName = diningReservation.getDiningId().getDiningName();
 
-        String email = "flint_" + diningName.toString().substring(0,3) + "@gmail.com";
 
-        System.out.println(email);
-        ReservationSseDetailDto reservationSseDetailDto = diningReservation.fromSseEntity(dto.getDiningId());
-
-        diningSseController.publishMessage(reservationSseDetailDto, email);
         return diningReservationRepository.save(diningReservation);
     }
 

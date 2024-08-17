@@ -8,6 +8,7 @@ src/main/resources/application**.yml
 src/main/java/com/hotel/flint/common/configs/RabbitMqConfig.java
 src/main/java/com/hotel/flint/common/controller/MqRequestController.java
 src/main/java/com/hotel/flint/common/service/RequestQueueManager.java
+src/main/java/com/hotel/flint/reserve/dining/controller/DiningSseController.java
 
 ### STS ###
 .apt_generated
