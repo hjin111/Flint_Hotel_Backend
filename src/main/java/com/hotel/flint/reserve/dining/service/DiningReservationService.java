@@ -4,7 +4,6 @@ import com.hotel.flint.common.enumdir.DiningName;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.dining.repository.DiningRepository;
-import com.hotel.flint.reserve.dining.controller.DiningSseController;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.reserve.dining.dto.*;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
