@@ -31,7 +31,6 @@ public class RoomInfo {
     public void updateRoomPrice(long newPrice){
         this.roomTypePrice = newPrice;
     }
-
     public RoomInfoResDto fromEntity(){
         return RoomInfoResDto.builder()
                 .id(this.id)
@@ -39,5 +38,4 @@ public class RoomInfo {
                 .roomTypePrice(this.roomTypePrice)
                 .build();
     }
-
 }

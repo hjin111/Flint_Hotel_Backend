@@ -1,12 +1,12 @@
 package com.hotel.flint.reserve.dining.service;
 
+import com.hotel.flint.common.enumdir.DiningName;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.dining.repository.DiningRepository;
+import com.hotel.flint.reserve.dining.controller.DiningSseController;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
-import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
-import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
-import com.hotel.flint.reserve.dining.dto.ReservationSaveReqDto;
+import com.hotel.flint.reserve.dining.dto.*;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.memberDiningResDto;
@@ -47,7 +47,7 @@ public class DiningReservationService {
     public DiningReservationService(DiningReservationRepository diningReservationRepository, MemberRepository memberRepository, DiningRepository diningRepository, EmployeeRepository employeeRepository, EmployeeService employeeService){
         this.diningReservationRepository = diningReservationRepository;
         this.memberRepository = memberRepository;
-        this.diningRepository = diningRepository;
+        this.diningRepository = diningRepository; 
         this.employeeRepository = employeeRepository;
         this.employeeService = employeeService;
     }
@@ -91,6 +91,8 @@ public class DiningReservationService {
 
         // DiningReservation에 저장
         DiningReservation diningReservation = dto.toEntity(member, dining);
+
+
         return diningReservationRepository.save(diningReservation);
     }
 

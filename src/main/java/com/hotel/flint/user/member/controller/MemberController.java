@@ -121,6 +121,8 @@ public class MemberController {
         }
     }
 
+
+//    멤버 상세 정보 조회.
     @GetMapping("/detail")
     public ResponseEntity<?> userDetail() {
         try {
@@ -133,6 +135,8 @@ public class MemberController {
         }
     }
 
+    
+//    멤버 삭제
     @PatchMapping("/delete")
     public ResponseEntity<?> userDelete(@RequestBody String password) {
         try {

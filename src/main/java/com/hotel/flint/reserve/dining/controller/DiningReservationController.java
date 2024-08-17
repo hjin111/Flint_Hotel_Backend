@@ -82,7 +82,7 @@ public class DiningReservationController {
         }
     }
     // 예약 삭제/취소
-    @DeleteMapping("/dining/delete/{id}")
+    @GetMapping("/dining/delete/{id}")
     public ResponseEntity<?> reservationDiningCanceled(@PathVariable Long id){
         try {
             diningReservationService.delete(id);
