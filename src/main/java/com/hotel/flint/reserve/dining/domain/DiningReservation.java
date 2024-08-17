@@ -9,17 +9,16 @@ import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
 import com.hotel.flint.user.employee.dto.InfoDiningDetResDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
+import com.hotel.flint.user.employee.dto.memberDiningResDto;
 import com.hotel.flint.user.member.domain.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -74,8 +73,6 @@ public class DiningReservation extends BaseTimeEntity {
         this.child = dto.getChild();
         this.comment = dto.getComment();
         this.reservationDateTime = dto.getReservationDateTime();
-        this.diningId = dining;
-        this.memberId = member;
 
     }
 
@@ -121,6 +118,21 @@ public class DiningReservation extends BaseTimeEntity {
                 .diningReservationId(this.id)
                 .reservationDateTime(this.reservationDateTime)
                 .infoDiningDetResDto(infoDiningDetResDto)
+                .build();
+    }
+
+    public memberDiningResDto tomemDiningRes(){
+        return memberDiningResDto.builder()
+                .id(this.id)
+                .email(this.memberId.getEmail())
+                .reservationDateTime(this.reservationDateTime)
+                .firstname(this.memberId.getFirstName())
+                .lastname(this.memberId.getLastName())
+                .adult(this.adult)
+                .child(this.child)
+                .phoneNumber(this.memberId.getPhoneNumber())
+                .diningName(this.getDiningId().getDiningName())
+                .comment(this.comment)
                 .build();
     }
 }

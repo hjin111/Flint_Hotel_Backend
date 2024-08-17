@@ -9,7 +9,9 @@ import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.reserve.dining.dto.*;
 import com.hotel.flint.reserve.dining.repository.DiningReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
+import com.hotel.flint.user.employee.dto.memberDiningResDto;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
+import com.hotel.flint.user.employee.service.EmployeeService;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,15 +41,15 @@ public class DiningReservationService {
     private final DiningRepository diningRepository;
 
     private final EmployeeRepository employeeRepository;
-    private final DiningSseController diningSseController;
+    private final EmployeeService employeeService;
 
     @Autowired
-    public DiningReservationService(DiningReservationRepository diningReservationRepository, MemberRepository memberRepository, DiningRepository diningRepository, EmployeeRepository employeeRepository, DiningSseController diningSseController){
+    public DiningReservationService(DiningReservationRepository diningReservationRepository, MemberRepository memberRepository, DiningRepository diningRepository, EmployeeRepository employeeRepository, EmployeeService employeeService){
         this.diningReservationRepository = diningReservationRepository;
         this.memberRepository = memberRepository;
-        this.diningRepository = diningRepository;
+        this.diningRepository = diningRepository; 
         this.employeeRepository = employeeRepository;
-        this.diningSseController = diningSseController;
+        this.employeeService = employeeService;
     }
 
 
@@ -169,22 +172,36 @@ public class DiningReservationService {
 
     }
 
-    // 예약 수정 - 관리자
-    public DiningReservation update(Long id, ReservationUpdateDto dto){
+    public DiningReservation updateDiningFields(Long id, Integer adult, Integer child, String comment, LocalDateTime reservationDateTime) {
+        // 기존 예약 정보 조회
+        DiningReservation diningReservation = diningReservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 예약입니다."));
 
-        Employee employee = getAuthenticatedEmployee();
-
-        Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new EntityNotFoundException("없는 회원입니다."));
-        Dining dining = diningRepository.findByDiningName(dto.getDiningName()).orElseThrow(()-> new EntityNotFoundException("없는 다이닝 타입 입니다."));
-
-        if(employee.getDepartment().toString().equals(dto.getDiningName().toString())) {
-            DiningReservation diningReservation = new DiningReservation(id, member, dining, dto);
-            diningReservationRepository.save(diningReservation);
-            return diningReservation;
-        }else {
-            throw new IllegalArgumentException("권한이 없습니다.");
+        // 필요한 필드만 업데이트
+        if (adult != null) {
+            diningReservation.setAdult(adult);  // 성인 인원 수정
+        }
+        if (child != null) {
+            diningReservation.setChild(child);  // 어린이 인원 수정
+        }
+        if (comment != null) {
+            diningReservation.setComment(comment);  // 코멘트 수정
+        }
+        if (reservationDateTime != null) {
+            diningReservation.setReservationDateTime(reservationDateTime);  // 예약 시간 수정
         }
 
+        // 수정된 예약 정보 저장
+        return diningReservationRepository.save(diningReservation);
     }
 
+
+
+    public memberDiningResDto diningDetail(Long id){
+        DiningReservation diningReservation = diningReservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 예약 ID 내역이 없습니다."));
+        System.out.println(diningReservation);
+
+        return diningReservation.tomemDiningRes();
+    }
 }

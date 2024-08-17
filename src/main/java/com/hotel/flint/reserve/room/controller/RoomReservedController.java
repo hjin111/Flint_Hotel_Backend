@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -46,6 +47,10 @@ public class RoomReservedController {
             CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "예약 금액은 " + totalPrice + "원 입니다.", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
+
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        } catch (EntityNotFoundException e) {
 
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
             return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
@@ -103,12 +108,14 @@ public class RoomReservedController {
      */
     @GetMapping("/room/remain")
     public List<PossibleRoomDto> checkRemainRoom(@RequestParam("checkInDate") String checkInStr,
-                                                 @RequestParam("checkOutDate") String checkOutStr) {
+                                                 @RequestParam("checkOutDate") String checkOutStr,
+                                                 @RequestParam("adultCnt") int adultCnt,
+                                                 @RequestParam("childCnt") int childCnt) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate checkInDate = LocalDate.parse(checkInStr, formatter);
         LocalDate checkOutDate = LocalDate.parse(checkOutStr, formatter);
 
-        return roomReservedService.checkRemainRoom(checkInDate, checkOutDate);
+        return roomReservedService.checkRemainRoom(checkInDate, checkOutDate, adultCnt, childCnt);
     }
 
     /**

@@ -2,11 +2,7 @@ package com.hotel.flint.support.qna.domain;
 
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.Service;
-import com.hotel.flint.support.qna.dto.QnaDetailDto;
-import com.hotel.flint.support.qna.dto.QnaListDto;
-import com.hotel.flint.support.qna.dto.QnaUpdateDto;
-import com.hotel.flint.support.qna.dto.EmployeeQnaDetailDto;
-import com.hotel.flint.support.qna.dto.EmployeeQnaListDto;
+import com.hotel.flint.support.qna.dto.*;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
@@ -14,7 +10,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -214,7 +214,6 @@ public class EmployeeService {
 
     public InfoMemberReserveListResDto employeeMemberReserveList(String email){
         Employee authenticatedEmployee = getAuthenticatedEmployee();
-        System.out.println(authenticatedEmployee.getDepartment().toString());
         if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
             throw new SecurityException("인증되지 않은 사용자입니다.");
         }
