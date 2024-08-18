@@ -15,5 +15,6 @@ import java.util.Optional;
 public interface DiningReservationRepository extends JpaRepository<DiningReservation, Long> {
     List<DiningReservation> findByMemberId(Member member);
     Page<DiningReservation> findAll(Pageable pageable);
-    List<DiningReservation> findByMemberIdAndDiningId(Member memberId, Dining diningId);
+    Page<DiningReservation> findByMemberIdAndDiningId(Member memberId, Dining diningId, Pageable pageable);
+    Page<DiningReservation> findAllByMemberId(Member member ,Pageable pageable);
 }

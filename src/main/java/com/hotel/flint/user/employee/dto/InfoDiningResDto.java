@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Builder
 public class InfoDiningResDto {
     private Long diningReservationId;
-    private LocalDateTime reservationDateTime;
-
-    private InfoDiningDetResDto infoDiningDetResDto;
+    private LocalDateTime reservationDate;
+    private LocalDateTime reservationTime;
 }

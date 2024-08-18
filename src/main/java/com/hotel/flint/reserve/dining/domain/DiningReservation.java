@@ -103,21 +103,11 @@ public class DiningReservation extends BaseTimeEntity {
                 .build();
     }
 
-    public InfoDiningResDto toInfoDiningResDto(InfoUserResDto infoUserResDto){
-        InfoDiningDetResDto infoDiningDetResDto = InfoDiningDetResDto.builder()
-                .diningName(this.diningId.getDiningName())
-                .firstname(infoUserResDto.getFirstName())
-                .lastname(infoUserResDto.getLastName())
-                .id(this.diningId.getId())
-                .adult(this.adult)
-                .child(this.child)
-                .comment(this.comment)
-                .build();
-
+    public InfoDiningResDto toInfoDiningResDto(){
         return InfoDiningResDto.builder()
                 .diningReservationId(this.id)
-                .reservationDateTime(this.reservationDateTime)
-                .infoDiningDetResDto(infoDiningDetResDto)
+                .reservationDate(this.reservationDateTime)
+                .reservationTime(this.reservationDateTime)
                 .build();
     }
 

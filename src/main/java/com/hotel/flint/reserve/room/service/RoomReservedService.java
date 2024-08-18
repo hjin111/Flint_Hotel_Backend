@@ -4,6 +4,7 @@ package com.hotel.flint.reserve.room.service;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.common.enumdir.Season;
+import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.reserve.room.domain.*;
 import com.hotel.flint.reserve.room.dto.PossibleRoomDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
@@ -16,6 +17,8 @@ import com.hotel.flint.room.domain.RoomPrice;
 import com.hotel.flint.room.repository.RoomDetailsRepository;
 import com.hotel.flint.room.repository.RoomInfoRepository;
 import com.hotel.flint.room.repository.RoomPriceRepository;
+import com.hotel.flint.user.employee.dto.InfoRoomDetResDto;
+import com.hotel.flint.user.employee.dto.memberDiningResDto;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -218,6 +221,14 @@ public class RoomReservedService {
 
         return percentage != null ? percentage.getAdditionalPercentage() : 1.0;
 
+    }
+
+//    예약 단건 조회
+    public InfoRoomDetResDto roomDetail(Long id){
+        RoomReservation roomReservation = roomReservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 예약 ID 내역이 없습니다."));
+
+        return roomReservation.toInfoRoomDetResEntity();
     }
 
     /**

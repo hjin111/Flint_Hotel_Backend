@@ -44,24 +44,24 @@ public class EmployeeMemberController {
         }
     }
 
-    @GetMapping("/list_reserve")
-    @ResponseBody
-    public ResponseEntity<?> employeeMemberReserveList(@RequestParam String email){
-        System.out.println(email);
-        try {
-            InfoMemberReserveListResDto info = employeeService.employeeMemberReserveList(email);
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Member Reserve List" , info);
-            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-        }
-        catch(EntityNotFoundException e){
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        }catch (IllegalArgumentException e){
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        } catch (SecurityException e){
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
-        }
-    }
+//    @GetMapping("/list_reserve")
+//    @ResponseBody
+//    public ResponseEntity<?> employeeMemberReserveList(@RequestParam String email){
+//        System.out.println(email);
+//        try {
+//            InfoMemberReserveListResDto info = employeeService.employeeMemberReserveList(email);
+//            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Member Reserve List" , info);
+//            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+//        }
+//        catch(EntityNotFoundException e){
+//            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+//            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+//        }catch (IllegalArgumentException e){
+//            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+//            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+//        } catch (SecurityException e){
+//            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+//            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
+//        }
+//    }
 }

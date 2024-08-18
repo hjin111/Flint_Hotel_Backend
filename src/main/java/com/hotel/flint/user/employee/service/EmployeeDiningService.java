@@ -19,6 +19,9 @@ import com.hotel.flint.user.employee.dto.MenuSearchDto;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,6 +36,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -165,37 +169,34 @@ public class EmployeeDiningService {
         menuRepository.deleteById(menuId);
     }
 
-    public List<InfoDiningResDto> memberReservationDiningCheck(String email){
+    public List<InfoDiningResDto> memberReservationDiningCheck(String email, Pageable pageable){
         Employee authenticateEmployee = getAuthenticatedEmployee();
         Member member = memberRepository.findByEmailAndDelYN(email, Option.N)
                 .orElseThrow(() -> new EntityNotFoundException("해당 고객 email이 존재하지 않습니다."));
 
         String auth = authenticateEmployee.getDepartment().toString();
-        System.out.println(auth);
-//        만약 Office 권한을 가진 관리자가 로그인 하면 해당 고객의 모든 예약 정보를 가져옴.
-        if(auth.equals(Department.Office.toString())){
-            List<DiningReservation> diningReservations = diningReservationRepository.findByMemberId(member);
-            InfoUserResDto infoUserResDto = employeeService.memberInfo(member.getEmail());
-            List<InfoDiningResDto> infoDiningResDtoList = new ArrayList<>();
-            for(DiningReservation revs : diningReservations){
-                infoDiningResDtoList.add(revs.toInfoDiningResDto(infoUserResDto));
-            }
-            return infoDiningResDtoList;
+        List<InfoDiningResDto> allReservation = new ArrayList<>();
+        int pageNumber = 0;
+        boolean hasMorePage;
 //            만약 Dining 관계자자라면 해당하는 Dining 의 리스트를 가져옴.
-        } else if (!auth.equals(Department.Room.toString())) {
-            Dining dining = diningRepository.findById(mapToDiningNum(auth)).orElse(null);
-            System.out.println(dining.getId());
-            List<DiningReservation> diningReservations = diningReservationRepository.findByMemberIdAndDiningId(member, dining);
-            InfoUserResDto infoUserResDto = employeeService.memberInfo(member.getEmail());
-            List<InfoDiningResDto> infoDiningResDtoList = new ArrayList<>();
-            for(DiningReservation revs : diningReservations){
-                infoDiningResDtoList.add(revs.toInfoDiningResDto(infoUserResDto));
+        do {
+            pageable = PageRequest.of(pageNumber, 10);
+            Page<DiningReservation> diningReservations;
+            if (!auth.equals(Department.Room.toString()) && !auth.equals(Department.Office.toString())) {
+                Dining dining = diningRepository.findById(mapToDiningNum(auth)).orElse(null);
+                diningReservations = diningReservationRepository.findByMemberIdAndDiningId(member, dining, pageable);
+            } else {
+                throw new IllegalArgumentException("접근 권한이 없습니다.");
             }
-            return infoDiningResDtoList;
-        }
-        else{
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
-        }
+            allReservation.addAll(diningReservations.stream()
+                    .map(revs -> revs.toInfoDiningResDto())
+                    .collect(Collectors.toList()));
+
+            hasMorePage = diningReservations.hasNext();
+            pageNumber++;
+        }while(hasMorePage);
+
+        return allReservation;
 //        만약 각 Dining 의 권한을 가진 관리자가 로그인 하면 해당하는 Dining 의 예약 리스트만 받아옴.
 
     }

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class InfoRoomDetResDto {
-
+    private Long id;
     private String roomType;
     private LocalDate checkin;
     private LocalDate checkout;

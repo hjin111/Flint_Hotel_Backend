@@ -14,6 +14,8 @@ import com.hotel.flint.user.employee.dto.MenuSearchDto;
 import com.hotel.flint.user.employee.dto.memberDiningResDto;
 import com.hotel.flint.user.employee.service.EmployeeDiningService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -120,12 +122,13 @@ public class EmployeeDiningController {
         }
     }
 
-//    직원의 고객 다이닝 예약 내역 리스트와 detail
+//    직원의 고객 다이닝 예약 내역 리스트
     @GetMapping("/reserve")
-    public ResponseEntity<?> memberReservationDiningCheck(@RequestParam String email) {
+    public ResponseEntity<?> memberReservationDiningCheck(@RequestParam String email, Pageable pageable) {
         try {
-            List<InfoDiningResDto> infoDiningResDto = employeeDiningService.memberReservationDiningCheck(email);
+            List<InfoDiningResDto> infoDiningResDto = employeeDiningService.memberReservationDiningCheck(email, pageable);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "고객 예약 리스트 ", infoDiningResDto);
+            System.out.println(infoDiningResDto.size());
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
