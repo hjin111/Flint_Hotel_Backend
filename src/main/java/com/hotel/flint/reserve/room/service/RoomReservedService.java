@@ -1,9 +1,11 @@
 package com.hotel.flint.reserve.room.service;
 
 
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.RoomView;
 import com.hotel.flint.common.enumdir.Season;
+import com.hotel.flint.reserve.room.controller.RoomSSEController;
 import com.hotel.flint.reserve.room.domain.*;
 import com.hotel.flint.reserve.room.dto.PossibleRoomDto;
 import com.hotel.flint.reserve.room.dto.RoomReservedDetailDto;
@@ -16,6 +18,8 @@ import com.hotel.flint.room.domain.RoomPrice;
 import com.hotel.flint.room.repository.RoomDetailsRepository;
 import com.hotel.flint.room.repository.RoomInfoRepository;
 import com.hotel.flint.room.repository.RoomPriceRepository;
+import com.hotel.flint.user.employee.domain.Employee;
+import com.hotel.flint.user.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +53,9 @@ public class RoomReservedService {
 
     private final HolidayService holidayService;
     private final SeasonService seasonService;
+    // sse controller
+    private final RoomSSEController roomSSEController;
+    private final EmployeeRepository employeeRepository;
 
     @Autowired
     public RoomReservedService (RoomReservationRepository roomReservationRepository,
@@ -58,7 +65,7 @@ public class RoomReservedService {
                                 MemberRepository memberRepository,
                                 CheckReservedDateRepository checkReservedDateRepository,
                                 HolidayService holidayService,
-                                SeasonService seasonService) {
+                                SeasonService seasonService, RoomSSEController roomSSEController, EmployeeRepository employeeRepository) {
         this.roomReservationRepository = roomReservationRepository;
         this.roomDetailsRepository = roomDetailsRepository;
         this.roomPriceRepository = roomPriceRepository;
@@ -68,6 +75,8 @@ public class RoomReservedService {
 
         this.holidayService = holidayService;
         this.seasonService = seasonService;
+        this.roomSSEController = roomSSEController;
+        this.employeeRepository = employeeRepository;
     }
 
     /**
@@ -102,6 +111,10 @@ public class RoomReservedService {
         RoomReservation savedRoomReservation = roomReservationRepository.save(roomReservation);
         log.info("room reservation : " + savedRoomReservation);
 
+        // 주문 된 후 알림 - Room부서인 직원 List 가져오기
+        List<Employee> roomEmployeeList = employeeRepository.findByDepartment(Department.Room);
+
+        roomSSEController.publishMessage(savedRoomReservation.listFromEntity(0), roomEmployeeList);
         // 날짜 가져가서 계산
         long totalPrice = calculatePrice(dto);
 

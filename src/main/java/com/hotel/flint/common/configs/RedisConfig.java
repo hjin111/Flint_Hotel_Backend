@@ -41,4 +41,33 @@ public class RedisConfig {
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return template;
     }
+
+    /**
+     * Redis - pub/sub 구현 (객실 예약 알림용)
+     */
+    @Bean
+    @Qualifier("6")
+    public RedisConnectionFactory sseFactory() {
+
+        // connection 정보 넣기
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(host);
+        configuration.setPort(port);
+        configuration.setDatabase(5); // db 5번 사용
+
+        return new LettuceConnectionFactory(configuration);
+    }
+
+    @Bean
+    @Qualifier("6")
+    public RedisTemplate<String, Object> sseRedisTemplate(@Qualifier("6") RedisConnectionFactory sseFactory) {
+
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+
+        // 직렬화
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setConnectionFactory(sseFactory);
+
+        return redisTemplate;
+    }
 }
