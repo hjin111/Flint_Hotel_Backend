@@ -1,6 +1,7 @@
 package com.hotel.flint.common.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -63,11 +64,30 @@ public class RedisConfig {
     public RedisTemplate<String, Object> sseRedisTemplate(@Qualifier("6") RedisConnectionFactory sseFactory) {
 
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-
         // 직렬화
         redisTemplate.setKeySerializer(new StringRedisSerializer());
+
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.registerModule(new JavaTimeModule());
+        serializer.setObjectMapper(objectMapper);
+        redisTemplate.setValueSerializer(serializer);
+
         redisTemplate.setConnectionFactory(sseFactory);
 
         return redisTemplate;
+    }
+
+    /**
+     * 리스너 객체 생성
+     */
+    @Bean
+    @Qualifier("6")
+    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("6") RedisConnectionFactory sseFactory) {
+
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(sseFactory);
+        return container;
     }
 }

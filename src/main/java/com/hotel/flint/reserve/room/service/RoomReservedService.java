@@ -109,12 +109,10 @@ public class RoomReservedService {
         RoomReservation roomReservation = dto.toEntity(member, roomDetails);
         log.info("toEntity넘어감");
         RoomReservation savedRoomReservation = roomReservationRepository.save(roomReservation);
-        log.info("room reservation : " + savedRoomReservation);
 
         // 주문 된 후 알림 - Room부서인 직원 List 가져오기
         List<Employee> roomEmployeeList = employeeRepository.findByDepartment(Department.Room);
-
-        roomSSEController.publishMessage(savedRoomReservation.listFromEntity(0), roomEmployeeList);
+        roomSSEController.publishMessage(savedRoomReservation.detailFromEntity(), roomEmployeeList);
         // 날짜 가져가서 계산
         long totalPrice = calculatePrice(dto);
 
