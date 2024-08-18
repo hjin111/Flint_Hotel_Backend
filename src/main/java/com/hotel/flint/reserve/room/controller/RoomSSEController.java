@@ -110,7 +110,7 @@ public class RoomSSEController implements MessageListener {
         // message 내용 parsing
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            RoomReservedListDto dto = objectMapper.readValue(message.getBody(), RoomReservedListDto.class);
+            RoomReservedDetailDto dto = objectMapper.readValue(message.getBody(), RoomReservedDetailDto.class);
             log.info("listen 하는 중");
             log.info("dto: {}", dto);
 
