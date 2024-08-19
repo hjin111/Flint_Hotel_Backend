@@ -38,7 +38,6 @@ public class EmployeeRoomController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
-
     @GetMapping("/roominfo")
     public ResponseEntity<?> getRoomInfo(){
         try {
@@ -49,9 +48,11 @@ public class EmployeeRoomController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
-
-    @GetMapping("/reserve")
-    public ResponseEntity<?> memberReservationRoomCheck(@RequestParam("id") Long id) {
+    /**
+     * 직원의 권한으로 회원의 객실 예약 조회 - 단건 (detail)
+     */
+    @GetMapping("/reserve/{id}")
+    public ResponseEntity<?> memberReservationRoomCheck(@PathVariable Long id) {
         try {
             InfoRoomResDto dto = employeeRoomService.memberReservationRoomCheck(id);
             return new ResponseEntity<>(dto, HttpStatus.OK);
@@ -64,8 +65,11 @@ public class EmployeeRoomController {
         }
     }
 
-    @PostMapping("/cancel_reserve_room")
-    public ResponseEntity<?> memberReservationCncRoomByEmployee(@RequestParam Long id) {
+    /**
+     * 직원의 권한으로 회원의 객실 예약 취소
+     */
+    @PostMapping("/cancel_reserve_room/{id}")
+    public ResponseEntity<?> memberReservationCncRoomByEmployee(@PathVariable Long id) {
         try {
             InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(id);
             employeeRoomService.memberReservationCncRoomByEmployee(infoRoomResDto);

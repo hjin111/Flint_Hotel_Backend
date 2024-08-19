@@ -73,7 +73,7 @@ public class EmployeeRoomService {
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
         List<RoomInfo> infos = roomInfoRepository.findAll();
-        List<RoomInfoResDto> resDtos = new ArrayList<>();
+        List<RoomInfoResDto> resDtos= new ArrayList<>();
 
         for(RoomInfo info : infos){
             resDtos.add(info.fromEntity());
@@ -81,6 +81,7 @@ public class EmployeeRoomService {
 
         return resDtos;
     }
+
 
     public void modRoomPrice(Long id, long newPrice) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
@@ -98,7 +99,7 @@ public class EmployeeRoomService {
     public InfoRoomResDto memberReservationRoomCheck(Long id) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
         String auth = authenticatedEmployee.getDepartment().toString();
-        if(!auth.equals("Room") && !auth.equals(Department.Office.toString())){
+        if(!auth.equals(Department.Room.toString()) && !auth.equals(Department.Office.toString())){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
 

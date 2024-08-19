@@ -8,16 +8,20 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class InfoDiningDetResDto {
+@Builder
+public class memberDiningResDto {
+    private LocalDateTime reservationDateTime;
     private Long id;
     private String firstname;
     private String lastname;
     private DiningName diningName;
+    private String email;
+    private String phoneNumber;
     private int adult;
     private int child;
     private String comment;
+
 }

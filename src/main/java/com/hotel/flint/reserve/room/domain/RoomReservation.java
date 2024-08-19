@@ -74,6 +74,8 @@ public class RoomReservation {
                 .childCnt(this.childCnt)
                 .adultBfCnt(this.adultBfCnt)
                 .childBfCnt(this.childBfCnt)
+                .parkingYN(this.parkingYN)
+                .requestContents(this.requestContents)
                 .build();
         return InfoRoomResDto.builder()
                 .id(this.id)
@@ -81,9 +83,9 @@ public class RoomReservation {
                 .build();
     }
     public RoomReservedListDto listFromEntity(int no) {
-
         RoomReservedListDto roomReservedListDto = RoomReservedListDto.builder()
                 .no(no)
+                .id(this.id)
                 .roomType(this.getRooms().getRoomInfo().getRoomTypeName())
                 .checkInDate(this.checkInDate)
                 .checkOutDate(this.checkOutDate)
@@ -112,7 +114,6 @@ public class RoomReservation {
      * 요청 시, 객실 예약 내역 수정 (직원용)
      */
     public RoomReservation updateFromEntity(EmployeeModRoomDto dto) {
-
         this.adultCnt = dto.getAdultCnt();
         this.adultBfCnt = dto.getAdultBfCnt();
         this.childCnt = dto.getChildCnt();

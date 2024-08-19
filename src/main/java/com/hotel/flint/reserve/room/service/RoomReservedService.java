@@ -80,21 +80,21 @@ public class RoomReservedService {
 
         // user 찾기
         Member member = memberRepository.findByEmailAndDelYN(memberEmail, Option.N).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 없음")
+                () -> new EntityNotFoundException("해당 email에 대한 회원이 존재하지 않습니다.")
         );
         // RoomDetail 찾아오기
         RoomDetails roomDetails = roomDetailsRepository.findById(dto.getRoomId()).orElseThrow(
-                () -> new IllegalArgumentException("해당 id의 방이 없음")
+                () -> new EntityNotFoundException("해당 id의 방이 존재하지 않습니다.")
         );
 
-        // 수용할 수 있는 최대 인원수 체크하기
+        // 수용할 수 있는 최대 인원수 체크하기 => 객실 조회에도 추가
         if (roomDetails.getMaxOccupancy() < dto.getAdultCnt() + dto.getChildCnt()) {
-            throw new IllegalArgumentException("최대 수용 가능한 인원 수 초과");
+            throw new IllegalArgumentException("최대 수용 가능한 인원 수를 초과하였습니다.");
         }
 
         // 해당 날짜에 해당 객실을 예약할 수 있는지 날짜별로 확인 ⭐⭐
         if (!checkReserved(dto, roomDetails)) {
-            throw new IllegalArgumentException("해당 날짜에 해당 객실을 이용할 수 없음");
+            throw new IllegalArgumentException("선택하신 날짜에 해당 객실을 이용하실 수 없습니다.");
         }
 
         RoomReservation roomReservation = dto.toEntity(member, roomDetails);
@@ -293,24 +293,30 @@ public class RoomReservedService {
     /**
      * 원하는 날짜에 남은 객실이 있는지 목록 조회
      */
-    public List<PossibleRoomDto> checkRemainRoom(LocalDate checkInDate, LocalDate checkOutDate) {
+    public List<PossibleRoomDto> checkRemainRoom(LocalDate checkInDate, LocalDate checkOutDate,
+                                                 int adultCnt, int childCnt) {
 
         List<RoomDetails> allRooms = roomDetailsRepository.findAll(); // 모든 방 리스트 찾아오기
         List<PossibleRoomDto> possibleRoomDtos = new ArrayList<>();
 
-        for (RoomDetails room : allRooms) {
-            boolean possible = true;
-            LocalDate date = checkInDate;
+        // 인원수 제한 걸기
+        int people = adultCnt + childCnt;
 
-            while (date.isBefore(checkOutDate)) { // checkInDate < checkOutDate
-                if (checkReservedDateRepository.findByDateAndRooms(date, room).isPresent()) {
-                    possible = false;
-                    break;
+        for (RoomDetails room : allRooms) {
+            if (people <= room.getMaxOccupancy()) { // 예약하려는 인원과 방의 수용 가능한 인원수 비교 추가
+                boolean possible = true;
+                LocalDate date = checkInDate;
+
+                while (date.isBefore(checkOutDate)) { // checkInDate < checkOutDate
+                    if (checkReservedDateRepository.findByDateAndRooms(date, room).isPresent()) {
+                        possible = false;
+                        break;
+                    }
+                    date = date.plusDays(1);
                 }
-                date = date.plusDays(1);
-            }
-            if (possible) {
-                possibleRoomDtos.add(room.possibleListFromEntity());
+                if (possible) {
+                    possibleRoomDtos.add(room.possibleListFromEntity());
+                }
             }
         }
 

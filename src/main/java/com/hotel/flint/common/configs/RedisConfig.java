@@ -30,20 +30,22 @@ public class RedisConfig {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(host);
         configuration.setPort(port);
-        configuration.setDatabase(3); // 3번 DB 사용
+        // 3번 db 사용
+        configuration.setDatabase(3);
         return new LettuceConnectionFactory(configuration);
     }
 
-    // 기본 RedisTemplate 설정
     @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
+    @Qualifier("4")
+    public RedisTemplate<String, Object> redisTemplate(@Qualifier("redisConnectionFactory4") RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory());
+        template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return template;
     }
 
+  // 황정하
     // Redis 2번 DB 사용
     @Bean
     @Qualifier("3")
@@ -100,4 +102,37 @@ public class RedisConfig {
         container.setConnectionFactory(sseFactory);
         return container;
     }
+  // --- 황정하
+  
+  // --- 이혜진
+    @Bean(name = "redisConnectionFactory4")
+    public RedisConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(host);
+        configuration.setPort(port);
+        // 3번 db 사용 -> 기존 3번에서 6번으로 바꿈.
+        configuration.setDatabase(6);
+        return new LettuceConnectionFactory(configuration);
+    }
+
+    // Qualifier("4")와 연결된 RedisTemplate -> 기존 4에서 7로 바꿈.
+    @Bean
+    @Qualifier("7")
+    public RedisTemplate<String, Object> redisTemplate(@Qualifier("redisConnectionFactory4") RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return template;
+    }
+
+    // RedisMessageListenerContainer도 동일한 RedisConnectionFactory를 사용하도록 설정
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("redisConnectionFactory4") RedisConnectionFactory redisConnectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory);
+        return container;
+    }
+// --- 이혜진
+  
 }

@@ -70,7 +70,7 @@ public class EmployeeService {
         for(Member m : member){
             dto.add(EmployeeToMemberListDto.builder()
                             .id(m.getId())
-                            .name(m.getFirstName() + " " + m.getLastName())
+                            .name(m.getLastName() + " " + m.getFirstName())
                             .email(m.getEmail())
                     .build());
         }
@@ -148,12 +148,21 @@ public class EmployeeService {
         return member.infoUserEntity();
     }
 
-//    직원 상세 정보
+//    직원 자신의 상세 정보.
     public EmployeeDetResDto employeeDetail(){
         Employee employee = employeeRepository.findByEmailAndDelYN(
                 SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getName()
+                , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 하는 관리자 정보가 존재하지 않습니다."));
+
+        return employee.EmpDetEntity();
+    }
+
+//    직원 상세 정보
+    public EmployeeDetResDto employeeDetail(Long id){
+        Employee employee = employeeRepository.findByIdAndDelYN(
+                id
         , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 계정이 존재하지 않습니다."));
 
         return employee.EmpDetEntity();
@@ -204,13 +213,16 @@ public class EmployeeService {
     }
 
     public InfoMemberReserveListResDto employeeMemberReserveList(String email){
+        Employee authenticatedEmployee = getAuthenticatedEmployee();
+        if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
+            throw new SecurityException("인증되지 않은 사용자입니다.");
+        }
         Member member = memberService.findByMemberEmail(email);
 
         InfoMemberReserveListResDto info = member.memberReserveListEntity();
 
         return info;
     }
-
     public List<EmployeeDetResDto> getEmployeeList(EmployeeSearchDto dto) {
         Specification<Employee> specification = new Specification<Employee>() {
             @Override
@@ -245,5 +257,4 @@ public class EmployeeService {
 
         return dtos;
     }
-
 }

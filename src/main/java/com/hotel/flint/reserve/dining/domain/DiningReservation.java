@@ -4,21 +4,21 @@ import com.hotel.flint.common.domain.BaseTimeEntity;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
+import com.hotel.flint.reserve.dining.dto.ReservationSseDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationUpdateDto;
 import com.hotel.flint.user.employee.dto.InfoDiningDetResDto;
 import com.hotel.flint.user.employee.dto.InfoDiningResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
+import com.hotel.flint.user.employee.dto.memberDiningResDto;
 import com.hotel.flint.user.member.domain.Member;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -73,8 +73,6 @@ public class DiningReservation extends BaseTimeEntity {
         this.child = dto.getChild();
         this.comment = dto.getComment();
         this.reservationDateTime = dto.getReservationDateTime();
-        this.diningId = dining;
-        this.memberId = member;
 
     }
 
@@ -93,20 +91,48 @@ public class DiningReservation extends BaseTimeEntity {
                 .build();
     }
 
-    public InfoDiningResDto toInfoDiningResDto(InfoUserResDto infoUserResDto){
-        InfoDiningDetResDto infoDiningDetResDto = InfoDiningDetResDto.builder()
-                .diningName(this.diningId.getDiningName())
+    public ReservationSseDetailDto fromSseEntity(Long id){
+        return ReservationSseDetailDto.builder()
+                .id(id)
+                .memberId(this.memberId.getId())
                 .adult(this.adult)
                 .child(this.child)
                 .comment(this.comment)
-                .reservationDateTime(this.reservationDateTime)
+                .ReserveTime(this.reservationDateTime.toString().split("T")[1])
+                .ReserveDate(this.reservationDateTime.toString().split("T")[0])
+                .build();
+    }
+
+    public InfoDiningResDto toInfoDiningResDto(InfoUserResDto infoUserResDto){
+        InfoDiningDetResDto infoDiningDetResDto = InfoDiningDetResDto.builder()
+                .diningName(this.diningId.getDiningName())
+                .firstname(infoUserResDto.getFirstName())
+                .lastname(infoUserResDto.getLastName())
+                .id(this.diningId.getId())
+                .adult(this.adult)
+                .child(this.child)
+                .comment(this.comment)
                 .build();
 
         return InfoDiningResDto.builder()
-                .id(infoUserResDto.getId())
-                .firstname(infoUserResDto.getFirstName())
-                .lastname(infoUserResDto.getLastName())
+                .diningReservationId(this.id)
+                .reservationDateTime(this.reservationDateTime)
                 .infoDiningDetResDto(infoDiningDetResDto)
+                .build();
+    }
+
+    public memberDiningResDto tomemDiningRes(){
+        return memberDiningResDto.builder()
+                .id(this.id)
+                .email(this.memberId.getEmail())
+                .reservationDateTime(this.reservationDateTime)
+                .firstname(this.memberId.getFirstName())
+                .lastname(this.memberId.getLastName())
+                .adult(this.adult)
+                .child(this.child)
+                .phoneNumber(this.memberId.getPhoneNumber())
+                .diningName(this.getDiningId().getDiningName())
+                .comment(this.comment)
                 .build();
     }
 }
