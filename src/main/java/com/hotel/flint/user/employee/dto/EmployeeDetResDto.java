@@ -3,6 +3,7 @@ package com.hotel.flint.user.employee.dto;
 import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.EmployeeRank;
 import com.hotel.flint.common.enumdir.Gender;
+import com.hotel.flint.common.enumdir.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,8 @@ import java.time.LocalDate;
 // 직원의 상세정보를 반환해주는 Dto
 public class EmployeeDetResDto {
     private Long id;
+    private String firstName;
+    private String lastName;
     private String employeeNumber;
     private EmployeeRank employeeRank;
     private String email;
@@ -24,4 +27,5 @@ public class EmployeeDetResDto {
     private LocalDate dateOfEmployment;
     private Gender gender;
     private Department department;
+    private Option delYN;
 }

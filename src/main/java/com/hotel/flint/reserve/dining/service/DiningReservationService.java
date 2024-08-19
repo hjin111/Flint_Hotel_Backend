@@ -51,7 +51,6 @@ public class DiningReservationService {
 
     private Employee getAuthenticatedEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("인증 값::" + authentication + "\n 여기가 끝");
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -65,7 +64,6 @@ public class DiningReservationService {
 
     private Member getAuthenticatedMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("인증 값::" + authentication + "\n 여기가 끝");
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -85,7 +83,7 @@ public class DiningReservationService {
         Member member = getAuthenticatedMember();
 
         // DiningName으로 dining 정보를 가져와서
-        Dining dining = diningRepository.findByDiningName(dto.getDiningName()).orElseThrow(() -> new EntityNotFoundException("없는 다이닝 타입입니다."));
+        Dining dining = diningRepository.findById(dto.getDiningId()).orElseThrow(() -> new EntityNotFoundException("없는 다이닝 타입입니다."));
 
         // DiningReservation에 저장
         DiningReservation diningReservation = dto.toEntity(member, dining);
@@ -135,9 +133,12 @@ public class DiningReservationService {
 
         DiningReservation dto = diningReservationRepository.findById(diningReservationId)
                 .orElseThrow(() -> new EntityNotFoundException("예약 내역이 없습니다."));
-        ReservationDetailDto reservationDetailDto = dto.fromEntity(diningReservationId);
-        return reservationDetailDto;
-
+        if(member.equals(dto.getMemberId())){
+            ReservationDetailDto reservationDetailDto = dto.fromEntity(diningReservationId);
+            return reservationDetailDto;
+        }else{
+            throw new IllegalArgumentException("권한이 없습니다.");
+        }
     }
 
     // 회원별 전체 목록 조회 , 예를 들어 1번 회원이 예약한 목록 전체 조회

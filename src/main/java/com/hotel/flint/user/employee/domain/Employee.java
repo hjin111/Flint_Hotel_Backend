@@ -61,6 +61,8 @@ public class Employee {
     public EmployeeDetResDto EmpDetEntity(){
         return EmployeeDetResDto.builder()
                 .id(this.id)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
                 .employeeNumber(this.employeeNumber)
                 .employeeRank(this.employeeRank)
                 .email(this.email)
@@ -68,6 +70,7 @@ public class Employee {
                 .birthday(this.birthday)
                 .dateOfEmployment(this.dateOfEmployment)
                 .gender(this.gender)
+                .delYN(this.delYN)
                 .department(this.department)
                 .build();
     }

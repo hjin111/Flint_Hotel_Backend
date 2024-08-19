@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/employee")
@@ -27,6 +28,19 @@ public class EmployeeMemberController {
     @ResponseBody
     public InfoUserResDto memberInfoCheck(@RequestParam String email){
         return employeeService.memberInfo(email);
+    }
+
+    @GetMapping("/memberlist")
+    @ResponseBody
+    public ResponseEntity<?> memberList(){
+        try{
+            List<EmployeeToMemberListDto> dto = employeeService.memberList();
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Details Find" , dto);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        }catch (EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
+        }
     }
 
 //    직원 계정의 정보 조회
@@ -48,7 +62,7 @@ public class EmployeeMemberController {
 //    해당 직원 id, 수정할 값이 들어있음.
     @PutMapping("/modify")
     @ResponseBody
-    public ResponseEntity<?> userModify(@RequestBody EmployeeModResDto dto){
+    public ResponseEntity<?> memberModify(@RequestBody EmployeeModResDto dto){
         try {
             employeeService.employeeModify(dto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Password Modify" , null);
@@ -85,8 +99,9 @@ public class EmployeeMemberController {
     @GetMapping("/list_reserve")
     @ResponseBody
     public ResponseEntity<?> employeeMemberReserveList(@RequestParam String email){
+        System.out.println(email);
         try {
-            InfoMemberReseveListResDto info = employeeService.employeeMemberReserveList(email);
+            InfoMemberReserveListResDto info = employeeService.employeeMemberReserveList(email);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Member Reserve List" , info);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         }

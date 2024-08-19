@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CheckedReservedDateDto {
+public class PossibleRoomDto {
 
-    private Long room_id; // 방번호
-    private LocalDate date;
+    private Long roomId;
+    private String roomTypeName;
+    private long roomPrice;
+//    s3 이미지 링크 추가
+    private String imagePath;
 }

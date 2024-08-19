@@ -25,7 +25,7 @@ public class EmployeeRoomController {
 
     @PatchMapping("/modprice/{room_type_id}")
     public ResponseEntity<?> modRoomPrice(@PathVariable Long room_type_id,
-                                          @RequestBody Map<String, Double> request) {
+                                          @RequestBody Map<String, Long> request) {
         try {
             employeeRoomService.modRoomPrice(room_type_id, request.get("newPrice"));
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "가격 수정 완료", null);
@@ -39,7 +39,18 @@ public class EmployeeRoomController {
         }
     }
 
-    @PostMapping("/reserve")
+    @GetMapping("/roominfo")
+    public ResponseEntity<?> getRoomInfo(){
+        try {
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "조회 완료", employeeRoomService.roomInfoList());
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @GetMapping("/reserve")
     public ResponseEntity<?> memberReservationRoomCheck(@RequestParam("id") Long id) {
         try {
             InfoRoomResDto dto = employeeRoomService.memberReservationRoomCheck(id);
