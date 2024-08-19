@@ -1,9 +1,6 @@
 package com.hotel.flint.common.controller;
 
-import com.hotel.flint.common.service.RequestQueueManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,10 +28,6 @@ public class SSEController implements MessageListener {
 
     private final RedisMessageListenerContainer redisMessageListenerContainer;
 
-    @Autowired
-    @Lazy
-    private RequestQueueManager queueManager;
-
     public SSEController(@Qualifier("2") RedisTemplate<String, Object> sseRedisTemplate, RedisMessageListenerContainer redisMessageListenerContainer) {
         this.sseRedisTemplate = sseRedisTemplate;
         this.redisMessageListenerContainer = redisMessageListenerContainer;
@@ -61,20 +54,20 @@ public class SSEController implements MessageListener {
     public SseEmitter subscribe(@RequestParam String email) {
         SseEmitter emitter = new SseEmitter(14400 * 60 * 1000L); // 4시간 유지되는 SSE 연결
 
-        System.out.println("SSE 연결 요청: " + email);
+//        System.out.println("SSE 연결 요청: " + email);
         emitters.put(email, emitter);
 
         emitter.onCompletion(() -> {
             emitters.remove(email);
-            System.out.println("SSE 연결 종료: " + email);
+//            System.out.println("SSE 연결 종료: " + email);
         });
         emitter.onTimeout(() -> {
             emitters.remove(email);
-            System.out.println("SSE 연결 타임아웃: " + email);
+//            System.out.println("SSE 연결 타임아웃: " + email);
         });
         emitter.onError((e) -> {
             emitters.remove(email);
-            System.out.println("SSE 연결 오류: " + email);
+//            System.out.println("SSE 연결 오류: " + email);
         });
 
         try {

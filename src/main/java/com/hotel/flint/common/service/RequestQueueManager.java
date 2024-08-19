@@ -4,7 +4,6 @@ import com.hotel.flint.common.controller.SSEController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -28,7 +27,6 @@ public class RequestQueueManager {
     private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
-    @Lazy
     private SSEController sseController;
 
     // Lua 스크립트를 사용하여 Redis에서 원자적(다른 명령어가 중간에 끼어들 수 없음)으로 데이터 추가 및 위치 계산을 수행
