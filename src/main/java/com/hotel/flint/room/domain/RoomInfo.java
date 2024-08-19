@@ -1,5 +1,6 @@
 package com.hotel.flint.room.domain;
 
+import com.hotel.flint.room.dto.RoomInfoResDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,13 +22,21 @@ public class RoomInfo {
     private String roomTypeName;
     private long roomTypePrice;
 
-    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL)
     private List<RoomPrice> roomPrices;
 
-    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL)
     private List<RoomDetails> roomDetails;
 
     public void updateRoomPrice(long newPrice){
         this.roomTypePrice = newPrice;
+    }
+
+    public RoomInfoResDto fromEntity(){
+        return RoomInfoResDto.builder()
+                .id(this.id)
+                .roomTypeName(this.roomTypeName)
+                .roomTypePrice(this.roomTypePrice)
+                .build();
     }
 }
