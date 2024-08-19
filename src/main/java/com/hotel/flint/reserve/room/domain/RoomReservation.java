@@ -85,6 +85,7 @@ public class RoomReservation {
 
     public RoomReservedDetailDto detailFromEntity() {
         RoomReservedDetailDto roomReservation = RoomReservedDetailDto.builder()
+                .id(this.id)
                 .adultCnt(this.adultCnt)
                 .childCnt(this.childCnt)
                 .roomType(this.getRooms().getRoomInfo().getRoomTypeName())

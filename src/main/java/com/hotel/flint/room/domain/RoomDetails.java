@@ -41,6 +41,7 @@ public class RoomDetails {
                 .roomId(this.id)
                 .roomTypeName(this.roomInfo.getRoomTypeName())
                 .roomPrice(this.roomInfo.getRoomTypePrice())
+                .imagePath(this.roomInfo.getImagePath()) // s3 이미지 링크 추가
                 .build();
         return possibleRoomDto;
     }

@@ -22,10 +22,13 @@ public class RoomInfo {
     private String roomTypeName;
     private long roomTypePrice;
 
-    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+//    s3 이미지 링크 추가
+    private String imagePath;
+
+    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL)
     private List<RoomPrice> roomPrices;
 
-    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL)
     private List<RoomDetails> roomDetails;
 
     public void updateRoomPrice(long newPrice){
