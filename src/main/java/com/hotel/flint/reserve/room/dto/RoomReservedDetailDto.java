@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class RoomReservedDetailDto {
 
+    private Long id;
     private int adultCnt;
     private int childCnt;
     private String roomType; // 디럭스, 스위트 등

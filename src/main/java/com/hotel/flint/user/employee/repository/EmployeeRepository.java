@@ -1,5 +1,6 @@
 package com.hotel.flint.user.employee.repository;
 
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.user.employee.domain.Employee;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,5 +16,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findByEmailAndDelYN(String email, Option delYN);
     Optional<Employee> findByPhoneNumberAndDelYN(String phoneNumber, Option delYN);
     List<Employee> findAll(Specification<Employee> specification);
+
+    List<Employee> findByDepartment(Department department);
 }
 

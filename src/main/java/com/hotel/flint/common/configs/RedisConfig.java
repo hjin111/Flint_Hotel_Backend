@@ -1,6 +1,7 @@
 package com.hotel.flint.common.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -44,7 +45,6 @@ public class RedisConfig {
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return template;
     }
-
   // 황정하
     // Redis 2번 DB 사용
     @Bean
@@ -134,5 +134,53 @@ public class RedisConfig {
         return container;
     }
 // --- 이혜진
+// --- 홍예지
   
+    /**
+     * Redis - pub/sub 구현 (객실 예약 알림용)
+     */
+    @Bean
+    @Qualifier("6")
+    public RedisConnectionFactory sseFactory() {
+
+        // connection 정보 넣기
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
+        configuration.setHostName(host);
+        configuration.setPort(port);
+        configuration.setDatabase(5); // db 5번 사용
+
+        return new LettuceConnectionFactory(configuration);
+    }
+
+    @Bean
+    @Qualifier("6")
+    public RedisTemplate<String, Object> sseRedisTemplate(@Qualifier("6") RedisConnectionFactory sseFactory) {
+
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        // 직렬화
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.registerModule(new JavaTimeModule());
+        serializer.setObjectMapper(objectMapper);
+        redisTemplate.setValueSerializer(serializer);
+
+        redisTemplate.setConnectionFactory(sseFactory);
+
+        return redisTemplate;
+    }
+
+    /**
+     * 리스너 객체 생성
+     */
+    @Bean
+    @Qualifier("6")
+    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("6") RedisConnectionFactory sseFactory) {
+      RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(sseFactory);
+        return container;
+    }
+// --- 홍예지
 }
