@@ -95,13 +95,14 @@ public class DiningReservationService {
         DiningReservation diningReservation = dto.toEntity(member, dining);
         DiningName diningName = diningReservation.getDiningId().getDiningName();
 
-        String email = "flint_" + diningName.toString().substring(0,3) + "@gmail.com";
+        String email = "flint_" + diningName.toString().substring(0,3).toLowerCase() + "@gmail.com";
         System.out.println(email);
-        ReservationSseDetailDto reservationSseDetailDto = diningReservation.fromSseEntity(dto.getDiningId());
+        diningReservationRepository.save(diningReservation);
+        ReservationSseDetailDto reservationSseDetailDto = diningReservation.fromSseEntity();
 
         diningSseController.publishMessage(reservationSseDetailDto, email);
 
-        return diningReservationRepository.save(diningReservation);
+        return diningReservation;
     }
 
     // 예약 전체 조회 - 관리자( 같은 부서인 예약 내역들만 볼 수 있음 )

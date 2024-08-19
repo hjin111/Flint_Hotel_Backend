@@ -91,9 +91,9 @@ public class DiningReservation extends BaseTimeEntity {
                 .build();
     }
 
-    public ReservationSseDetailDto fromSseEntity(Long id){
+    public ReservationSseDetailDto fromSseEntity(){
         return ReservationSseDetailDto.builder()
-                .id(id)
+                .id(this.id)
                 .memberId(this.memberId.getId())
                 .adult(this.adult)
                 .child(this.child)
