@@ -1,10 +1,7 @@
 package com.hotel.flint.support.qna.dto;
 
 import com.hotel.flint.common.enumdir.Service;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 public class EmployeeQnaDetailDto {
 
     private String title;
