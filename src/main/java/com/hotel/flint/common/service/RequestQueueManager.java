@@ -7,11 +7,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -42,7 +40,6 @@ public class RequestQueueManager {
     // 요청을 큐에 추가하고 requestId와 email을 Redis에 저장
     public String addRequest(String email) {
         String requestId = UUID.randomUUID().toString(); // 고유한 요청 ID 생성
-
         // Lua 스크립트를 실행하여 원자적으로 요청 ID를 추가하고 위치를 계산
         try {
             // KEYS[1] = QUEUE_KEY, KEYS[2] = POSITION_HASH_KEY, ARGV[1] = requestId
@@ -110,74 +107,146 @@ public class RequestQueueManager {
 
                 // 트랜잭션 실행
                 connection.exec();
-//                log.info("REMOVE_REQUEST 트랜잭션 완료 - REQUEST_ID: {}", cleanedRequestId);
+//            log.info("REMOVE_REQUEST 트랜잭션 완료 - REQUEST_ID: {}", cleanedRequestId);
                 return null;
             });
+
         } catch (Exception e) {
-//            log.error("요청 ID 제거 중 오류 발생: {}", e.getMessage(), e);
+//        log.error("요청 ID 제거 중 오류 발생: {}", e.getMessage(), e);
             throw new RuntimeException("요청 ID 제거 중 오류 발생: " + e.getMessage(), e);
         }
     }
 
-    // 대기열 업데이트 메서드 (2초마다 실행)
-    @Scheduled(fixedRate = 2000)
-    public void refreshPositions() {
-        try {
-            // 현재 Redis에 남아있는 대기열(List)을 가져옴
-            List<Object> queue = redisTemplate.opsForList().range(QUEUE_KEY, 0, -1);
-            if (queue != null) {
-                // 트랜잭션을 통해 원자적으로 위치를 업데이트
-                redisTemplate.execute((RedisCallback<Object>) connection -> {
-                    //  대기열 리스트를 감시(갱신하는 동안 새로운 요청 들어올 수 있음)
-                    connection.watch(redisTemplate.getStringSerializer().serialize(QUEUE_KEY));
+//    // 대기열 업데이트 메서드 (2초마다 실행)
+//    @Scheduled(fixedRate = 2000)
+//    public void refreshPositions() {
+//        try {
+//            // 현재 Redis에 남아있는 대기열(List)을 가져옴
+//            List<Object> queue = redisTemplate.opsForList().range(QUEUE_KEY, 500, -1);
+//            if (queue != null) {
+//                // 트랜잭션을 통해 원자적으로 위치를 업데이트
+//                redisTemplate.execute((RedisCallback<Object>) connection -> {
+//                    // 대기열 리스트를 감시(갱신하는 동안 새로운 요청 들어올 수 있음)
+//                    connection.watch(redisTemplate.getStringSerializer().serialize(QUEUE_KEY));
+//                    connection.watch(redisTemplate.getStringSerializer().serialize(EMAIL_HASH_KEY));
+//
+//                    // 트랜잭션 시작
+//                    connection.multi();
+//
+//                    // 큐에 남아있는 모든 요청 ID의 위치를 재계산하여 갱신
+//                    for (int i = 0; i < queue.size(); i++) {
+//                        String requestId = queue.get(i).toString();
+//
+//                        // 요청 ID로 이메일을 조회
+//                        String email = (String) redisTemplate.opsForHash().get(EMAIL_HASH_KEY, requestId);
+//
+//                        if (email == null) {
+//                            // 이메일을 찾을 수 없는 경우 해당 요청 ID를 제거하고 다음으로 넘어감
+//                            System.err.println("해당 요청 ID에 대한 이메일을 찾을 수 없습니다: " + requestId);
+//                            connection.lRem(redisTemplate.getStringSerializer().serialize(QUEUE_KEY), 1,
+//                                    redisTemplate.getStringSerializer().serialize(requestId));
+//                            connection.hDel(redisTemplate.getStringSerializer().serialize(POSITION_HASH_KEY),
+//                                    redisTemplate.getStringSerializer().serialize(requestId));
+//                            continue;
+//                        }
+//
+//                        int newPosition = i + 1;
+//
+//                        // 위치 정보를 일관되게 유지하기 위해 매번 위치를 갱신
+//                        connection.hSet(redisTemplate.getStringSerializer().serialize(POSITION_HASH_KEY),
+//                                redisTemplate.getStringSerializer().serialize(requestId),
+//                                redisTemplate.getStringSerializer().serialize(String.valueOf(newPosition)));
+//
+//                        // SSE를 통해 위치 변동을 클라이언트에 전송
+//                        sseController.publishPositionMessage(email, newPosition);
+////                    log.info("REQUEST_ID {} 위치 {}로 업데이트 됨", requestId, newPosition);
+//                    }
+//
+//                    // 트랜잭션 실행
+//                    connection.exec();
+//                    return null;
+//                });
+//            }
+//        } catch (Exception e) {
+////        log.error("대기열 위치 업데이트 중 오류 발생: {}", e.getMessage(), e);
+//            throw new RuntimeException("대기열 위치 업데이트 중 오류 발생: " + e.getMessage(), e);
+//        }
+//    }
 
-                    // 트랜잭션 시작
-                    connection.multi();
-
-                    // 큐에 남아있는 모든 요청 ID의 위치를 재계산하여 갱신
-                    for (int i = 0; i < queue.size(); i++) {
-                        String requestId = queue.get(i).toString();
-
-                        // 요청 ID가 POSITION_HASH_KEY에 존재하는지 확인
-                        if (!redisTemplate.opsForHash().hasKey(POSITION_HASH_KEY, requestId)) {
-//                            log.warn("POSITION_HASH_KEY에 존재하지 않는 요청 ID: {}", requestId);
-                            continue;
-                        }
-
-                        int previousPosition = getPositionInQueue(requestId);
-                        int newPosition = i + 1;
-
-                        if (previousPosition != newPosition) {
-                            // 위치가 변경된 경우에만 업데이트
-                            connection.hSet(redisTemplate.getStringSerializer().serialize(POSITION_HASH_KEY),
-                                    redisTemplate.getStringSerializer().serialize(requestId),
-                                    redisTemplate.getStringSerializer().serialize(String.valueOf(newPosition)));
-
-                            // SSE를 통해 위치 변동을 클라이언트에 전송
-                            String email = getEmailByRequestId(requestId);
-                            sseController.publishMessage(email, newPosition);
-//                            log.info("REQUEST_ID {} 위치 {}로 업데이트 됨", requestId, newPosition);
-                        }
-                    }
-                    // 트랜잭션 실행
-                    connection.exec();
-                    return null;
-                });
-            }
-        } catch (Exception e) {
-//            log.error("대기열 위치 업데이트 중 오류 발생: {}", e.getMessage(), e);
-            throw new RuntimeException("대기열 위치 업데이트 중 오류 발생: " + e.getMessage(), e);
-        }
-    }
+//    @Scheduled(fixedRate = 20000)
+//    public void refreshPositions() {
+//        try {
+//            // 현재 Redis에 남아있는 대기열(List)을 가져옴
+//            List<Object> queue = redisTemplate.opsForList().range(QUEUE_KEY, 0, -1);
+//            if (queue != null) {
+//                // 트랜잭션을 통해 원자적으로 위치를 업데이트
+//                redisTemplate.execute((RedisCallback<Object>) connection -> {
+//                    // 대기열 리스트를 감시(갱신하는 동안 새로운 요청 들어올 수 있음)
+//                    connection.watch(redisTemplate.getStringSerializer().serialize(QUEUE_KEY));
+//
+//                    // 트랜잭션 시작
+//                    connection.multi();
+//
+//                    // 큐에 남아있는 모든 요청 ID의 위치를 재계산하여 갱신
+//                    for (int i = 0; i < queue.size(); i++) {
+//                        String requestId = queue.get(i).toString();
+//                        String email = null;
+//
+//                        try {
+//                            email = getEmailByRequestId(requestId);
+//                        } catch (IllegalArgumentException e) {
+//                            // 이메일을 찾을 수 없는 경우 해당 요청 ID를 제거하고 다음으로 넘어감
+//                            System.err.println("해당 요청 ID에 대한 이메일을 찾을 수 없습니다: " + requestId);
+//                            connection.lRem(redisTemplate.getStringSerializer().serialize(QUEUE_KEY), 1,
+//                                    redisTemplate.getStringSerializer().serialize(requestId));
+//                            connection.hDel(redisTemplate.getStringSerializer().serialize(POSITION_HASH_KEY),
+//                                    redisTemplate.getStringSerializer().serialize(requestId));
+//                            continue;
+//                        }
+//
+//                        int newPosition = i + 1;
+//
+//                        // 위치 정보를 일관되게 유지하기 위해 매번 위치를 갱신
+//                        connection.hSet(redisTemplate.getStringSerializer().serialize(POSITION_HASH_KEY),
+//                                redisTemplate.getStringSerializer().serialize(requestId),
+//                                redisTemplate.getStringSerializer().serialize(String.valueOf(newPosition)));
+//
+//                        // SSE를 통해 위치 변동을 클라이언트에 전송
+//                        sseController.publishPositionMessage(email, newPosition);
+////                    log.info("REQUEST_ID {} 위치 {}로 업데이트 됨", requestId, newPosition);
+//                    }
+//
+//                    // 트랜잭션 실행
+//                    connection.exec();
+//                    return null;
+//                });
+//            }
+//        } catch (Exception e) {
+////        log.error("대기열 위치 업데이트 중 오류 발생: {}", e.getMessage(), e);
+//            throw new RuntimeException("대기열 위치 업데이트 중 오류 발생: " + e.getMessage(), e);
+//        }
+//    }
 
     // 요청 ID로 이메일을 조회하는 메서드
-    private String getEmailByRequestId(String requestId) {
-        String email = (String) redisTemplate.opsForHash().get(EMAIL_HASH_KEY, requestId);
-        if (email != null) {
-            return email; // 이메일 반환
-        } else {
-//            log.error("해당 요청 ID에 대한 이메일을 찾을 수 없습니다: {}", requestId);
-            throw new IllegalArgumentException("해당 요청 ID에 대한 이메일을 찾을 수 없습니다: " + requestId);
-        }
-    }
+//    private String getEmailByRequestId(String requestId) {
+//        return redisTemplate.execute((RedisCallback<String>) connection -> {
+//            connection.watch(redisTemplate.getStringSerializer().serialize(EMAIL_HASH_KEY));
+//
+//            // 트랜잭션 시작
+//            connection.multi();
+//
+//            // EMAIL_HASH_KEY에서 requestId로 이메일 조회
+//            String email = (String) redisTemplate.opsForHash().get(EMAIL_HASH_KEY, requestId);
+//
+//            // 트랜잭션 실행
+//            connection.exec();
+//
+//            if (email != null) {
+//                return email; // 이메일 반환
+//            } else {
+////                log.error("해당 요청 ID에 대한 이메일을 찾을 수 없습니다: {}", requestId);
+//                throw new IllegalArgumentException("해당 요청 ID에 대한 이메일을 찾을 수 없습니다: " + requestId);
+//            }
+//        });
+//    }
 }
