@@ -14,4 +14,6 @@ public class PossibleRoomDto {
     private Long roomId;
     private String roomTypeName;
     private long roomPrice;
+//    s3 이미지 링크 추가
+    private String imagePath;
 }

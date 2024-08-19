@@ -22,6 +22,9 @@ public class RoomInfo {
     private String roomTypeName;
     private long roomTypePrice;
 
+//    s3 이미지 링크 추가
+    private String imagePath;
+
     @OneToMany(mappedBy = "roomInfo", cascade = CascadeType.ALL)
     private List<RoomPrice> roomPrices;
 
