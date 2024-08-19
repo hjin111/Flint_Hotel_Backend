@@ -1,8 +1,12 @@
 package com.hotel.flint.support.qna.service;
 
 import com.hotel.flint.common.enumdir.Option;
+import com.hotel.flint.support.qna.controller.InquirySseController;
 import com.hotel.flint.support.qna.domain.QnA;
-import com.hotel.flint.support.qna.dto.*;
+import com.hotel.flint.support.qna.dto.CreateAnswerDto;
+import com.hotel.flint.support.qna.dto.EmployeeQnaDetailDto;
+import com.hotel.flint.support.qna.dto.EmployeeQnaListDto;
+import com.hotel.flint.support.qna.dto.UpdateAnswerDto;
 import com.hotel.flint.support.qna.repository.QnaRepository;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
@@ -26,19 +30,19 @@ public class EmployeeQnaService {
 
     private final QnaRepository qnaRepository;
     private final EmployeeRepository employeeRepository;
+    private final InquirySseController sseController; // SseController 의존성 주입
 
     @Autowired
-    public EmployeeQnaService(QnaRepository qnaRepository, EmployeeRepository employeeRepository) {
+    public EmployeeQnaService(QnaRepository qnaRepository, EmployeeRepository employeeRepository, InquirySseController sseController) {
         this.qnaRepository = qnaRepository;
         this.employeeRepository = employeeRepository;
+        this.sseController = sseController; // 주입
     }
 
     private Employee getAuthenticatedEmployee() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("인증 값::" + authentication + "\n 여기가 끝");
         if (authentication != null && authentication.isAuthenticated()) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-
             String email = userDetails.getUsername();
             return employeeRepository.findByEmailAndDelYN(email, Option.N)
                     .orElseThrow(() -> new SecurityException("인증되지 않은 사용자입니다."));
@@ -47,13 +51,11 @@ public class EmployeeQnaService {
         }
     }
 
-
     // QnA 답변 작성
     public QnA createAnswer(Long qnaId, CreateAnswerDto dto) {
 
         // 관리자 권한으로 로그인된 사용자 가져오기
         Employee employee = getAuthenticatedEmployee();
-
         QnA qna = qnaRepository.findById(qnaId).orElseThrow(() -> new EntityNotFoundException("해당 질문이 없습니다."));
         if (qna.getRespond().equals(Option.N)) {
 
@@ -63,7 +65,6 @@ public class EmployeeQnaService {
         } else {
             throw new IllegalStateException("이미 답변이 존재합니다.");
         }
-
     }
 
     // QnA 답변 수정
