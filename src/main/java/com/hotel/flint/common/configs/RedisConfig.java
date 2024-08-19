@@ -107,7 +107,7 @@ public class RedisConfig {
   
   // --- 이혜진
     @Bean(name = "redisConnectionFactory4")
-    public RedisConnectionFactory redisConnectionFactory() {
+    public RedisConnectionFactory redisQnaConnectionFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(host);
         configuration.setPort(port);
@@ -119,7 +119,7 @@ public class RedisConfig {
     // Qualifier("4")와 연결된 RedisTemplate -> 기존 4에서 7로 바꿈.
     @Bean
     @Qualifier("7")
-    public RedisTemplate<String, Object> redisTemplate(@Qualifier("redisConnectionFactory4") RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisQnaTemplate(@Qualifier("redisConnectionFactory4") RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
@@ -129,7 +129,7 @@ public class RedisConfig {
 
     // RedisMessageListenerContainer도 동일한 RedisConnectionFactory를 사용하도록 설정
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("redisConnectionFactory4") RedisConnectionFactory redisConnectionFactory) {
+    public RedisMessageListenerContainer redisQnaMessageListenerContainer(@Qualifier("redisConnectionFactory4") RedisConnectionFactory redisConnectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
         return container;
@@ -142,7 +142,7 @@ public class RedisConfig {
      */
     @Bean
     @Qualifier("6")
-    public RedisConnectionFactory sseFactory() {
+    public RedisConnectionFactory sseRoomFactory() {
 
         // connection 정보 넣기
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
@@ -155,7 +155,7 @@ public class RedisConfig {
 
     @Bean
     @Qualifier("6")
-    public RedisTemplate<String, Object> sseRedisTemplate(@Qualifier("6") RedisConnectionFactory sseFactory) {
+    public RedisTemplate<String, Object> sseRoomRedisTemplate(@Qualifier("6") RedisConnectionFactory sseFactory) {
 
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         // 직렬화
@@ -178,7 +178,7 @@ public class RedisConfig {
      */
     @Bean
     @Qualifier("6")
-    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("6") RedisConnectionFactory sseFactory) {
+    public RedisMessageListenerContainer redisRoomMessageListenerContainer(@Qualifier("6") RedisConnectionFactory sseFactory) {
       RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(sseFactory);
         return container;
@@ -188,7 +188,7 @@ public class RedisConfig {
   
     @Bean
     @Qualifier("5")
-    public RedisConnectionFactory sseFactory() {
+    public RedisConnectionFactory sseDiningFactory() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
         configuration.setHostName(host);
         configuration.setPort(port);
@@ -197,7 +197,7 @@ public class RedisConfig {
     }
     @Bean
     @Qualifier("5")
-    public RedisTemplate<String, Object> sseRedisTemplate(@Qualifier("5") RedisConnectionFactory sseFactory){
+    public RedisTemplate<String, Object> sseDiningRedisTemplate(@Qualifier("5") RedisConnectionFactory sseFactory){
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 
 //        객체안의 객체 직렬화 이슈로 인해 아래와 같이 serializer 커스텀
@@ -214,7 +214,7 @@ public class RedisConfig {
     //    리스너 객체 생성.
     @Bean
     @Qualifier("5")
-    public RedisMessageListenerContainer redisMessageListenerContainer(@Qualifier("5") RedisConnectionFactory sseFactory){
+    public RedisMessageListenerContainer redisDiningMessageListenerContainer(@Qualifier("5") RedisConnectionFactory sseFactory){
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(sseFactory);
         return container;
