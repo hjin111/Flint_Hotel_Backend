@@ -3,6 +3,7 @@ package com.hotel.flint.reserve.dining.service;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.dining.repository.DiningRepository;
+import com.hotel.flint.reserve.dining.controller.DiningSseController;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationListResDto;
@@ -42,14 +43,16 @@ public class DiningReservationService {
 
     private final EmployeeRepository employeeRepository;
     private final EmployeeService employeeService;
+    private final DiningSseController diningSseController;
 
     @Autowired
-    public DiningReservationService(DiningReservationRepository diningReservationRepository, MemberRepository memberRepository, DiningRepository diningRepository, EmployeeRepository employeeRepository, EmployeeService employeeService){
+    public DiningReservationService(DiningReservationRepository diningReservationRepository, MemberRepository memberRepository, DiningRepository diningRepository, EmployeeRepository employeeRepository, EmployeeService employeeService, DiningSseController diningSseController){
         this.diningReservationRepository = diningReservationRepository;
         this.memberRepository = memberRepository;
         this.diningRepository = diningRepository; 
         this.employeeRepository = employeeRepository;
         this.employeeService = employeeService;
+        this.diningSseController = diningSseController;
     }
 
 
@@ -91,9 +94,16 @@ public class DiningReservationService {
 
         // DiningReservation에 저장
         DiningReservation diningReservation = dto.toEntity(member, dining);
+        DiningName diningName = diningReservation.getDiningId().getDiningName();
 
+        String email = "flint_" + diningName.toString().substring(0,3).toLowerCase() + "@gmail.com";
+        System.out.println(email);
+        diningReservationRepository.save(diningReservation);
+        ReservationSseDetailDto reservationSseDetailDto = diningReservation.fromSseEntity();
 
-        return diningReservationRepository.save(diningReservation);
+        diningSseController.publishMessage(reservationSseDetailDto, email);
+
+        return diningReservation;
     }
 
     // 예약 전체 조회 - 관리자( 같은 부서인 예약 내역들만 볼 수 있음 )

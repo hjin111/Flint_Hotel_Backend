@@ -2,25 +2,35 @@ package com.hotel.flint.user.employee.controller;
 
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
+import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
+import com.hotel.flint.reserve.room.service.RoomReservedService;
 import com.hotel.flint.user.employee.dto.EmployeeModRoomDto;
+import com.hotel.flint.user.employee.dto.InfoDiningResDto;
+import com.hotel.flint.user.employee.dto.InfoRoomDetResDto;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
 import com.hotel.flint.user.employee.service.EmployeeRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/employee/room")
 public class EmployeeRoomController {
     private final EmployeeRoomService employeeRoomService;
+    private final RoomReservationRepository roomReservationRepository;
+    private final RoomReservedService roomReservedService;
 
     @Autowired
-    public EmployeeRoomController(EmployeeRoomService employeeRoomService) {
+    public EmployeeRoomController(EmployeeRoomService employeeRoomService, RoomReservationRepository roomReservationRepository, RoomReservedService roomReservedService) {
         this.employeeRoomService = employeeRoomService;
+        this.roomReservationRepository = roomReservationRepository;
+        this.roomReservedService = roomReservedService;
     }
 
     @PatchMapping("/modprice/{room_type_id}")
@@ -48,13 +58,29 @@ public class EmployeeRoomController {
             return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
         }
     }
+    @GetMapping("/reserve")
+    public ResponseEntity<?> memberReservatioRoomCheck(@RequestParam String email, Pageable pageable) {
+        try {
+            List<InfoRoomResDto> infoRoomResDtos = employeeRoomService.memberReservationRoomCheck(email, pageable);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "고객 예약 리스트 ", infoRoomResDtos);
+            System.out.println(infoRoomResDtos.size());
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+        } catch (IllegalArgumentException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
+        }
+    }
+
     /**
      * 직원의 권한으로 회원의 객실 예약 조회 - 단건 (detail)
      */
     @GetMapping("/reserve/{id}")
-    public ResponseEntity<?> memberReservationRoomCheck(@PathVariable Long id) {
+    public ResponseEntity<?> reserveRoomDetail(@PathVariable Long id) {
         try {
-            InfoRoomResDto dto = employeeRoomService.memberReservationRoomCheck(id);
+            InfoRoomDetResDto dto = roomReservedService.roomDetail(id);
             return new ResponseEntity<>(dto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
@@ -71,8 +97,8 @@ public class EmployeeRoomController {
     @PostMapping("/cancel_reserve_room/{id}")
     public ResponseEntity<?> memberReservationCncRoomByEmployee(@PathVariable Long id) {
         try {
-            InfoRoomResDto infoRoomResDto = employeeRoomService.memberReservationRoomCheck(id);
-            employeeRoomService.memberReservationCncRoomByEmployee(infoRoomResDto);
+            InfoRoomDetResDto dto = roomReservedService.roomDetail(id);
+            employeeRoomService.memberReservationCncRoomByEmployee(dto);
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "삭제 완료", null);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         } catch (EntityNotFoundException e) {

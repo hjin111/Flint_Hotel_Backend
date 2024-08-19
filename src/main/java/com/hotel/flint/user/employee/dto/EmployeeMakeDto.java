@@ -37,7 +37,7 @@ public class EmployeeMakeDto {
                 .birthday(this.birthday)
                 .phoneNumber(this.phoneNumber)
                 .password(password)
-                .employeeRank(EmployeeRank.사원)
+                .employeeRank(this.employeeRank)
                 .dateOfEmployment(this.dateOfEmployment)
                 .gender(this.gender)
                 .employeeNumber(this.employeeNumber)

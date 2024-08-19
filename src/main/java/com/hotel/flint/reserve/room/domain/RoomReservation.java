@@ -66,20 +66,10 @@ public class RoomReservation {
 
 //    고객 객실 예약 정보를 담은 데이터 반환 
     public InfoRoomResDto toInfoRoomResDto() {
-        InfoRoomDetResDto infoRoomDetResDto = InfoRoomDetResDto.builder()
-                .roomType(rooms.getRoomInfo().getRoomTypeName())
-                .checkin(this.checkInDate)
-                .checkout(this.checkOutDate)
-                .adultCnt(this.adultCnt)
-                .childCnt(this.childCnt)
-                .adultBfCnt(this.adultBfCnt)
-                .childBfCnt(this.childBfCnt)
-                .parkingYN(this.parkingYN)
-                .requestContents(this.requestContents)
-                .build();
         return InfoRoomResDto.builder()
                 .id(this.id)
-                .infoRoomDetResDto(infoRoomDetResDto)
+                .checkInDate(this.checkInDate)
+                .checkOutDate(this.checkOutDate)
                 .build();
     }
     public RoomReservedListDto listFromEntity(int no) {
@@ -122,6 +112,21 @@ public class RoomReservation {
         this.parkingYN = dto.getParkingYN();
         this.requestContents = dto.getRequestContents();
         return this;
+    }
+
+    public InfoRoomDetResDto toInfoRoomDetResEntity(){
+        return InfoRoomDetResDto.builder()
+                .id(this.id)
+                .roomType(rooms.getRoomInfo().getRoomTypeName())
+                .checkin(this.checkInDate)
+                .checkout(this.checkOutDate)
+                .adultCnt(this.adultCnt)
+                .childCnt(this.childCnt)
+                .adultBfCnt(this.adultBfCnt)
+                .childBfCnt(this.childBfCnt)
+                .parkingYN(this.parkingYN)
+                .requestContents(this.requestContents)
+                .build();
     }
 
 }
