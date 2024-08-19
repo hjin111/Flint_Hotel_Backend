@@ -82,12 +82,12 @@ public class SSEController implements MessageListener {
     }
 
     // 새로운 대기 위치를 클라이언트에 전송하는 메서드
-    public void publishMessage(String email, int newPosition) {
+    public void publishMessage(String email) {
         SseEmitter emitter = emitters.get(email);
         if (emitter != null) {
             try {
                 // 새로운 대기 번호를 클라이언트에 전송
-                emitter.send(SseEmitter.event().name("현재 위치").data("나의 대기 순서: " + newPosition + "번째"));
+                emitter.send(SseEmitter.event().name("갱신 완료").data("대기열 갱신 됨"));
             } catch (IOException e) {
                 // 클라이언트 연결이 끊어진 경우, emitters에서 제거하고 예외를 기록
                 emitters.remove(email);
@@ -95,7 +95,7 @@ public class SSEController implements MessageListener {
             }
         } else {
             // 클라이언트가 연결되어 있지 않으면 Redis 메시지로 전송
-            sseRedisTemplate.convertAndSend(email, String.valueOf(newPosition));
+            sseRedisTemplate.convertAndSend(email, String.valueOf(""));
         }
     }
 
@@ -103,13 +103,32 @@ public class SSEController implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             String email = new String(pattern); // Redis 채널 이름에서 이메일을 가져옴
-            String newPositionStr = new String(message.getBody()); // 메시지에서 새 대기 번호 가져옴
-            int newPosition = Integer.parseInt(newPositionStr); // 새 대기 번호를 정수로 변환
+//            String newPositionStr = new String(message.getBody()); // 메시지에서 새 대기 번호 가져옴
+//            int newPosition = Integer.parseInt(newPositionStr); // 새 대기 번호를 정수로 변환
 
             // 메시지 수신 후, 해당 사용자의 대기열 위치를 클라이언트에게 전송
-            publishMessage(email, newPosition);
+            publishMessage(email);
+//            publishPositionMessage(email, newPosition);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+//    // 새로운 대기 위치를 클라이언트에 전송하는 메서드
+//    public void publishPositionMessage(String email, int newPosition) {
+//        SseEmitter emitter = emitters.get(email);
+//        if (emitter != null) {
+//            try {
+//                // 새로운 대기 번호를 클라이언트에 전송
+//                emitter.send(SseEmitter.event().name("현재 위치").data("나의 대기 순서: " + newPosition + "번째"));
+//            } catch (IOException e) {
+//                // 클라이언트 연결이 끊어진 경우, emitters에서 제거하고 예외를 기록
+//                emitters.remove(email);
+//                System.out.println("SSE 연결이 끊어졌습니다: " + email);
+//            }
+//        } else {
+//            // 클라이언트가 연결되어 있지 않으면 Redis 메시지로 전송
+//            sseRedisTemplate.convertAndSend(email, String.valueOf(newPosition));
+//        }
+//    }
 }
