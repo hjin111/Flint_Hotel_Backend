@@ -10,6 +10,8 @@ import com.hotel.flint.support.qna.dto.UpdateAnswerDto;
 import com.hotel.flint.support.qna.repository.QnaRepository;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
+import com.hotel.flint.user.member.domain.Member;
+import com.hotel.flint.user.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -31,12 +33,14 @@ public class EmployeeQnaService {
     private final QnaRepository qnaRepository;
     private final EmployeeRepository employeeRepository;
     private final InquirySseController sseController; // SseController 의존성 주입
+    private final MemberRepository memberRepository;
 
     @Autowired
-    public EmployeeQnaService(QnaRepository qnaRepository, EmployeeRepository employeeRepository, InquirySseController sseController) {
+    public EmployeeQnaService(QnaRepository qnaRepository, EmployeeRepository employeeRepository, InquirySseController sseController, MemberRepository memberRepository) {
         this.qnaRepository = qnaRepository;
         this.employeeRepository = employeeRepository;
         this.sseController = sseController; // 주입
+        this.memberRepository = memberRepository;
     }
 
     private Employee getAuthenticatedEmployee() {
@@ -57,9 +61,13 @@ public class EmployeeQnaService {
         // 관리자 권한으로 로그인된 사용자 가져오기
         Employee employee = getAuthenticatedEmployee();
         QnA qna = qnaRepository.findById(qnaId).orElseThrow(() -> new EntityNotFoundException("해당 질문이 없습니다."));
+        Member member = memberRepository.findById(qna.getMember().getId())
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 Member ID가 없습니다."));
+
         if (qna.getRespond().equals(Option.N)) {
 
             qna = dto.toEntity(qna, employee);
+            sseController.publishMessage(qna.getAnswer(), member.getEmail());
             return qnaRepository.save(qna);
 
         } else {

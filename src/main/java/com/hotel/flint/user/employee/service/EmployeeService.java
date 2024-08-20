@@ -73,6 +73,7 @@ public class EmployeeService {
                             .id(m.getId())
                             .name(m.getLastName() + " " + m.getFirstName())
                             .email(m.getEmail())
+                            .phoneNumber(m.getPhoneNumber())
                     .build());
         }
         return dto;

@@ -25,7 +25,7 @@ public class InquirySseController implements MessageListener {
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Set<String> subscribeList = ConcurrentHashMap.newKeySet();
 
-    @Qualifier("4")
+    @Qualifier("7")
     private final RedisTemplate<String, Object> sseRedisTemplate;
     private final RedisMessageListenerContainer redisMessageListenerContainer;
 
