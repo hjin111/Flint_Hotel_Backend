@@ -3,6 +3,7 @@ package com.hotel.flint.reserve.dining.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotel.flint.reserve.dining.dto.ReservationDetailDto;
 import com.hotel.flint.reserve.dining.dto.ReservationSseDetailDto;
+import com.hotel.flint.user.employee.domain.Employee;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,10 +57,10 @@ public class DiningSseController implements MessageListener {
     }
 
     @GetMapping("/subscribe")
-    public SseEmitter subscribe(@RequestHeader("X-User-Email") String email){
+    public SseEmitter subscribe(){
         SseEmitter emitter = new SseEmitter(14400*60*1000L); // emmiter 유효시간 30분
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
         emitters.put(email, emitter);
         emitter.onCompletion(()-> emitters.remove(email));
         emitter.onTimeout(() -> emitters.remove(email));
@@ -71,8 +73,11 @@ public class DiningSseController implements MessageListener {
         return emitter;
     }
 
-    public void publishMessage(ReservationSseDetailDto dto, String email){
-        sseRedisTemplat.convertAndSend(email, dto);
+    public void publishMessage(ReservationSseDetailDto dto, List<Employee> diningEmployeeList){
+        for(Employee employee : diningEmployeeList){
+            sseRedisTemplat.convertAndSend(employee.getEmail(), dto);
+        }
+
     }
 
 

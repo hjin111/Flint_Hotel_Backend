@@ -1,5 +1,6 @@
 package com.hotel.flint.reserve.dining.service;
 
+import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.DiningName;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.dining.domain.Dining;
@@ -98,14 +99,27 @@ public class DiningReservationService {
         DiningReservation diningReservation = dto.toEntity(member, dining);
         DiningName diningName = diningReservation.getDiningId().getDiningName();
 
-        String email = "flint_" + diningName.toString().substring(0,3).toLowerCase() + "@gmail.com";
-        System.out.println(email);
+        List<Employee> diningEmployeeList = employeeRepository.findByDepartment(mapToDiningToDepartment(diningName));
         diningReservationRepository.save(diningReservation);
         ReservationSseDetailDto reservationSseDetailDto = diningReservation.fromSseEntity();
 
-        diningSseController.publishMessage(reservationSseDetailDto, email);
+        diningSseController.publishMessage(reservationSseDetailDto, diningEmployeeList);
 
         return diningReservation;
+    }
+    private Department mapToDiningToDepartment(DiningName diningName){
+        switch (diningName){
+            case KorDining:
+                return Department.KorDining;
+            case JapDining:
+                return Department.JapDining;
+            case ChiDining:
+                return Department.ChiDining;
+            case Lounge:
+                return Department.Lounge;
+            default:
+                throw new IllegalArgumentException("접근권한이 없습니다.");
+        }
     }
 
     // 예약 전체 조회 - 관리자( 같은 부서인 예약 내역들만 볼 수 있음 )
