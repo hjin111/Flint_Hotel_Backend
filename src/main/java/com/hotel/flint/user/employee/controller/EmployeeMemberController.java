@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/employee")
@@ -29,13 +30,12 @@ public class EmployeeMemberController {
         return employeeService.memberInfo(email);
     }
 
-//    직원 계정의 정보 조회
-//    해당 직원 id값
-    @GetMapping("/detail")
+//    직원이 멤버 리스트를 조회하는 기능
+    @GetMapping("/memberlist")
     @ResponseBody
-    public ResponseEntity<?> empDetail(){
+    public ResponseEntity<?> memberList(){
         try{
-            EmployeeDetResDto dto = employeeService.employeeDetail();
+            List<EmployeeToMemberListDto> dto = employeeService.memberList();
             CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Details Find" , dto);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
         }catch (EntityNotFoundException e){
@@ -44,58 +44,39 @@ public class EmployeeMemberController {
         }
     }
 
-//    직원 정보 수정 : 비밀번호 수정만 있음.
-//    해당 직원 id, 수정할 값이 들어있음.
-    @PutMapping("/modify")
-    @ResponseBody
-    public ResponseEntity<?> userModify(@RequestBody EmployeeModResDto dto){
-        try {
-            employeeService.employeeModify(dto);
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Password Modify" , null);
+    /**
+     * 관리자 권한으로 회원 detail 조회
+     */
+    @GetMapping("/member/detail/{id}")
+    public ResponseEntity<?> EmployeeToMemberDetail(@PathVariable Long id) {
+        try{
+            EmployeeToMemberDetailDto dto = employeeService.employeeToMemberDetail(id);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Details Find" , dto);
             return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-        }catch (IllegalArgumentException e){
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
         }catch (EntityNotFoundException e){
             CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
         }
     }
 
-//    직원의 직급을 수정
-//    직원 수정은 office 부서만 가능
-//    dto 안에 수정하는 직원 id, 수정 대상 id, 수정할 값 이 들어있다.
-    @PutMapping("/mod_rank")
-    @ResponseBody
-    public ResponseEntity<?> modEmployeeRank(@RequestBody EmployeeRankModResDto dto){
-        try {
-            employeeService.modEmployeeRank(dto);
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Rank Modify" , null);
-            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-        }
-        catch(EntityNotFoundException e){
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        }catch (IllegalArgumentException e){
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    @GetMapping("/list_reserve")
-    @ResponseBody
-    public ResponseEntity<?> employeeMemberReserveList(@RequestParam String email){
-        try {
-            InfoMemberReseveListResDto info = employeeService.employeeMemberReserveList(email);
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Member Reserve List" , info);
-            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
-        }
-        catch(EntityNotFoundException e){
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        }catch (IllegalArgumentException e){
-            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
-            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @GetMapping("/list_reserve")
+//    @ResponseBody
+//    public ResponseEntity<?> employeeMemberReserveList(@RequestParam String email){
+//        System.out.println(email);
+//        try {
+//            InfoMemberReserveListResDto info = employeeService.employeeMemberReserveList(email);
+//            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Member Reserve List" , info);
+//            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+//        }
+//        catch(EntityNotFoundException e){
+//            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+//            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+//        }catch (IllegalArgumentException e){
+//            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+//            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_REQUEST);
+//        } catch (SecurityException e){
+//            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+//            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
+//        }
+//    }
 }

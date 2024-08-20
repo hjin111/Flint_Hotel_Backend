@@ -21,6 +21,6 @@ public class InfoUserResDto {
     private String lastName;
     private String nation;
     private LocalDate birthday;
-    private int countRoomResevation;
+    private int countRoomReservation;
     private int countDiningReservation;
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ReservationDetailDto extends BaseTimeEntity {
+public class ReservationDetailDto{
 
     private Long id;
     private Long memberId;

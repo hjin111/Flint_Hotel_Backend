@@ -1,5 +1,6 @@
 package com.hotel.flint.dining.service;
 
+import com.hotel.flint.common.enumdir.DiningName;
 import com.hotel.flint.dining.domain.Dining;
 import com.hotel.flint.dining.domain.Menu;
 import com.hotel.flint.dining.dto.MenuSaveDto;
@@ -40,5 +41,10 @@ public class DiningService {
         } else{
             throw new EntityNotFoundException("존재하지 않는 메뉴");
         }
+    }
+
+    public DiningName getName(Long id){
+        Dining dining = diningRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재 하지 않는 다이닝"));
+        return dining.getDiningName();
     }
 }
