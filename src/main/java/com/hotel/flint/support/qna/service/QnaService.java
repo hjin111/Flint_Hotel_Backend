@@ -12,12 +12,14 @@ import com.hotel.flint.user.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -72,15 +74,31 @@ public class QnaService {
                 () -> new IllegalArgumentException("해당 email의 회원 없음")
         );
 
-        Page<QnA> list = qnaRepository.findByMember(pageable, member); //qna 리스트 가져오기
-
+        // 전체 qna list 가져오기
+        List<QnaListDto> allQnaList = new ArrayList<>();
+        int pageNumber = 0;
+        boolean hashMorePage;
         AtomicInteger start = new AtomicInteger((int) pageable.getOffset() + 1);
+        do {
+            pageable = PageRequest.of(pageNumber, 10);
+            Page<QnA> list = qnaRepository.findByMember(pageable, member); //qna 리스트 가져오기
 
-        List<QnaListDto> listDtos = list.stream()
-                .map(a -> a.listFromEntity((long) start.getAndIncrement()))
-                .collect(Collectors.toList());
+            allQnaList.addAll(list.stream()
+                    .map(qna -> qna.listFromEntity((long) start.getAndIncrement()))
+                    .collect(Collectors.toList()));
+            hashMorePage = list.hasNext();
+            pageNumber++;
+        } while (hashMorePage);
 
-        return listDtos;
+//        Page<QnA> list = qnaRepository.findByMember(pageable, member); //qna 리스트 가져오기
+
+//        AtomicInteger start = new AtomicInteger((int) pageable.getOffset() + 1);
+//
+//        List<QnaListDto> listDtos = list.stream()
+//                .map(a -> a.listFromEntity((long) start.getAndIncrement()))
+//                .collect(Collectors.toList());
+
+        return allQnaList;
     }
 
     /**

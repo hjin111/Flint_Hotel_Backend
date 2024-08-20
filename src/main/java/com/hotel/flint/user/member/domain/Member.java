@@ -4,6 +4,7 @@ import com.hotel.flint.common.domain.BaseTimeEntity;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
+import com.hotel.flint.user.employee.dto.EmployeeToMemberDetailDto;
 import com.hotel.flint.user.employee.dto.InfoMemberReserveListResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.member.dto.MemberDetResDto;
@@ -104,5 +105,18 @@ public class Member extends BaseTimeEntity {
 
     public void modifyUser(String password){
         this.password = password;
+    }
+
+    public EmployeeToMemberDetailDto detailFromEntity() {
+        EmployeeToMemberDetailDto employeeToMemberDetailDto = EmployeeToMemberDetailDto.builder()
+                .id(this.id)
+                .firstName(this.firstName)
+                .lastName(this.lastName)
+                .email(this.email)
+                .phoneNumber(this.phoneNumber)
+                .birthday(this.birthday)
+                .nation(this.nation)
+                .build();
+        return employeeToMemberDetailDto;
     }
 }

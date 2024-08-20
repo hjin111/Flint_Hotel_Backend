@@ -44,6 +44,21 @@ public class EmployeeMemberController {
         }
     }
 
+    /**
+     * 관리자 권한으로 회원 detail 조회
+     */
+    @GetMapping("/member/detail/{id}")
+    public ResponseEntity<?> EmployeeToMemberDetail(@PathVariable Long id) {
+        try{
+            EmployeeToMemberDetailDto dto = employeeService.employeeToMemberDetail(id);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.OK, "Employee Details Find" , dto);
+            return new ResponseEntity<>(commonResDto, HttpStatus.OK);
+        }catch (EntityNotFoundException e){
+            CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+            return new ResponseEntity<>(commonErrorDto, HttpStatus.BAD_GATEWAY);
+        }
+    }
+
 //    @GetMapping("/list_reserve")
 //    @ResponseBody
 //    public ResponseEntity<?> employeeMemberReserveList(@RequestParam String email){

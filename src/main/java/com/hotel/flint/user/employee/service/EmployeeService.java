@@ -27,6 +27,7 @@ import javax.transaction.Transactional;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -256,5 +257,16 @@ public class EmployeeService {
         }
 
         return dtos;
+    }
+
+    /**
+     * 관리자 권한으로 회원 detail 정보 조회
+     */
+    public EmployeeToMemberDetailDto employeeToMemberDetail(Long id) {
+
+        Member member = memberRepository.findById(id).orElseThrow(
+                ()-> new EntityNotFoundException("존재하지 않는 회원입니다.")
+        );
+        return member.detailFromEntity();
     }
 }
