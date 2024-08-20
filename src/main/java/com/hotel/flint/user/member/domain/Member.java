@@ -4,8 +4,7 @@ import com.hotel.flint.common.domain.BaseTimeEntity;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
-import com.hotel.flint.user.employee.dto.EmployeeToMemberDetailDto;
-import com.hotel.flint.user.employee.dto.InfoMemberReserveListResDto;
+import com.hotel.flint.user.employee.dto.InfoMemberReseveListResDto;
 import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.member.dto.MemberDetResDto;
 import lombok.AllArgsConstructor;
@@ -65,7 +64,7 @@ public class Member extends BaseTimeEntity {
                 .nation(this.nation)
                 .birthday(this.birthday)
                 .countDiningReservation(this.diningReservationList.size())
-                .countRoomReservation(this.roomReservations.size())
+                .countRoomResevation(this.roomReservations.size())
                 .build();
     }
 
@@ -81,18 +80,18 @@ public class Member extends BaseTimeEntity {
                 .build();
     }
 
-    public InfoMemberReserveListResDto memberReserveListEntity(){
-        List<InfoMemberReserveListResDto.RoomReserveId> roomDto = new ArrayList<>();
+    public InfoMemberReseveListResDto memberReserveListEntity(){
+        List<InfoMemberReseveListResDto.RoomReserveId> roomDto = new ArrayList<>();
         for(RoomReservation dto : this.roomReservations){
-            roomDto.add(InfoMemberReserveListResDto.fromRoomEntity(dto));
+            roomDto.add(InfoMemberReseveListResDto.fromRoomEntity(dto));
         }
 
-        List<InfoMemberReserveListResDto.DiningReserveId> diningDto = new ArrayList<>();
+        List<InfoMemberReseveListResDto.DiningReserveId> diningDto = new ArrayList<>();
         for(DiningReservation dto : this.diningReservationList){
-            diningDto.add(InfoMemberReserveListResDto.fromDiningEntity(dto));
+            diningDto.add(InfoMemberReseveListResDto.fromDiningEntity(dto));
         }
 
-        return InfoMemberReserveListResDto.builder()
+        return InfoMemberReseveListResDto.builder()
                 .roomReservations(roomDto)
                 .diningReservations(diningDto)
                 .build();
@@ -105,18 +104,5 @@ public class Member extends BaseTimeEntity {
 
     public void modifyUser(String password){
         this.password = password;
-    }
-
-    public EmployeeToMemberDetailDto detailFromEntity() {
-        EmployeeToMemberDetailDto employeeToMemberDetailDto = EmployeeToMemberDetailDto.builder()
-                .id(this.id)
-                .firstName(this.firstName)
-                .lastName(this.lastName)
-                .email(this.email)
-                .phoneNumber(this.phoneNumber)
-                .birthday(this.birthday)
-                .nation(this.nation)
-                .build();
-        return employeeToMemberDetailDto;
     }
 }

@@ -17,4 +17,6 @@ public class EmployeeQnaListDto { // 직원이 보는 Qna 전체 목록 조회
     private String title;
     private String memberEmail;
     private LocalDateTime writeTime;
+
+
 }

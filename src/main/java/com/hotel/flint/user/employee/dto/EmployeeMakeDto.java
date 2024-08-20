@@ -21,7 +21,7 @@ public class EmployeeMakeDto {
     private String lastName;
     private String phoneNumber;
     private String email;
-    private Department department;
+    private Department departMent;
     private EmployeeRank employeeRank;
     private LocalDate dateOfEmployment;
     private String password;
@@ -37,11 +37,11 @@ public class EmployeeMakeDto {
                 .birthday(this.birthday)
                 .phoneNumber(this.phoneNumber)
                 .password(password)
-                .employeeRank(this.employeeRank)
+                .employeeRank(EmployeeRank.사원)
                 .dateOfEmployment(this.dateOfEmployment)
                 .gender(this.gender)
                 .employeeNumber(this.employeeNumber)
-                .department(this.department)
+                .department(this.departMent)
                 .delYN(Option.N)
                 .build();
         return employee;

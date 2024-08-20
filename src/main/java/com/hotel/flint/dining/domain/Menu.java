@@ -1,6 +1,5 @@
 package com.hotel.flint.dining.domain;
 
-import com.hotel.flint.user.employee.dto.DiningMenuDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,13 +30,5 @@ public class Menu {
 
     public void menuUpdate(int newCost){
         this.cost = newCost;
-    }
-
-    public DiningMenuDto fromEntity(Menu menu){
-        return DiningMenuDto.builder()
-                .menuId(this.id)
-                .menuName(this.menuName)
-                .cost(this.cost)
-                .build();
     }
 }

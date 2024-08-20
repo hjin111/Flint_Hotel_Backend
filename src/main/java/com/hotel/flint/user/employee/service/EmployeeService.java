@@ -11,7 +11,6 @@ import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import com.hotel.flint.user.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,15 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -64,21 +55,6 @@ public class EmployeeService {
         }
     }
 
-    public List<EmployeeToMemberListDto> memberList(){
-        List<EmployeeToMemberListDto> dto = new ArrayList<>();
-        List<Member> member = memberRepository.findAll();
-
-        for(Member m : member){
-            dto.add(EmployeeToMemberListDto.builder()
-                            .id(m.getId())
-                            .name(m.getLastName() + " " + m.getFirstName())
-                            .email(m.getEmail())
-                            .phoneNumber(m.getPhoneNumber())
-                    .build());
-        }
-        return dto;
-    }
-
 //    직원 생성(Office 부서만 가능함)
     public Employee makeEmployee(EmployeeMakeDto dto) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
@@ -93,40 +69,7 @@ public class EmployeeService {
             memberRepository.findByPhoneNumberAndDelYN(dto.getPhoneNumber(), Option.N).isPresent()) {
             throw new IllegalArgumentException("해당 번호로 이미 가입한 계정이 존재합니다");
         }
-
-        String departmentCode = getDepartmentCode(dto.getDepartment());
-        String randomNumber = generateRandomNumber();
-        String employeeNumber = "FL" + departmentCode + randomNumber;
-
-        dto.setEmployeeNumber(employeeNumber);
         return employeeRepository.save(dto.toEntity(passwordEncoder.encode(dto.getPassword())));
-    }
-
-    // 부서 코드 생성
-    private String getDepartmentCode(Department department) {
-        switch(department) {
-            case Office:
-                return "10";
-            case Room:
-                return "11";
-            case KorDining:
-                return "12";
-            case JapDining:
-                return "13";
-            case ChiDining:
-                return "14";
-            case Lounge:
-                return "15";
-            default:
-                throw new IllegalArgumentException("Unknown department: " + department);
-        }
-    }
-
-    // 6자리 랜덤 숫자 생성
-    private String generateRandomNumber() {
-        SecureRandom random = new SecureRandom();
-        int randomNumber = random.nextInt(900000) + 100000; // 100000 ~ 999999
-        return String.valueOf(randomNumber);
     }
 
 //    직원 로그인
@@ -150,21 +93,12 @@ public class EmployeeService {
         return member.infoUserEntity();
     }
 
-//    직원 자신의 상세 정보.
+//    직원 상세 정보
     public EmployeeDetResDto employeeDetail(){
         Employee employee = employeeRepository.findByEmailAndDelYN(
                 SecurityContextHolder.getContext()
                         .getAuthentication()
                         .getName()
-                , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 하는 관리자 정보가 존재하지 않습니다."));
-
-        return employee.EmpDetEntity();
-    }
-
-//    직원 상세 정보
-    public EmployeeDetResDto employeeDetail(Long id){
-        Employee employee = employeeRepository.findByIdAndDelYN(
-                id
         , Option.N).orElseThrow(() -> new EntityNotFoundException("해당 계정이 존재하지 않습니다."));
 
         return employee.EmpDetEntity();
@@ -214,60 +148,11 @@ public class EmployeeService {
         delEmp.delEmp();
     }
 
-    public InfoMemberReserveListResDto employeeMemberReserveList(String email){
-        Employee authenticatedEmployee = getAuthenticatedEmployee();
-        if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
-            throw new SecurityException("인증되지 않은 사용자입니다.");
-        }
+    public InfoMemberReseveListResDto employeeMemberReserveList(String email){
         Member member = memberService.findByMemberEmail(email);
 
-        InfoMemberReserveListResDto info = member.memberReserveListEntity();
+        InfoMemberReseveListResDto info = member.memberReserveListEntity();
 
         return info;
-    }
-    public List<EmployeeDetResDto> getEmployeeList(EmployeeSearchDto dto) {
-        Specification<Employee> specification = new Specification<Employee>() {
-            @Override
-            public Predicate toPredicate(Root<Employee> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicates = new ArrayList<>();
-
-                // 이메일 검색 조건 추가
-                if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
-                    predicates.add(criteriaBuilder.like(root.get("email"), "%" + dto.getEmail() + "%"));
-                }
-
-                // 직원 번호 검색 조건 추가
-                if (dto.getEmployeeNumber() != null && !dto.getEmployeeNumber().isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(root.get("employeeNumber"), dto.getEmployeeNumber()));
-                }
-
-                // 부서별 검색 조건 추가
-                if (dto.getDepartment() != null) {
-                    predicates.add(criteriaBuilder.equal(root.get("department"), dto.getDepartment()));
-                }
-
-                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-            }
-        };
-
-        List<Employee> employees = employeeRepository.findAll(specification);
-        List<EmployeeDetResDto> dtos = new ArrayList<>();
-
-        for(Employee employee : employees) {
-            dtos.add(employee.EmpDetEntity());
-        }
-
-        return dtos;
-    }
-
-    /**
-     * 관리자 권한으로 회원 detail 정보 조회
-     */
-    public EmployeeToMemberDetailDto employeeToMemberDetail(Long id) {
-
-        Member member = memberRepository.findById(id).orElseThrow(
-                ()-> new EntityNotFoundException("존재하지 않는 회원입니다.")
-        );
-        return member.detailFromEntity();
     }
 }

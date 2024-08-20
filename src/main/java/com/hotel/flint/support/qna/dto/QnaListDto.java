@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class QnaListDto {
 
-    private Long id;
     private Long no;
     private String title;
     private String memberEmail;

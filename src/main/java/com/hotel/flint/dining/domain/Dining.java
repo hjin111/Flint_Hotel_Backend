@@ -5,6 +5,7 @@ import com.hotel.flint.common.enumdir.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import com.hotel.flint.reserve.dining.domain.DiningReservation;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

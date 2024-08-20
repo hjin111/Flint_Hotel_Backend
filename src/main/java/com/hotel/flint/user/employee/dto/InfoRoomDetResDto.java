@@ -1,6 +1,5 @@
 package com.hotel.flint.user.employee.dto;
 
-import com.hotel.flint.common.enumdir.Option;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class InfoRoomDetResDto {
-    private Long id;
+
     private String roomType;
     private LocalDate checkin;
     private LocalDate checkout;
@@ -24,7 +23,4 @@ public class InfoRoomDetResDto {
 
     private int adultBfCnt; // 성인 조식 신청인원
     private int childBfCnt;
-
-    private Option parkingYN;
-    private String requestContents;
 }

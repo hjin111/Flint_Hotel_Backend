@@ -2,27 +2,21 @@ package com.hotel.flint.user.employee.service;
 
 import com.hotel.flint.common.enumdir.Department;
 import com.hotel.flint.common.enumdir.Option;
-import com.hotel.flint.dining.domain.Dining;
-import com.hotel.flint.reserve.dining.domain.DiningReservation;
-import com.hotel.flint.reserve.room.domain.RoomReservation;
-import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
 import com.hotel.flint.room.domain.RoomInfo;
-import com.hotel.flint.room.dto.RoomInfoResDto;
+import com.hotel.flint.reserve.room.domain.RoomReservation;
 import com.hotel.flint.room.repository.RoomDetailsRepository;
 import com.hotel.flint.room.repository.RoomInfoRepository;
 import com.hotel.flint.room.repository.RoomPriceRepository;
+import com.hotel.flint.reserve.room.repository.RoomReservationRepository;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.employee.dto.EmployeeModRoomDto;
-import com.hotel.flint.user.employee.dto.InfoRoomDetResDto;
 import com.hotel.flint.user.employee.dto.InfoRoomResDto;
+import com.hotel.flint.user.employee.dto.InfoUserResDto;
 import com.hotel.flint.user.employee.repository.EmployeeRepository;
 import com.hotel.flint.user.member.domain.Member;
 import com.hotel.flint.user.member.repository.MemberRepository;
 import com.hotel.flint.user.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,9 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -75,23 +66,8 @@ public class EmployeeRoomService {
         }
     }
 
-    public List<RoomInfoResDto> roomInfoList(){
-        Employee authenticatedEmployee = getAuthenticatedEmployee();
-        if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
-            throw new IllegalArgumentException("접근 권한이 없습니다.");
-        }
-        List<RoomInfo> infos = roomInfoRepository.findAll();
-        List<RoomInfoResDto> resDtos= new ArrayList<>();
-
-        for(RoomInfo info : infos){
-            resDtos.add(info.fromEntity());
-        }
-
-        return resDtos;
-    }
-
-
-    public void modRoomPrice(Long id, long newPrice) {
+//
+    public void modRoomPrice(Long id, Double newPrice) {
         Employee authenticatedEmployee = getAuthenticatedEmployee();
         if(!authenticatedEmployee.getDepartment().toString().equals("Room")){
             throw new IllegalArgumentException("접근 권한이 없습니다.");
@@ -104,33 +80,22 @@ public class EmployeeRoomService {
         roomInfoRepository.save(roomInfo);
     }
 
-    public List<InfoRoomResDto> memberReservationRoomCheck(String email, Pageable pageable) {
-        Employee authenticateEmployee = getAuthenticatedEmployee();
-        Member member = memberRepository.findByEmailAndDelYN(email, Option.N)
-                .orElseThrow(() -> new EntityNotFoundException("해당 고객 email이 존재하지 않습니다."));
-        String auth = authenticateEmployee.getDepartment().toString();
-        List<InfoRoomResDto> allReservation = new ArrayList<>();
-        int pageNumber = 0;
-        boolean hasMorePage;
-        do {
-            pageable = PageRequest.of(pageNumber, 10);
-            Page<RoomReservation> roomReservations;
-            if(auth.equals(Department.Room.toString())){
-                roomReservations = roomReservationRepository.findByMember(pageable, member);
-            }else{
-                throw new IllegalArgumentException("접근 권한이 없습니다.");
-            }
+    public InfoRoomResDto memberReservationRoomCheck(Long id) {
+        Employee authenticatedEmployee = getAuthenticatedEmployee();
+        String auth = authenticatedEmployee.getDepartment().toString();
+        if(!auth.equals("Room") && !auth.equals(Department.Office.toString())){
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
+        }
 
-            allReservation.addAll(roomReservations.stream()
-                    .map(revs -> revs.toInfoRoomResDto())
-                    .collect(Collectors.toList()));
-            hasMorePage = roomReservations.hasNext();
-            pageNumber++;
-        }while(hasMorePage);
-        return allReservation;
+        RoomReservation roomReservation = roomReservationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("해당 예약 정보가 없습니다."));
+
+        InfoRoomResDto infoRoomResDto = roomReservation.toInfoRoomResDto();
+
+        return infoRoomResDto;
     }
 
-    public void memberReservationCncRoomByEmployee(InfoRoomDetResDto dto) {
+    public void memberReservationCncRoomByEmployee(InfoRoomResDto dto) {
         roomReservationRepository.deleteById(dto.getId());
     }
 

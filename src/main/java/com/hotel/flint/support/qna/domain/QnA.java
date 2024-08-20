@@ -2,7 +2,11 @@ package com.hotel.flint.support.qna.domain;
 
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.common.enumdir.Service;
-import com.hotel.flint.support.qna.dto.*;
+import com.hotel.flint.support.qna.dto.QnaDetailDto;
+import com.hotel.flint.support.qna.dto.QnaListDto;
+import com.hotel.flint.support.qna.dto.QnaUpdateDto;
+import com.hotel.flint.support.qna.dto.EmployeeQnaDetailDto;
+import com.hotel.flint.support.qna.dto.EmployeeQnaListDto;
 import com.hotel.flint.user.employee.domain.Employee;
 import com.hotel.flint.user.member.domain.Member;
 import lombok.AllArgsConstructor;
@@ -42,6 +46,7 @@ public class QnA {
     @CreationTimestamp
     private LocalDateTime writeTime; // qna 작성시간
 
+    @CreationTimestamp
     private LocalDateTime answerTime; // 답변 작성시간 - 답변 전에는 null일 수 있음
 
     @Column(length = 3000)
@@ -57,7 +62,6 @@ public class QnA {
 
     public QnaListDto listFromEntity(Long no) {
         QnaListDto qnaListDto = QnaListDto.builder()
-                .id(this.id)
                 .no(no)
                 .title(this.title)
                 .memberEmail(this.getMember().getEmail())
@@ -68,14 +72,11 @@ public class QnA {
 
     public QnaDetailDto detailFromEntity(String email) {
         QnaDetailDto qnaDetailDto = QnaDetailDto.builder()
-                .id(this.id)
                 .service(this.service)
                 .title(this.title)
                 .contents(this.contents)
                 .writeTime(this.writeTime)
                 .memberEmail(email)
-                .respond(this.respond)
-                .answer(this.answer)
                 .build();
         return qnaDetailDto;
     }
@@ -112,7 +113,6 @@ public class QnA {
                 .title(this.title)
                 .contents(this.contents)
                 .memberEmail(this.member != null ? this.member.getEmail() : null)
-                .service(this.service)
                 .writeTime(this.writeTime)
                 .answer((this.answer != null && !this.answer.isEmpty()) ? this.answer : null)
                 .answerTime(this.answerTime != null ? this.answerTime : null)
