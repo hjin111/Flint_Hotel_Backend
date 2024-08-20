@@ -67,7 +67,8 @@ public class EmployeeQnaService {
         if (qna.getRespond().equals(Option.N)) {
 
             qna = dto.toEntity(qna, employee);
-            sseController.publishMessage(qna.getAnswer(), member.getEmail());
+//            메서드명 일치
+            sseController.publishQnaMessage(qna.getAnswer(), member.getEmail());
             return qnaRepository.save(qna);
 
         } else {

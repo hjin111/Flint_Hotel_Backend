@@ -29,7 +29,8 @@ public class InquirySseController implements MessageListener {
     private final RedisTemplate<String, Object> sseRedisTemplate;
     private final RedisMessageListenerContainer redisMessageListenerContainer;
 
-    public InquirySseController(@Qualifier("4") RedisTemplate<String, Object> sseRedisTemplate, RedisMessageListenerContainer redisMessageListenerContainer) {
+//    Qualifier 수정 안되어 있던 것 수정
+    public InquirySseController(@Qualifier("7") RedisTemplate<String, Object> sseRedisTemplate, RedisMessageListenerContainer redisMessageListenerContainer) {
         this.sseRedisTemplate = sseRedisTemplate;
         this.redisMessageListenerContainer = redisMessageListenerContainer;
     }
@@ -64,18 +65,22 @@ public class InquirySseController implements MessageListener {
         return new MessageListenerAdapter(sseController, "onMessage");
     }
 
-    public void publishMessage(String message, String email) {
-        SseEmitter emitter = emitters.get(email);
-        if (emitter != null) {
-            try {
-                emitter.send(SseEmitter.event().name("answer").data(message));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+    public void publishQnaMessage(String message, String email) {
+//        메시지 내용이 null 이 아닐 때만 발행
+        if (message != null && !message.trim().isEmpty()) {
+            SseEmitter emitter = emitters.get(email);
+            if (emitter != null) {
+                try {
+                    emitter.send(SseEmitter.event().name("answer").data(message));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                sseRedisTemplate.convertAndSend(email, message);
             }
-        } else {
-            sseRedisTemplate.convertAndSend(email, message);
         }
     }
+
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
