@@ -2,6 +2,7 @@ package com.hotel.flint.reserve.room.controller;
 
 import com.hotel.flint.common.dto.CommonErrorDto;
 import com.hotel.flint.common.dto.CommonResDto;
+import com.hotel.flint.reserve.room.dto.*;
 import com.hotel.flint.common.enumdir.Option;
 import com.hotel.flint.reserve.room.domain.RoomReservation;
 import com.hotel.flint.reserve.room.dto.PossibleRoomDto;
@@ -42,9 +43,9 @@ public class RoomReservedController {
     public ResponseEntity<?> roomReservation(@RequestBody RoomReservedDto dto) {
 
         try {
-            double totalPrice = roomReservedService.roomReservation(dto);
+            RoomReservedResDto resDto = roomReservedService.roomReservation(dto);
 
-            CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "예약 금액은 " + totalPrice + "원 입니다.", null);
+            CommonResDto commonResDto = new CommonResDto(HttpStatus.CREATED, "예약 금액은 " + resDto.getTotalPrice() + "원 입니다.", resDto);
             return new ResponseEntity<>(commonResDto, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
 
