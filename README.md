@@ -1,7 +1,7 @@
 ![image](https://github.com/user-attachments/assets/80fc49d7-565c-4d10-9104-88b5792414ab)
 <div align=center>
   
-  **🦅[Play Data] 한화시스템 BEYOND SW캠프 7기/불사조🦅**
+  **🦅불사조🦅**
 </div>
 
 <br><br>
